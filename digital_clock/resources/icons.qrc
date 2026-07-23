@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/clock/images">
+        <file alias="quit.svg.p">images/cross-24.svg</file>
+        <file alias="update.svg.p">images/download-16.svg</file>
+        <file alias="info.svg.p">images/info-24.svg</file>
+        <file alias="settings.svg.p">images/settings-24.svg</file>
+        <file alias="clock.svg.p">images/time-24.svg</file>
+        <!-- the real Digital Clock 4 application icon, same artwork the
+             Windows build uses for the executable (clock_icon_win.ico) -->
+        <file alias="app-icon.png">images/clock_icon.png</file>
+    </qresource>
+    <qresource prefix="/clock/about">
+        <file alias="about-1.png">images/if_clock-c_750020.png</file>
+        <file alias="about-2.png">images/if_favorite_c_750016.png</file>
+        <file alias="donate.png">images/qr-code-512.png</file>
+    </qresource>
+    <qresource prefix="/clock/icons/tray">
+        <file alias="clock.svg">images/time-24.svg</file>
+        <file alias="clock-alt-w.svg">images/if_clock_2561404-w.svg</file>
+        <file alias="clock-alt-b.svg">images/if_clock_2561404-b.svg</file>
+        <file alias="clock-smaller.svg">images/if_time-24_103169.svg</file>
+        <file alias="clock-smaller.svg.p">images/if_time-24_103169.svg</file>
+    </qresource>
+</RCC>

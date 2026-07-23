@@ -1,0 +1,915 @@
+Whats new in 4.7.9:
+-------------------
+Features:
+ - show app icon in Windows TaskBar (also in Alt+Tab dialog), can be useful for screen recording software
+ - possibility to use semitransparent color as background
+
+Core:
+ - Qt 5.12.10 for all supported platforms
+
+Plugins:
+ - alarm: call plugin settings dialog using hotkey
+ - countdown_timer: option to hide when it is not active
+ - countdown_timer: option to hide days
+ - countdown_timer: reverse counting option
+ - countdown_timer: call plugin dialog using hotkey
+ - schedule: added advanced settings
+ - schedule: support tasks without notes
+ - schedule: support sound-only notifications
+ - timetracker: added settings dialog similar to countdown timer
+ - timetracker: renamed to stopwatch
+ - timetracker: translation support
+ - timetracker: added plugin icon
+ - timetracker: call plugin dialog using hotkey
+
+
+Whats new in 4.7.8:
+-------------------
+Features:
+ - autostart for multiple instances (Windows portable version only)
+ - option to completely hide clock on mouse hover
+
+Core:
+ - Qt 5.12.9 for all supported platforms
+ - added few workarounds for Wayland-based Linux systems
+ - change updater User-Agent to latest Firefox ESR release
+
+GUI:
+ - added Chinese (China) (zh-CN) translation
+ - fixed few translation typo
+ - updated palette icon engine
+ - added donation link into About dialog
+ - keep inactive clock window behind all other windows
+ - fixed issue with light fonts selection
+
+Plugins:
+ - countdown_timer: double-click on the countdown timer restarts it
+ - countdown_timer: added "Auto-restart countdown" option
+ - countdown_timer: chime when countdown finishes
+ - countdown_timer: don't set focus to existing message box button
+ - countdown_timer: pause timer on click on it
+ - countdown_timer: hotkeys support
+
+
+Whats new in 4.7.7:
+-------------------
+Features:
+ - become almost transparent on mouse hover
+
+Core:
+ - Qt 5.12.8 for all supported platforms
+ - drop autostart flag after app path change
+ - don't save state on each clock position change, do it only when it is required
+ - restore clock position after screen resolution change
+ - handle secondary screen removal (nothing has changed related to adding)
+
+GUI:
+ - use slightly different tray icons on different platforms
+ - fixed invisible tray icon on KDE when system Qt is used
+ - change tray icon depending on Windows 10 system theme
+ - fixed strange behavior on some Linux systems when right alignment is used
+ - updated external links in About dialog
+ - updated copyright year
+ - added another workaround for "stay on on top" on Windows
+ - show previews for custom time formats as tooltips
+
+Plugins:
+ - added random position plugin
+ - timetracker: do not reset progress on app settings change
+ - date: show previews for custom date formats as tooltips
+ - date: added 2 more custom formats
+
+Installer:
+ - packaged for various Linux systems
+
+
+Whats new in 4.7.6:
+-------------------
+Core:
+ - Qt 5.12.7 for all supported platforms
+ - OpenSSL 1.1 on Windows
+
+Plugins:
+ - alarm: m3u playlists support
+ - countdown_timer: added ability to show remaining days
+
+
+Whats new in 4.7.5:
+-------------------
+Core:
+ - Qt 5.12.3 for all supported platforms
+
+
+Whats new in 4.7.4:
+-------------------
+Features:
+ - Windows: keep clock window visible after Win+D (show desktop)
+
+Core:
+ - Qt 5.11.2 for Windows and Linux
+ - Qt development branch for macOS
+ - Linux build compiled with GCC 6 on Debian, used OpenSSL 1.1
+ - macOS build compiled with Xcode 10.1 (SDK 10.14)
+ - macOS: cleanup Info.plist
+ - added another workaround for "always on top" problem on Windows
+ - fixed unstable crash on clock move
+ - fixed bug with position saving when "show clock in fullscreen mode" is disabled
+
+GUI:
+ - slightly decreased tray icon size
+ - added Portugal (pt-PT) translation, thanks to Rui
+ - configurable snap to edge threshold (see Experimental tab)
+ - configurable window refresh interval (see Experimental tab)
+
+Installer:
+ - Windows: added shortcut to documentation
+ - macOS: created pretty dmg
+
+
+Whats new in 4.7.3:
+-------------------
+Features:
+ - move clock on click on it (doesn't work if "transparent for mouse" is enabled)
+
+Core:
+ - Qt 5.9.6 for Linux and macOS
+ - Qt 5.11.1 for Windows
+ - Linux build compiled with GCC 7
+ - macOS build compiled with Xcode 9.4
+
+GUI:
+ - Linux: display clock on current workspace instead of first
+ - multiline time format support
+
+Plugins:
+ - added very simple timetracker plugin
+
+General:
+ - Linux: slightly decreased package size
+
+
+Whats new in 4.7.2:
+-------------------
+Features:
+ - Linux: KDE integration (use system Qt instead of shipped if possible)
+
+Core:
+ - allow to change "show on all workspaces" option on runtime
+ - fixed config loading in portable version
+ - fixed out of range position detection/handling
+ - prevent out of range position on startup
+
+GUI:
+ - Linux: fixed notifications in GNOME
+ - don't display "Show/Hide" menu item by default
+ - fixed "invisible" tray icons on Win10
+ - fixed quick positioning on multimonitor systems
+
+General:
+ - added ["Known issues" article](https://sourceforge.net/p/digitalclock4/wiki/Known%20issues/) to [wiki](https://sourceforge.net/p/digitalclock4/wiki/)
+
+
+Whats new in 4.7.1:
+-------------------
+Features:
+ - single instance
+
+Core:
+ - Qt 5.9.4 for macOS and Linux
+ - fixed unstable bug related with plugins unload
+ - descreased disk I/O usage
+
+GUI:
+ - better support for multimonitor systems with different DPI
+ - ability to align clock to plugins messages
+
+Plugins:
+ - talking clock: respect custom time zone
+ - date: added few date formats
+ - widget plugins: allow sizes >100%
+ - fixed few plugins after previous update
+
+
+Whats new in 4.7.0:
+-------------------
+Features:
+ - "quick positioning" menu with 9 predefined positions
+ - show clock on each monitor
+
+Core:
+ - significant changes to plugins API and plugins engine in general
+ - better error handling in plugin engine
+ - Qt 5.10.0 for Windows
+
+GUI:
+ - save clock visibility (Show/Hide menu item state) between restarts
+ - fixed saved position loading (it was loaded incorrectly in some cases)
+ - display clock window border during clock configuration
+ - allow item selection in plugins list
+ - better HiDPI support for Linux systems
+
+Plugins:
+ - don't keep plugins in memory after unload
+ - fixed incorrect color of currently used color indicator
+ - customized "talking clock" plugin icon
+
+General:
+ - linux: fixed launch on modern systems
+ - linux: deploy Qt runtime into separated folder
+
+
+Whats new in 4.6.0:
+-------------------
+Features:
+ - align center
+ - independent scaling for width and height (through 'any zoom' plugin)
+ - plugins can use current clock skin to draw own content (affected plugins are: 'countdown timer', 'date', 'ip address', 'quick note')
+
+Core:
+ - HTTPS URL in updater
+ - switched to strict C++14
+ - decreased binaries size for Linux systems
+ - macOS: compiled with Xcode 9
+ - Qt 5.9.2 for Windows
+ - 64-bit installer version compiled with MSVC2017
+
+GUI:
+ - fix clock position after settings reset
+ - updated links in About dialog, used HTTPS where available
+
+
+Whats new in 4.5.7:
+-------------------
+Features:
+ - snap to edges
+
+Core:
+ - re-written skin draw engine, a lot of improvements
+ - don't overwrite config if nothing changed
+ - improved settings loading
+ - used custom parser for time format, resolves issues with 12h format without AM/PM indicator
+ - correctly handle locale-dependent system time format
+ - a lot of small bugfixes in plugin core
+ - improved macOS support
+
+GUI:
+ - disabled resize for some plugin settings dialogs
+ - added "Help to translate" link to About dialog
+ - added "surprise" to About dialog (triple click the logo several times)
+ - changed links color in about dialog
+ - added AM/PM indicator for Flipclock HD skin
+ - added new skin: "Numeric Dotted"
+
+Plugins:
+ - schedule: added ability to change notification type
+ - schedule: fixed task text editing
+ - added basic countdown timer plugin
+ - plugins API was extended
+
+General:
+ - transifex.com integration, now you can help to translate my clock
+ - updated mini-wiki, added translation instructions
+
+
+Whats new in 4.5.6:
+-------------------
+Core:
+ - Qt 5.9.1 for Windows (including portable version)
+ - fixed unstable crash on exit
+ - change window resize logic, CPU load must be decreased even more
+ - fixed rare bug in updater
+
+GUI:
+ - fixed ugly blinking on repaint when some skins are used
+ - correctly handle dark menu bar mode on macOS
+ - icons color depend on system palette (especially notable on Linux systems with dark themes)
+
+Plugins:
+ - alarm: remember last used sound path
+ - alarm: allow multiselect
+ - significantly improved 'autoresize' feature
+
+General:
+ - fixed autostart issues on some Linux systems
+ - changed SettingsDialog logic
+
+
+Whats new in 4.5.5:
+-------------------
+Features:
+ - always keep visible on display (prevent out of range position)
+
+Core:
+ - small changes in updater
+ - added basic logging (linux/mac only)
+
+GUI:
+ - sort plugins by name
+ - decreased spacing on HiDPI display on Windows
+
+Plugins:
+ - horizontal layout support
+ - quick_note: dropped edit button
+ - alarm: fixed "disable all" icon color
+ - alarm: fixed alarms sorting
+ - alarm: fixed unstable crash
+ - alarm: changed icon color
+ - alarm: show notifications on error
+ - alarm: global hotkey to stop alarm
+ - ip_address: fixed unstable crash
+ - ip_address: fixed external IP getting
+
+General:
+ - fixed launch issues on some linux systems
+ - fixed autostart on some linux systems
+
+
+Whats new in 4.5.4:
+-------------------
+Features:
+ - alternative (possible much better) 'stay on top' for Linux
+ - show clock on all workspaces/desktops on Linux/Mac
+ - autodetect fullscreen apps on Windows
+ - change clock time zone
+
+Core:
+ - separated timer for plugins
+ - compiled with GCC 5.4.0 on linux
+
+GUI:
+ - decreased spacing in few dialogs
+ - macOS dark menu bar support (make icon white)
+ - don't show menu icons on macOS
+ - added tab with experimental features
+ - restore clock position after screen resolution change
+
+Plugins:
+ - new alarm plugin with multiple alarms support
+ - chime: quiet time feature
+ - alignment support for plugins which have widgets
+ - ip_addres: ability to choose what addresses will be displayed
+
+General:
+ - linux: config_desktop.sh now can be run as root
+
+
+Whats new in 4.5.3:
+-------------------
+Core:
+ - compiled with Xcode 7 and Qt 5.8.0 on macOS
+ - Qt 5.8.0 for Windows installer version
+ - added option to enable/disable state export
+
+GUI:
+ - dropped 'fullscreen windows detect' and 'visible on all workspaces' features
+ - fixed "transparent for input" option on macOS
+ - bring clock window to front when setting dialog is opened
+ - added 'enable show/hide menu item' option
+
+General:
+ - included INSTALL.rtf in linux versions
+
+
+Whats new in 4.5.2:
+-------------------
+Core:
+ - custom Qt 5.6.3 for macOS (OS X)
+ - Qt 5.7.1 for Windows (installer only)
+
+GUI:
+ - now clock is shown on all workspaces (virtual desktops) on Linux and macOS (OS X)
+ - change cursor to "hand" if "clock URL" option is enabled
+ - prevent appearing above fullscreen windows (Windows only)
+ - even better HiDPI displays support for Windows and Linux
+
+Plugins:
+ - chime: converted default sounds from *mp4* to *mp3*
+ - added *talking_clock* plugin (Windows portable doesn't support it)
+
+
+Whats new in 4.5.1:
+-------------------
+Core:
+ - fixed multiple monitors issues
+ - improved out of range position handling
+ - custom Qt 5.6.2 with GStreamer 1.0 support for linux, fixed playback issues
+ - custom Qt 5.6.2 for macOS (OS X), fixed issues on macOS Sierra
+ - simplified/improved locale detection, prevent wrong choice or partial translation
+
+GUI:
+ - better support for italic fonts, now they look very good, no extra space
+ - improved Retina displays support
+ - fixed bug with custom flashing separator (not ':') when font is used
+ - linux: hide app from taskbar in KDE and Unity
+
+Plugins:
+ - dropped 'move_clock' plugin, it is broken, no fix is planned
+ - 'custom_signal' renamed to 'chime' and improved
+ - dropped 'hour_signal', 'tower_clock_signal', 'quarter_hour_signal'. they can be replaced with 'chime'. their sound are included in 'chime' as default.
+ - 'quick_note': flat edit button on mac
+ - fixed minor gui bugs
+
+General:
+ - linux: fixed .desktop file in KDE
+ - linux: improved launcher script
+ - introducing [mini-wiki](https://sourceforge.net/p/digitalclock4/wiki/Home/)
+
+
+Whats new in 4.5.0:
+-------------------
+Core:
+ - slightly changed default settings
+ - fixed plugin settings import
+ - added 'plugin_core' library as a part of plugins engine
+
+GUI:
+ - decreased spacing
+ - fixed small menu icons in Windows on Retina display
+ - updated 2 skins
+ - added 3 new skins!
+
+Plugins:
+ - added 'custom_signal' plugin
+ - fixed tray icon after unloading 'tray_color' plugin
+ - rewritten 'date', 'ip_address', 'quick_note' plugins
+ - fixed/improved 'calculate font size' plugins feature
+ - centered plugin widgets under clock
+ - custom color support for widget plugins ('date', 'quick_note', etc.)
+
+Installer:
+ - improved upgrade: removed ugly blinking terminals
+ - close app before upgrade/uninstall
+ - added 32/64 bit label after app name
+
+
+Whats new in 4.4.6:
+-------------------
+Core:
+ - compiled with Qt 5.7.0 (Windows/Mac)
+ - compiled with MSVC2015 (win installer)
+ - compiled with Qt 5.6.1 (Linux x64/Win portable)
+ - improved plugin load/unload
+
+GUI:
+ - changed icons color to make them visible on Win 10 taskbar
+
+Plugins:
+ - reimplemented 'schedule' plugin
+
+
+Whats new in 4.4.5:
+-------------------
+Core:
+ - local files/programs can be opened using 'clock URL' feature
+ - compiled with GCC 5.3.1 [linux only]
+
+Features:
+ - show/hide clock
+ -  windows portable version
+
+GUI:
+ - replaced app icon
+ - added default export/import filename
+
+Plugins:
+ - 'spectrum clock' now works with colorize effect too
+ - added 'ip address' plugin
+ - added plugin for chiming on every quarter of an hour
+
+Installer:
+ - significantly decreased installed size
+
+
+Whats new in 4.4.4:
+-------------------
+Core:
+ - updater: small bugfixes
+
+Features:
+ - background color support
+ - quick URL on clock
+
+GUI:
+ - decreased empty space (especially if background is used)
+ - updated links in about dialog
+
+Plugins:
+ - quick note: edit on click
+ - quick note: hide edit button (pencil)
+ - added "tower clock hour signal" plugin
+
+Installer:
+ - install VC Redist if needed
+ - export/import settings (upgrade support)
+
+
+Whats new in 4.4.3:
+-------------------
+Core:
+ - improved time format switching
+ - improved settings cancel (revert to previous state)
+ - reimplemented export/import settings
+ - fixed some bugs with default settings loading
+ - improved skin and plugin system initialization
+ - fixed plugin settings loading
+ - updated win user-agent strings
+ - fixed/improved autostart feature
+ - compiled with Qt 5.6.0
+
+Features:
+ - added runtime (not currently applied) settings export
+
+GUI:
+ - "italic dots" for "electronic italic" skin
+ - used russian for ukrainian locale
+ - added 5 flowers textures
+ - added link to changelog to about dialog
+ - added link to 'how create skin' article to about dialog
+ - added some workaround to support always on top including taskbar [win only]
+ - fixed Settings dialog lost focus after applying some options
+ - fixed AM/PM support on not US systems
+
+Plugins:
+ - fixed "quick note" plugin configuration
+ - used russian for ukrainian locale
+ - improved/fixed plugin options export/import
+
+SDK:
+ - removed CenteredDialog
+ - update documentation
+
+
+Whats new in 4.4.2:
+-------------------
+Core:
+ - Qt 5.5.1 on Win/Linux
+ - Qt 5.6.0 on Mac
+ - platform specific user-agent string in updater
+
+Features:
+ - right align support
+
+GUI:
+ - redesigned about dialog
+ - fixed space between digits on Mac
+ - fixed colorize effect on Retina Mac
+ - added tooltip for space between digits slider
+ - added check for updates button to settings dialog
+
+Installer:
+ - fixed/improved deployment on Mac
+ - changed windows installer creator tool: used WiX
+
+
+Whats new in 4.4.1:
+-------------------
+Core:
+ - build with Qt 5.5.0 (5.4.2 for Mac)
+ - Windows 10 ready!
+ - improved updater
+
+Features:
+ - colorize effect
+
+GUI:
+ - redesigned settings dialog
+ - fixed some localization issues
+
+Plugins:
+ - added new metadata fields
+ - 'quick note': added quick edit button
+
+SDK:
+ - added new setting options
+ - updated documentation
+ - simplified plugins api: most of all methods are optional
+
+
+Whats new in 4.4.0:
+-------------------
+Core:
+ - build with Qt 5.4.1
+ - updater: fixed build time detect
+ - updater: fixed autoupdate option
+ - plugin settings export/import
+ - fixed some localization issues
+ - improved linux build script to produce source tarball
+
+Features:
+ - autostart option for any supported platform
+
+GUI:
+ - added build date to about dialog
+ - redesigned about dialog
+
+plugins:
+ - improved 'schedule' plugin
+
+SDK:
+ - updated plugin interface
+ - updated plugin settings class
+ - updated documentation
+
+
+Whats new in 4.3.6:
+-------------------
+Core:
+ - build with Qt 5.4.0
+ - updated copyright string in file info
+
+GUI:
+ - chnaged GCC version display format
+ - origami skin: added AM/PM
+
+plugins:
+ - 'date' : J option in format
+ - 'date' : added new predefined formats
+ - 'date' : redesigned settings dialog
+ - 'power off' : added message before power off
+ - 'any zoom' : fixed load bug
+
+Installer:
+ - 'Launch Digital Clock' is checked by default
+
+SDK:
+ - added new class to 'clock_common'
+ - updated documentation
+
+
+Whats new in 4.3.5:
+-------------------
+Core:
+ - build with Qt 5.3.2
+ - new line symbol support in skin draw engine
+ - fixed plugins engine (do not add plugins with same name)
+ - MinGW build is no longer supported
+
+Features:
+ - new line symbol support for date plugin
+ - .desktop file for linux build + script to configure it
+
+GUI:
+ - fixed VisualStudio version detect
+ - updated softpedia.com award
+
+plugins:
+ - 'date' plugin: fixed format editing
+
+SDK:
+ - changed config class for plugins
+ - updated documentation
+ - updated plugin example
+
+
+Whats new in 4.3.4:
+-------------------
+Core:
+ - build with Qt 5.3.1
+ - removed VC Redist 2013 dependency for portable version
+
+GUI:
+ - fixed 'Restore defaults' button size
+
+plugins:
+ - fixed 'every hour signal' on Windows
+ - fixed autoresize logic in 'date' plugin
+ - fixed crash on try to configure not loaded 'date' plugin
+ - updated 'win on top' plugin
+
+Features:
+ - 'date' plugin: added week number support
+
+
+Whats new in 4.3.3:
+-------------------
+Core:
+ - fixed search paths restore after cancel
+ - fixed settings import
+ - improved path management: scan recently added paths on runtime
+
+GUI:
+ - Retina displays support
+ - hide clock icon from dock and its system menu on Mac OS X
+
+SDK:
+ - updated plugin interface
+ - updated documentation
+ - updated plugin example
+
+
+Whats new in 4.3.2:
+-------------------
+Core:
+ - build with Qt 5.3.0
+ - basic Mac OS X support
+ - if skin is not loaded load default skin
+
+Features:
+ - skins/plugins search path management
+ - one click restore default settings
+
+GUI:
+ - fixed some GUI issues on Mac OS X
+
+Plugins:
+ - added "moving clock" plugin
+
+
+Whats new in 4.3.1:
+-------------------
+Core:
+ - changed all plugins to use new interfaces
+ - improved plugin engine: plugins can 'listen' settings changes from each other
+ - fixed issue with plugin unload on app exit
+
+Plugins:
+ - date: fixed issues with custom font using
+ - reimplemented 'quick_note' plugin
+ - tray color: 'spectum tray' feature (enable 'Spectrum clock' plugin to see this)
+ - enabled 'Always on top for any window' plugin for MinGW builds
+
+SDK:
+ - removed 'Init()' from old interfaces
+ - updated SDK
+ - updated plugin example
+
+
+Whats new in 4.3.0:
+-------------------
+Core:
+ - code refactored, a lot of little issues are fixed
+ - plugin system updated: added new plugin interfaces
+ - improved updater: check for daily builds (for BETA releases)
+ - reorganized/renamed some option keys
+ - improved Linux support
+
+Features:
+ - export/import clock settings (without plugin settings)
+
+GUI:
+ - added new built-in skin
+
+Plugins:
+ - date: fixed bug with font autoresize on clock startup
+
+SDK:
+ - added new header with new plugin interfaces
+ - updated documentation
+
+Wiki:
+ - added 'How to create skin' article
+
+
+Whats new in 4.2.7:
+-------------------
+Core:
+ - build with Qt 5.2.1
+ - reimplemented updater without boost::asio
+ - code optimization
+
+Features:
+ - configurable space between digits
+
+Plugins:
+ - power off: added force power off option
+ - configurable date plugin
+
+SDK:
+ - improved plugin example
+ - updated documentation
+
+
+Whats new in 4.2.6:
+-------------------
+Core:
+ - memory usage optimization
+ - code optimization
+ - fixed bug in updater: infinity reconnect after connection error
+
+GUI:
+ - fixed issue with system UI language autodetect on some systems
+ - added plugin names/description translation
+ - added icons to about plugin dialog
+ - updated about dialog (version info format)
+
+Plugins:
+ - added "auto power off" plugin (windows only)
+ - added "quick note" plugin
+ - added "date" plugin
+ - added "any window on top" plugin (MSVC build only)
+
+SDK:
+ - namespaces for plugins
+ - improved plugin example
+ - updated documentation
+
+
+Whats new in 4.2.5:
+-------------------
+Core:
+ - added update checker
+ - build with Qt 5.2.0
+ - improved plugin system
+
+Installer:
+ - reverted online VC Redist installation
+
+GUI:
+ - added special Christmas/New Year skin
+ - added plugins translations
+
+Plugins:
+ - fixed bug in "alarm" plugin
+ - changed "schedule" plugin type to "clock"
+
+SDK:
+ - improved plugin example
+
+
+Whats new in 4.2.4:
+-------------------
+Core:
+ - simplified skin and plugin interfaces
+ - new plugin info system
+ - fixed bug with plugins unload on clock exit
+
+GUI:
+ - redesigned plugins page
+ - setting dialog saves last geometry (size + position)
+ - system time format used without seconds by default
+ - changed about icon
+
+Plugins:
+ - alarm: added play button
+ - alarm: can change volume
+ - alarm: use system time format
+ - added "schedule" plugin
+ - settings dialog now is modal
+
+Installer:
+ - VC Redist is not downloaded from internet anymore, it already included in installer
+ - removed 'Setup type (typical/custom/complete)' dialog
+
+SDK:
+ - added documentation
+ - added plugin example
+
+
+Whats new in 4.2.3:
+-------------------
+Core:
+ - removed display AM/PM option (any time format feature support this)
+ - made skin draw engine common usage library (for clock and plugins, SDK available)
+ - added clock SDK (plugin SDK + skin draw engine SDK)
+
+Features:
+ - added enable/disable skin customization
+ - any time format support
+ - double click on tray icon calls settings dialog
+
+GUI:
+ - fixed bug with some copies of Setting and About dialogs
+ - fixed bug with displaying vectors skins without AM/PM support
+ - added some skins
+ - "stay on top" enabled by default
+
+Plugins:
+ - fixed bug with settings load in tray color plugin
+ - added "any zoom" plugin
+
+Installer:
+ - feature-based installer (app, skins, textures can be installed separately)
+ - save previous clock settings (will work only for 4.2.3+, 4.2.2-4.2.3 upgrade is not supported)
+
+Whats new in 4.2.2:
+-------------------
+Core:
+ - improved skin draw engine
+ - made skin draw engine more safe
+ - build with Qt 5.1.1
+
+Features:
+ - added 'display AM/PM' option
+ - fixed installer to make upgrades possible
+
+GUI:
+ - redesign settings dialog
+ - removed "About Qt" menu item
+ - customized about dialog
+ - dialog windows are displayed at screen center
+
+Plugins:
+ - removed AM/PM plugin
+ - "Alarm" plugin can play streams
+ - fixed bug: crash on "Alarm" plugin unload when it plays signal
+ - added "Tray color" plugin
+
+Whats new in 4.2.1:
+-------------------
+ - added text mode (clock can use any font instead of skin)
+ - added Display AP/PM plugin
+
+Whats new in 4.2.0:
+-------------------
+ - added plugin system
+ - added 4 plugins: Alarm, Every hour signal, Any color clock, Variable translucency

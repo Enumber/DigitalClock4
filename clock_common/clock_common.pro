@@ -1,0 +1,64 @@
+#
+#   Digital Clock: clock common library
+#   Copyright (C) 2013-2020  Nick Korotysh <nick.korotysh@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+#-------------------------------------------------
+#
+# Project created by QtCreator 2013-10-21T22:29:49
+#
+#-------------------------------------------------
+
+QT       += core gui widgets
+
+include(../config.pri)
+
+TARGET   = clock_common
+TEMPLATE = lib
+
+DEFINES += CLOCK_COMMON_LIBRARY
+
+SOURCES += \
+    config_base.cpp \
+    config_serialization.cpp \
+    led_tool_button.cpp \
+    message_box.cpp \
+    settings_storage.cpp \
+    settings_storage_wrapper.cpp
+
+HEADERS += \
+    clock_common_global.h \
+    config_base.h \
+    config_serialization.h \
+    led_tool_button.h \
+    message_box.h \
+    settings_keys.h \
+    settings_storage.h \
+    settings_storage_wrapper.h
+
+win32:RC_FILE = clock_common.rc
+unix:VERSION = 1.2.1
+macx:QMAKE_LFLAGS_SONAME = -Wl,-install_name,@executable_path/../Frameworks/
+
+unix:!macx {
+    target.path = $$clock_libs_path
+    INSTALLS += target
+    # portable install layout: these libraries sit next to each other in lib/
+    # and depend on each other. RUNPATH is NOT inherited by transitive
+    # dependencies, so every library needs its own $ORIGIN entry — without it
+    # a plugin dlopen'ing plugin_core cannot resolve skin_draw/clock_common.
+    QMAKE_LFLAGS += -Wl,-rpath,\'\$$ORIGIN\'
+}

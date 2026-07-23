@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/win_on_top/lang">
+        <file>win_on_top_en.qm</file>
+        <file>win_on_top_pt_PT.qm</file>
+        <file>win_on_top_ru.qm</file>
+        <file>win_on_top_zh_CN.qm</file>
+    </qresource>
+</RCC>

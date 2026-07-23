@@ -1,0 +1,10 @@
+build/
+build-*/
+dist/
+*.qm
+.qmake.stash
+
+# 六原则审查产物：过程材料，不随仓库发布
+docs/audit-*.md
+docs/audit-shots/
+docs/i18n-audit.md

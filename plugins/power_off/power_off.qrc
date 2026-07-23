@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/power_off">
+        <file alias="icon.svg.p">1401048090_519564-060_Off.svg</file>
+    </qresource>
+</RCC>

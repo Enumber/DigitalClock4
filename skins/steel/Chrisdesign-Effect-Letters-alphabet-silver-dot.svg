@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.0"
+   viewBox="0 0 23.698 72.901"
+   id="svg2">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient2198">
+      <stop
+         offset="0"
+         style="stop-color:#767676"
+         id="stop2218" />
+      <stop
+         offset=".66667"
+         style="stop-color:#bbbbbb"
+         id="stop2220" />
+      <stop
+         offset="1"
+         style="stop-color:#dfdfdf"
+         id="stop2202" />
+    </linearGradient>
+    <linearGradient
+       x1="36.311"
+       y1="54.347"
+       gradientTransform="translate(528.66 -904.31)"
+       x2="45.681"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       xlink:href="#linearGradient2198"
+       y2="67.469"
+       id="linearGradient2407" />
+    <linearGradient
+       x1="61.794"
+       y1="65.935"
+       gradientTransform="translate(515.85 -929.93)"
+       x2="68.138"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect"
+       xlink:href="#linearGradient2198"
+       y2="74.704"
+       id="linearGradient2409" />
+  </defs>
+  <g
+     transform="translate(-568.43 80.381)"
+     id="layer1">
+    <path
+       id="path5702"
+       d="m 580.33,-30.181 10.8,10.8 -10.8,10.901 -10.9,-10.901 10.9,-10.8 z"
+       style="stroke-width:2;color:#000000;stroke:url(#linearGradient2409);fill:url(#linearGradient2407)" />
+  </g>
+  <metadata
+     id="metadata13">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+        <dc:date>2007-07-28T18:41:02</dc:date>
+        <dc:description>Note! Filling and outline were copied by “style copy” by the letter A. Thus if this is changed, all marked elements change themselves as well!</dc:description>
+        <dc:source>https://openclipart.org/detail/4885/effect-letters-alphabet-silver-by-chrisdesign-4885</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Chrisdesign</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>abc</rdf:li>
+            <rdf:li>alphabet</rdf:li>
+            <rdf:li>gradient</rdf:li>
+            <rdf:li>letter</rdf:li>
+            <rdf:li>silver</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

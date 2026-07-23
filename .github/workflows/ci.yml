@@ -1,0 +1,222 @@
+# 从 Enum Code/ci-template.yml 复制适配（C++/Qt5 项目：build + encoding + licence）
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:        # 留着这个：新建仓库首次推送有时不触发，能手动补跑
+
+jobs:
+  build:
+    name: Build (Qt 5)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Qt 5 build dependencies
+        # 依赖要照着 .pro/.pri 里所有的 `QT += xxx` 逐个对：
+        # widgets/network/svg/x11extras/multimedia，另有 PKGCONFIG += x11 xi。
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential qtbase5-dev qtbase5-dev-tools qttools5-dev-tools \
+            libqt5svg5-dev libqt5x11extras5-dev qtmultimedia5-dev \
+            libqt5texttospeech5-dev libx11-dev libxi-dev
+
+      - name: Build
+        run: |
+          mkdir -p build
+          cd build
+          qmake -r ../DigitalClock.pro
+          make -j"$(nproc)"
+
+      - name: Portable layout smoke check
+        run: |
+          test -x build/digital_clock/digital_clock
+          # every binary that participates in the portable layout needs its own
+          # $ORIGIN RUNPATH — RUNPATH is not inherited by transitive deps
+          for f in build/digital_clock/digital_clock \
+                   build/clock_common/libclock_common.so.1 \
+                   build/skin_draw/libskin_draw.so.1 \
+                   build/plugin_core/libplugin_core.so.1 \
+                   build/plugins/*/*.so; do
+            readelf -d "$f" | grep -q 'ORIGIN' || { echo "no \$ORIGIN RUNPATH: $f"; exit 1; }
+          done
+          ls build/plugins/*/*.so | grep -c .
+
+      - name: Optional dependencies are actually compiled in
+        # Both .pri files used exists() with a path relative to the *including*
+        # file, which never resolves in an out-of-source build. The result was
+        # silent: HAVE_SINGLEAPPLICATION and HAVE_QHOTKEY were simply never
+        # defined, so "only one instance" did nothing and every global hotkey
+        # was compiled out — with no warning anywhere.
+        run: |
+          fail=0
+          grep -q 'HAVE_SINGLEAPPLICATION' build/digital_clock/Makefile \
+            || { echo "SingleApplication was not compiled in"; fail=1; }
+          grep -q 'HAVE_QHOTKEY' build/plugins/alarm/Makefile \
+            || { echo "QHotkey was not compiled in"; fail=1; }
+          exit $fail
+
+      - name: Plugin dialogs stack above Settings, not behind it
+        # A dialog created with no parent is only "transient for group" to the
+        # window manager, so nothing keeps it above the modal Settings window
+        # that spawned it — it opens behind Settings, which looks exactly like
+        # the whole window hanging. SetDialogParent() is how plugins receive a
+        # parent to stack correctly; it must still exist and be wired up.
+        run: |
+          grep -q 'SetDialogParent' plugin_core/plugin_base.h \
+            || { echo "SetDialogParent is gone from the plugin base class"; exit 1; }
+          grep -q 'PluginConfigureRequest' digital_clock/core/clock_application.cpp \
+            || { echo "plugin dialogs are no longer parented to Settings"; exit 1; }
+
+      - name: Autostart entry points at files that exist
+        # Upstream's Exec pointed at "<binary>.sh", a launcher that only exists
+        # in their bundled-Qt tarball, so "start at login" silently did nothing
+        # on a normal install. Nothing failed loudly when this broke.
+        run: |
+          fail=0
+          grep -q 'applicationFilePath() + ".sh"' digital_clock/platform/autostart_linux.cpp \
+            && { echo "autostart Exec still points at a .sh launcher"; fail=1; }
+          grep -q 'applicationFilePath() + ".svg"' digital_clock/platform/autostart_linux.cpp \
+            && { echo "autostart Icon still points at a nonexistent .svg"; fail=1; }
+          exit $fail
+
+      - name: Windows-only features have a Linux counterpart
+        # Every feature upstream gated behind Q_OS_WIN either needs a Linux
+        # implementation or must stay hidden in the settings — a visible
+        # checkbox with no implementation behind it is the failure mode that
+        # made "start at login" look like it worked for years.
+        run: |
+          fail=0
+          test -f digital_clock/platform/fullscreen_detect_x11.cpp \
+            || { echo "fullscreen detect has no X11 implementation"; fail=1; }
+          grep -q 'fullscreen_detect_x11.cpp' digital_clock/digital_clock.pro \
+            || { echo "fullscreen_detect_x11.cpp is not in the Linux build"; fail=1; }
+          grep -q 'X11FullscreenWorkaround' digital_clock/platform/main_window_linux.cpp \
+            || { echo "X11 fullscreen handling is not wired into the window"; fail=1; }
+          # the taskbar-icon toggle is implemented with Qt::Tool, which X11
+          # honours; it must not be hidden again on non-Windows
+          grep -q 'taskbar_icon_enable->setVisible(false)' digital_clock/gui/settings_dialog.cpp \
+            && { echo "taskbar icon toggle was hidden again, but it works on X11"; fail=1; }
+          exit $fail
+
+      - name: Panel-overlap setting has an inline explanation
+        # Keep the explanation directly below the real window-boundary option,
+        # present in both English and Chinese UI resources, and safe to wrap.
+        run: python3 tests/check_panel_overlap_description.py
+
+      - name: Multi-monitor placement policy tests
+        run: |
+          mkdir -p build-placement-tests
+          cd build-placement-tests
+          qmake ../tests/screen_placement_policy_tests.pro
+          make -j"$(nproc)"
+          ./screen_placement_policy_tests
+
+      - name: No update checker
+        # This fork does not check for updates: 4.7.9 is the final 4.x release
+        # and upstream is archived. The whole feature is gone — no menu entry,
+        # no notifications, no periodic check, and nothing that phones home.
+        run: |
+          fail=0
+          for f in digital_clock/core/updater.cpp digital_clock/core/updater.h \
+                   digital_clock/core/http_client.cpp digital_clock/core/http_client.h \
+                   update.json; do
+            test -e "$f" && { echo "update checker came back: $f"; fail=1; }
+          done
+          grep -rn 'CheckForUpdates' digital_clock/ && { echo "update action came back"; fail=1; }
+          exit $fail
+
+      - name: Plugin translations actually load
+        # Regression guard: plugin resources are not registered yet while the
+        # plugin constructor runs, so every plugin must call Q_INIT_RESOURCE
+        # explicitly, from file scope, with a name unique across the process.
+        # When this broke, plugin names silently stayed English in every
+        # language and nothing else failed.
+        run: |
+          fail=0
+          for pri in plugins/*/lang/lang.pri plugins/*/*/lang/lang.pri; do
+            [ -e "$pri" ] || continue
+            dir=$(dirname "$(dirname "$pri")"); plug=$(basename "$dir")
+            grep -q "RESOURCES += lang/${plug}_lang.qrc" "$pri" \
+              || { echo "$plug: qrc name is not unique (must be ${plug}_lang.qrc)"; fail=1; }
+            test -e "$dir/lang/${plug}_lang.qrc" \
+              || { echo "$plug: missing $dir/lang/${plug}_lang.qrc"; fail=1; }
+            grep -rq "Q_INIT_RESOURCE(${plug}_lang)" "$dir" \
+              || { echo "$plug: no Q_INIT_RESOURCE(${plug}_lang) call"; fail=1; }
+            # the prefix passed to InitTranslator must match the qrc prefix
+            pfx=$(grep -rho 'InitTranslator(QLatin1String("[^"]*"' "$dir" | head -1 | grep -o '":/[^"]*' | tr -d '"')
+            case "$pfx" in
+              ":/$plug/lang/"*) ;;
+              *) echo "$plug: InitTranslator prefix looks wrong: $pfx"; fail=1 ;;
+            esac
+          done
+          exit $fail
+
+      - name: Chinese translation is complete
+        run: |
+          fail=0
+          # a plugin with no zh_CN file at all shows up entirely in English on a
+          # Chinese desktop, and the "unfinished" check below cannot catch it
+          for pri in plugins/*/lang/lang.pri; do
+            [ -e "$pri" ] || continue
+            dir=$(dirname "$(dirname "$pri")"); plug=$(basename "$dir")
+            test -e "$dir/lang/${plug}_zh_CN.ts" \
+              || { echo "$plug: no Chinese translation file"; fail=1; }
+          done
+          for ts in $(git ls-files '*_zh_CN.ts'); do
+            n=$(grep -c 'type="unfinished"' "$ts" || true)
+            [ "$n" -eq 0 ] || { echo "$ts has $n untranslated strings"; fail=1; }
+          done
+          # Qt mnemonics: '&' must precede an ASCII letter, never a Chinese char
+          if grep -rn '<translation>&amp;[^A-Za-z<]' $(git ls-files '*_zh_CN.ts'); then
+            echo "broken mnemonic(s) above: use 名称(&X) instead of &名称"; fail=1
+          fi
+          exit $fail
+
+  encoding:
+    name: Encoding check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # 界面里有中文翻译。任何一个文件不是合法 UTF-8，用户看到的就是乱码，
+      # 而这种问题运行前不会有任何征兆。
+      - name: All tracked text files must be valid UTF-8
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            case "$f" in
+              *.py|*.sh|*.md|*.txt|*.json|*.js|*.yml|*.cpp|*.h|*.mm|*.pro|*.pri|*.ui|*.qrc|*.ts)
+                iconv -f UTF-8 -t UTF-8 "$f" >/dev/null 2>&1 || {
+                  echo "not valid UTF-8: $f"; fail=1; }
+                ;;
+            esac
+          done < <(git ls-files)
+          exit $fail
+
+  licence:
+    name: Licence files present
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # GPL fork：许可证、原作者署名、修改说明必须一直在（分发合规），
+      # 与 BeeBEEP fork 用的是同一套检查标准
+      - name: Required licence files
+        run: |
+          test -s LICENSE.txt
+          grep -q "GNU GENERAL PUBLIC LICENSE" LICENSE.txt
+          test -s MODIFICATIONS.md
+          grep -q "Nick Korotysh" MODIFICATIONS.md
+          test -s 3rdparty/QHotkey/LICENSE
+          test -s 3rdparty/SingleApplication/LICENSE
+          echo "licence OK"
+
+      - name: The program identifies itself as a modified version
+        run: |
+          grep -q "This is a modified version of Digital Clock 4, Linux fork by ENum" \
+            digital_clock/gui/about_dialog.ui
+          echo "modified-version notice OK"

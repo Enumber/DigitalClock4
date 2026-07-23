@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   sodipodi:docname="Chrisdesign-Effect-Letters-alphabet-silver-pm.svg"
+   viewBox="0 0 107.53018 62.965"
+   sodipodi:version="0.32"
+   version="1.0"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:version="0.91 r13725"
+   width="107.53018"
+   height="62.965">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient2198">
+      <stop
+         id="stop2218"
+         style="stop-color:#767676"
+         offset="0" />
+      <stop
+         id="stop2220"
+         style="stop-color:#bbbbbb"
+         offset=".66667" />
+      <stop
+         id="stop2202"
+         style="stop-color:#dfdfdf"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2615"
+       y2="67.469002"
+       xlink:href="#linearGradient2198"
+       spreadMethod="reflect"
+       gradientUnits="userSpaceOnUse"
+       x2="45.681"
+       gradientTransform="matrix(0.88451279,0,0,0.88451279,337.61093,-191.16141)"
+       y1="54.347"
+       x1="36.311001"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient2617"
+       y2="74.704002"
+       xlink:href="#linearGradient2198"
+       spreadMethod="reflect"
+       gradientUnits="userSpaceOnUse"
+       x2="68.138"
+       gradientTransform="matrix(0.88451279,0,0,0.88451279,326.28032,-213.82263)"
+       y1="65.934998"
+       x1="61.793999"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient2603"
+       y2="67.469002"
+       xlink:href="#linearGradient2198"
+       spreadMethod="reflect"
+       gradientUnits="userSpaceOnUse"
+       x2="45.681"
+       gradientTransform="matrix(1.0008314,0,0,1.0008314,55.457211,-210.01031)"
+       y1="54.347"
+       x1="36.311001"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient2605"
+       y2="74.704002"
+       xlink:href="#linearGradient2198"
+       spreadMethod="reflect"
+       gradientUnits="userSpaceOnUse"
+       x2="68.138"
+       gradientTransform="matrix(1.0008314,0,0,1.0008314,42.63656,-235.65161)"
+       y1="65.934998"
+       x1="61.793999"
+       inkscape:collect="always" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     inkscape:window-y="27"
+     pagecolor="#ffffff"
+     inkscape:window-height="683"
+     inkscape:zoom="3.2583138"
+     inkscape:window-x="0"
+     borderopacity="1.0"
+     inkscape:current-layer="layer1"
+     inkscape:cx="119.9223"
+     inkscape:cy="44.670728"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1024"
+     inkscape:pageopacity="0.0"
+     inkscape:document-units="px"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-maximized="0" />
+  <g
+     id="layer1"
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     transform="translate(-509.9448,84.337917)">
+    <path
+       id="path2625"
+       style="color:#000000;fill:url(#linearGradient2615);stroke:url(#linearGradient2617);stroke-width:1.76902556"
+       d="m 616.37398,-27.017067 -12.98465,1.575318 -4.65254,-23.852657 -13.45344,25.976372 -13.0731,-25.976372 -4.64369,23.852657 -13.30307,-1.575318 14.32911,-54.789375 16.69075,34.164306 17.39837,-34.164306 13.69226,54.789375 z"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path2617"
+       style="color:#000000;fill:url(#linearGradient2603);stroke:url(#linearGradient2605);stroke-width:2.00166297"
+       d="m 510.94563,-83.337086 17.90487,0 c 9.0275,0 15.58294,1.811504 19.68635,5.434514 3.50291,3.087565 5.25436,7.422166 5.25436,13.003803 0,6.473378 -2.09173,11.357436 -6.28521,14.653174 -4.18348,3.295738 -10.2285,4.943107 -18.12506,4.943107 l -3.29274,0 0,21.021464 -15.14257,1.782481 0,-60.838543 z m 27.52286,18.794614 c 0,-1.958628 -0.77064,-3.531935 -2.31192,-4.719921 -1.55129,-1.187988 -3.56296,-1.782481 -6.06505,-1.782481 l -4.00332,0.26622 0,13.274028 3.47289,0 c 2.43202,0 4.4537,-0.534444 6.05503,-1.604333 1.90158,-1.306085 2.85237,-3.11759 2.85237,-5.433513 z" />
+  </g>
+  <metadata
+     id="metadata13">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Effect Letters alphabet silver</dc:title>
+        <dc:date>2007-07-28T18:41:02</dc:date>
+        <dc:description>Note! Filling and outline were copied by “style copy” by the letter A. Thus if this is changed, all marked elements change themselves as well!</dc:description>
+        <dc:source>https://openclipart.org/detail/4860/effect-letters-alphabet-silver-by-chrisdesign-4860</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Chrisdesign</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>abc</rdf:li>
+            <rdf:li>alphabet</rdf:li>
+            <rdf:li>gradient</rdf:li>
+            <rdf:li>letter</rdf:li>
+            <rdf:li>silver</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

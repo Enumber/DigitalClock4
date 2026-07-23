@@ -1,0 +1,30 @@
+1	VERSIONINFO
+FILEVERSION	1,2,1,85
+PRODUCTVERSION	1,2,1,0
+FILEFLAGSMASK	0x3F
+FILEFLAGS	0x0
+FILEOS		0x40004
+FILETYPE	0x2
+FILESUBTYPE	0x0
+{
+BLOCK "StringFileInfo"
+{
+	BLOCK "040904E4"
+	{
+		VALUE "Comments", "Custom icon engine to render SVG icons depending on palette"
+		VALUE "CompanyName", "Nick Korotysh"
+		VALUE "FileDescription", "Palette Icon Engine"
+		VALUE "FileVersion", "1.2.1.85"
+		VALUE "InternalName", "paletteicon.dll"
+		VALUE "LegalCopyright", "© 2017-2020 Nick Korotysh"
+		VALUE "OriginalFilename", "paletteicon.dll"
+		VALUE "ProductName", "Palette Icon Engine"
+		VALUE "ProductVersion", "1.2.1"
+	}
+}
+
+BLOCK "VarFileInfo"
+{
+	VALUE "Translation", 0x0409, 0x04E4
+}
+}

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/spectrum_clock/lang">
+        <file>spectrum_clock_en.qm</file>
+        <file>spectrum_clock_pt_PT.qm</file>
+        <file>spectrum_clock_ru.qm</file>
+        <file>spectrum_clock_zh_CN.qm</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/date">
+        <file alias="icon.svg.p">1464840078_common-calendar-day-outline-stroke.svg</file>
+    </qresource>
+</RCC>

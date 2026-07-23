@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name=Digital Clock
+GenericName=Digital Clock
+Comment=Beautiful very customizable clock with plugins
+Type=Application
+Terminal=false
+Exec=digitalclock4
+Icon=digitalclock4
+StartupNotify=false
+Categories=Utility;Clock;
+
+
+# Translations
+Comment[ru]=Красивые часы с большим количеством настроек и плагинами
+Name[ru]=Цифровые часы
+Comment[pt_PT]=Relógio bonito muito personalizável com módulos.
+Name[pt_PT]=Relógio Digital
+Comment[zh_CN]=美观且高度可定制化的时钟，大量插件可用
+Name[zh_CN]=数字时钟

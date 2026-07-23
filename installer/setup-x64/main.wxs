@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Name="Digital Clock" Id="*" UpgradeCode="{64E0CE3B-F6E2-4CC9-ACD2-A24E812DF339}"
+    Language="1033" Codepage="1252" Version="4.7.9" Manufacturer="Nick Korotysh">
+
+    <Package Id="*" Keywords="Installer" Platform="x64" Description="Digital Clock"
+      Comments="Digital Clock 4.7.9 x64 Installer" Manufacturer="Nick Korotysh"
+      InstallerVersion="405" InstallScope="perMachine" Compressed="yes" Languages="1033" SummaryCodepage="1252" />
+
+    <Property Id="ARPCONTACT">mailto:nick.korotysh@gmail.com</Property>
+    <Property Id="ARPHELPLINK">https://sourceforge.net/projects/digitalclock4/support</Property>
+    <Property Id="ARPURLINFOABOUT">https://digitalclock4.sourceforge.io</Property>
+    <Property Id="ARPURLUPDATEINFO">https://digitalclock4.sourceforge.io</Property>
+
+    <Property Id="ARPPRODUCTICON">app_icon.ico</Property>
+
+    <Property Id="ARPNOMODIFY">1</Property>
+
+    <Condition Message="Windows 7 SP1 or higher is required"><![CDATA[VersionNT64 AND WindowsBuild > 7600]]></Condition>
+    <Condition Message="32 bits per pixel color is required"><![CDATA[ColorBits = 32]]></Condition>
+
+    <Upgrade Id="{64E0CE3B-F6E2-4CC9-ACD2-A24E812DF339}">
+      <UpgradeVersion
+        Minimum="4.4.4" Maximum="4.7.9"
+        Property="PREVIOUSVERSIONSINSTALLED"
+        IncludeMinimum="yes" IncludeMaximum="yes" />
+    </Upgrade>
+
+    <Media Id="1" Cabinet="_data1.cab" EmbedCab="yes" DiskPrompt="CD-ROM #1" />
+    <Property Id="DiskPrompt" Value="Digital Clock 4 Installation [1]" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder" Name="PFiles">
+        <Directory Id="manufacturer_dir" Name="Nick Korotysh">
+          <Directory Id="INSTALLDIR" Name="Digital Clock" />
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ProgramMenuDir" Name="Digital Clock">
+          <Component Id="ProgramMenuDir" Guid="{C66DCABA-A806-4A20-9744-76945BE1FFA5}" Win64="yes">
+            <RemoveFolder Id="ProgramMenuDir" On="uninstall" />
+            <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <ComponentGroup Id="OnlineShortcuts">
+      <Component Id="cmp_wiki_shortcut" Directory="ProgramMenuDir" Guid="{17893509-4EB7-492C-ACFF-A2E49F28A049}" Win64="yes">
+        <util:InternetShortcut Id="wiki_shortcut" Name="Documentation" Target="https://sourceforge.net/p/digitalclock4/wiki/" Type="url" />
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="wiki_shortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <Feature Id="Complete" Level="1">
+      <ComponentGroupRef Id="QtFiles" />
+      <ComponentGroupRef Id="ClockFiles" />
+      <ComponentGroupRef Id="skins" />
+      <ComponentGroupRef Id="textures" />
+      <ComponentRef Id="ProgramMenuDir" />
+      <ComponentGroupRef Id="OnlineShortcuts" />
+    </Feature>
+
+    <Icon Id="app_icon.ico" SourceFile="..\..\digital_clock\resources\clock_icon_win.ico" />
+
+    <util:CloseApplication Id="close_main_exe" Target="digital_clock.exe" EndSessionMessage="yes" RebootPrompt="no" />
+
+    <InstallExecuteSequence>
+      <Custom Action="WixCloseApplications" Before="InstallValidate">PREVIOUSVERSIONSINSTALLED OR REINSTALL OR (REMOVE="ALL")</Custom>
+      <!-- https://msdn.microsoft.com/library/aa371197.aspx -->
+      <RemoveExistingProducts After="InstallFinalize" />
+    </InstallExecuteSequence>
+  </Product>
+</Wix>
