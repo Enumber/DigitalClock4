@@ -26,6 +26,9 @@
 # ============================================================================
 set -e
 
+CONFIG_PATHS="$HOME/.config/DigitalClock4" "$HOME/.config/digitalclock4"
+DATA_PATHS=""
+
 # ── 配置区（换项目时只改这里）───────────────────────────────────────────────
 APP_ID="digitalclock4"                   # 唯一标识（.desktop 文件名，用英文小写连字符）
 APP_WMCLASS="Digital Clock"              # 窗口 WM_CLASS 的 Class 段（实测值，别改）
@@ -156,6 +159,8 @@ PREFIX=""
 WANT_DESKTOP_ICON="1"
 WANT_AUTOSTART="0"
 DO_UNINSTALL="0"
+WANT_KEEP_CONFIG="0"
+WANT_INPLACE="0"
 while [ $# -gt 0 ]; do
   case "$1" in
     --system) MODE="system" ;;
@@ -164,6 +169,8 @@ while [ $# -gt 0 ]; do
     --no-desktop-icon) WANT_DESKTOP_ICON="0" ;;
     --autostart) WANT_AUTOSTART="1" ;;
     --uninstall) DO_UNINSTALL="1" ;;
+    --keep-config) WANT_KEEP_CONFIG="1" ;;
+    --inplace) WANT_INPLACE="1" ;;
     --help|-h) usage; exit 0 ;;
     *) say "未知参数: $1（--help 查看用法）" "Unknown option: $1 (see --help)"; exit 1 ;;
   esac
@@ -171,6 +178,44 @@ while [ $# -gt 0 ]; do
 done
 
 SRC="$(cd "$(dirname "$0")" && pwd)"
+
+# ── ENum Setup 单实例锁（与 EnumSetup / 各 install.sh 共用）────────────────
+_ENUM_LOCK_DIR="${XDG_RUNTIME_DIR:-/tmp}"
+_ENUM_LOCK_FILE="$_ENUM_LOCK_DIR/enum-setup-${UID:-$(id -u)}.lock"
+enum_setup_acquire_lock() {
+  if [ "${ENUM_SETUP_NESTED:-0}" = "1" ]; then return 0; fi
+  mkdir -p "$_ENUM_LOCK_DIR"
+  exec 9>"$_ENUM_LOCK_FILE"
+  if ! flock -n 9; then
+    say "已有安装器在运行，请先关掉另一个窗口。" \
+        "Another installer is already running; close it first."
+    exit 1
+  fi
+}
+enum_is_dev_tree() {
+  case "$SRC" in
+    */Enum\ Code/github/*|*/Enum\ Code/*) return 0 ;;
+  esac
+  [ "${ENUM_DEV_TREE:-0}" = "1" ] && return 0
+  return 1
+}
+enum_scan_remove_desktop() {
+  local desk
+  for desk in \
+      "$(as_desk_user env HOME="$DESK_HOME" xdg-user-dir DESKTOP 2>/dev/null || true)" \
+      "$DESK_HOME/Desktop" "$DESK_HOME/桌面"; do
+    [ -n "$desk" ] && [ -d "$desk" ] || continue
+    rm -f "$desk/$APP_ID.desktop" 2>/dev/null || true
+    for f in "$desk"/*.desktop; do
+      [ -f "$f" ] || continue
+      if grep -qE "Exec=.*$APP_ID|/enum/$APP_ID/" "$f" 2>/dev/null; then
+        rm -f "$f" 2>/dev/null || true
+      fi
+    done
+  done
+}
+
+enum_setup_acquire_lock
 
 # ── 交互模式：stdin 是 TTY 且没带任何参数才进入 ─────────────────────────────
 INTERACTIVE=0
@@ -180,6 +225,7 @@ if [ "$INTERACTIVE" = "1" ]; then
   say "▶ 安装 $APP_NAME" "▶ Installing $APP_NAME"
   echo ""
   say "安装位置：" "Install location:"
+  say "说明：默认装到 ~/.local/share/enum（与 ~/.config 配置分开）；对外卸载会删光程序+配置。" "Note: default install ~/.local/share/enum (config stays under ~/.config); uninstall removes both by default."
   say "  1) 用户目录（默认，无需密码）" "  1) User directory (default, no password)"
   say "  2) 自定义路径" "  2) Custom path"
   say "  3) 系统目录 /opt（所有用户可用，需要管理员密码）" "  3) System directory /opt (all users, admin password required)"
@@ -239,7 +285,7 @@ as_desk_user() {
 
 if [ "$MODE" = "system" ]; then
   APPS_DIR="/usr/share/applications"
-  DEFAULT_PREFIX="/opt"
+  DEFAULT_PREFIX="/opt/enum"
 else
   APPS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
   DEFAULT_PREFIX="$SRC"
@@ -251,12 +297,15 @@ DESKTOP_DIR="$(as_desk_user env HOME="$DESK_HOME" xdg-user-dir DESKTOP 2>/dev/nu
 AUTOSTART_DIR="$DESK_HOME/.config/autostart"
 [ "$DESK_HOME" = "$HOME" ] && AUTOSTART_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/autostart"
 
-if [ -n "$PREFIX" ]; then
+# 强制默认程序目录与配置分离（覆盖脚本前面可能把 DEFAULT_PREFIX 设成 $SRC 的旧逻辑）
+if [ "${WANT_INPLACE:-0}" = "1" ]; then
+  INSTALL_DIR="$SRC"
+elif [ -n "$PREFIX" ]; then
   INSTALL_DIR="$PREFIX/$APP_ID"
 elif [ "$MODE" = "system" ]; then
-  INSTALL_DIR="$DEFAULT_PREFIX/$APP_ID"
+  INSTALL_DIR="/opt/enum/$APP_ID"
 else
-  INSTALL_DIR="$SRC"
+  INSTALL_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/enum/$APP_ID"
 fi
 
 # 自定义路径落在没有写权限的目录（如 /opt）时同样走 sudo——
@@ -280,14 +329,36 @@ fi
 # ── 卸载 ────────────────────────────────────────────────────────────────────
 if [ "$DO_UNINSTALL" = "1" ]; then
   $SUDO rm -f "$APPS_DIR/$APP_ID.desktop"
-  rm -f "$DESKTOP_DIR/$APP_ID.desktop" 2>/dev/null || true
-  rm -f "$AUTOSTART_DIR/$APP_ID.desktop" "$AUTOSTART_DIR/$(basename "$EXEC_REL").desktop" 2>/dev/null || true
+  rm -f "$AUTOSTART_DIR/$APP_ID.desktop" 2>/dev/null || true
+  enum_scan_remove_desktop
   command -v update-desktop-database >/dev/null 2>&1 && $SUDO update-desktop-database "$APPS_DIR" 2>/dev/null || true
-  if [ "$INSTALL_DIR" != "$SRC" ] && [ -d "$INSTALL_DIR" ]; then
-    $SUDO rm -rf "$INSTALL_DIR"
-    say "已删除程序副本：$INSTALL_DIR" "Removed program copy: $INSTALL_DIR"
+  remove_icon "$APP_ID"
+  for _pair in $EXTRA_ICONS; do remove_icon "${_pair%%:*}"; done
+  refresh_icon_cache
+  _dev=0
+  enum_is_dev_tree && _dev=1
+  if [ "$_dev" = "1" ]; then
+    say "检测到 Enum 开发树：不删除源码与配置（只移除菜单/桌面/自启）。" \
+        "Dev tree detected: source and config kept (menu/desktop/autostart only)."
+  else
+    if [ "$INSTALL_DIR" != "$SRC" ] && [ -d "$INSTALL_DIR" ]; then
+      $SUDO rm -rf "$INSTALL_DIR"
+      say "已删除程序目录：$INSTALL_DIR" "Removed program directory: $INSTALL_DIR"
+    fi
+    if [ "${WANT_KEEP_CONFIG:-0}" != "1" ]; then
+      for _c in $CONFIG_PATHS; do
+        case "$_c" in "~"|"~/"*) _c="$HOME${_c#\~}" ;; esac
+        [ -e "$_c" ] && rm -rf "$_c" && say "已删除配置：$_c" "Removed config: $_c"
+      done
+      for _d in $DATA_PATHS; do
+        case "$_d" in "~"|"~/"*) _d="$HOME${_d#\~}" ;; esac
+        [ -e "$_d" ] && rm -rf "$_d" && say "已删除数据：$_d" "Removed data: $_d"
+      done
+    else
+      say "已按 --keep-config 保留配置与数据。" "Kept config/data per --keep-config."
+    fi
   fi
-  say "✅ 已卸载 $APP_NAME 的图标、菜单项与自启动。" "✅ Uninstalled $APP_NAME icons, menu entry and autostart."
+  say "✅ 已卸载。" "✅ Uninstalled."
   exit 0
 fi
 
