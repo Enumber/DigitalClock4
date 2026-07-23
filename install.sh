@@ -26,13 +26,13 @@
 # ============================================================================
 set -e
 
-CONFIG_PATHS="$HOME/.config/DigitalClock4" "$HOME/.config/digitalclock4"
+CONFIG_PATHS="$HOME/.config/DigitalClock4 $HOME/.config/digitalclock4"
 DATA_PATHS=""
 
 # ── 配置区（换项目时只改这里）───────────────────────────────────────────────
 APP_ID="digitalclock4"                   # 唯一标识（.desktop 文件名，用英文小写连字符）
 APP_WMCLASS="Digital Clock"              # 窗口 WM_CLASS 的 Class 段（实测值，别改）
-APP_NAME="Digital Clock"                 # 菜单/桌面显示名称（固定英文，不跟随语言）
+APP_NAME="Digital Clock 4"               # 菜单/桌面显示名称（固定英文，不跟随语言）
 APP_COMMENT="Customizable desktop clock with skins and plugins"
 APP_COMMENT_ZH="可换皮肤、带插件的桌面时钟"
 APP_ICON="clock-icon.png"                # 便携目录里的图标（真·Digital Clock 4 图标）
@@ -513,6 +513,18 @@ fi
 if [ "$INSTALL_DIR" = "$SRC" ] && [ "$PAYLOAD" != "$SRC" ]; then
   EXEC_REL="dist/$APP_ID/digital_clock"
   APP_ICON="dist/$APP_ID/clock-icon.png"
+fi
+# 开发树兜底：只有 build/ 二进制、没有 dist/ 时也能装图标（别再写不存在的
+# digital_clock/resources/clock-icon.png —— 真文件是 images/clock_icon.png）
+if [ ! -f "$INSTALL_DIR/$APP_ICON" ]; then
+  if [ -f "$SRC/digital_clock/resources/images/clock_icon.png" ]; then
+    APP_ICON="digital_clock/resources/images/clock_icon.png"
+  fi
+fi
+if [ "$INSTALL_DIR" = "$SRC" ] && ! is_exe "$INSTALL_DIR/$EXEC_REL"; then
+  if is_exe "$SRC/build/digital_clock/digital_clock"; then
+    EXEC_REL="build/digital_clock/digital_clock"
+  fi
 fi
 
 # 覆盖安装时旧版本可能正在运行——正在执行的文件不能被写，cp 会以
