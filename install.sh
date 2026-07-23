@@ -56,13 +56,26 @@ CUSTOMIZE_HOOK() {
   CFG="$CFG_DIR/Digital Clock.conf"
 
   if [ "$INTERACTIVE" = "1" ]; then
-    say "时间格式：" "Time format:"
-    say "  1) 跟随系统（默认）" "  1) Follow the system (default)"
-    say "  2) 24 小时，如 21:05" "  2) 24-hour, e.g. 21:05"
-    say "  3) 24 小时带秒，如 21:05:30" "  3) 24-hour with seconds, e.g. 21:05:30"
-    say "  4) 12 小时带 AM/PM，如 9:05PM" "  4) 12-hour with AM/PM, e.g. 9:05PM"
-    printf '%s' "$(tr_ "请选择 [1/2/3/4]（回车=1）: " "Choose [1/2/3/4] (Enter=1): ")"
-    read -r _tf || _tf=""
+    if [ "${USE_GUI:-0}" = "1" ]; then
+      if enum_gui_eval list "$(tr_ "时间格式" "Time format")" \
+          "$(tr_ "选择 Digital Clock 4 的时间格式" "Choose a time format for Digital Clock 4")" \
+          "1|$(tr_ "跟随系统（默认）" "Follow the system (default)")" \
+          "2|$(tr_ "24 小时，如 21:05" "24-hour, e.g. 21:05")" \
+          "3|$(tr_ "24 小时带秒，如 21:05:30" "24-hour with seconds")" \
+          "4|$(tr_ "12 小时带 AM/PM" "12-hour with AM/PM")"; then
+        _tf="${CHOICE:-1}"
+      else
+        _tf="1"
+      fi
+    else
+      say "时间格式：" "Time format:"
+      say "  1) 跟随系统（默认）" "  1) Follow the system (default)"
+      say "  2) 24 小时，如 21:05" "  2) 24-hour, e.g. 21:05"
+      say "  3) 24 小时带秒，如 21:05:30" "  3) 24-hour with seconds, e.g. 21:05:30"
+      say "  4) 12 小时带 AM/PM，如 9:05PM" "  4) 12-hour with AM/PM, e.g. 9:05PM"
+      printf '%s' "$(tr_ "请选择 [1/2/3/4]（回车=1）: " "Choose [1/2/3/4] (Enter=1): ")"
+      read -r _tf || _tf=""
+    fi
     case "$_tf" in
       2) TIME_FORMAT="HH:mm" ;;
       3) TIME_FORMAT="HH:mm:ss" ;;
@@ -159,6 +172,7 @@ PREFIX=""
 WANT_DESKTOP_ICON="1"
 WANT_AUTOSTART="0"
 DO_UNINSTALL="0"
+WANT_YES="0"
 WANT_KEEP_CONFIG="0"
 WANT_INPLACE="0"
 while [ $# -gt 0 ]; do
@@ -171,6 +185,8 @@ while [ $# -gt 0 ]; do
     --uninstall) DO_UNINSTALL="1" ;;
     --keep-config) WANT_KEEP_CONFIG="1" ;;
     --inplace) WANT_INPLACE="1" ;;
+    --yes|-y) WANT_YES="1" ;;
+    --cli) ENUM_FORCE_CLI=1 ;;
     --help|-h) usage; exit 0 ;;
     *) say "未知参数: $1（--help 查看用法）" "Unknown option: $1 (see --help)"; exit 1 ;;
   esac
@@ -178,6 +194,21 @@ while [ $# -gt 0 ]; do
 done
 
 SRC="$(cd "$(dirname "$0")" && pwd)"
+
+# ── 图形界面（有 DISPLAY 时默认走 GUI；ENUM_FORCE_CLI=1 或 --cli 强制终端）──
+enum_gui_available() {
+  [ "${ENUM_FORCE_CLI:-0}" = "1" ] && return 1
+  [ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ] || return 1
+  [ -f "$SRC/enum-gui-ask.py" ] || return 1
+  command -v python3 >/dev/null 2>&1 || return 1
+  python3 -c "import gi; gi.require_version('Gtk','3.0'); from gi.repository import Gtk" 2>/dev/null
+}
+enum_gui_eval() {
+  local out
+  out="$(python3 "$SRC/enum-gui-ask.py" "$@")" || return $?
+  eval "$out"
+  return 0
+}
 
 # ── ENum Setup 单实例锁（与 EnumSetup / 各 install.sh 共用）────────────────
 _ENUM_LOCK_DIR="${XDG_RUNTIME_DIR:-/tmp}"
@@ -217,39 +248,69 @@ enum_scan_remove_desktop() {
 
 enum_setup_acquire_lock
 
-# ── 交互模式：stdin 是 TTY 且没带任何参数才进入 ─────────────────────────────
+# ── 交互模式：无参数时进入；有图形界面优先 GUI，否则终端问答 ───────────────
 INTERACTIVE=0
-if [ -t 0 ] && [ "$NARGS" -eq 0 ]; then INTERACTIVE=1; fi
+USE_GUI=0
+if enum_gui_available; then USE_GUI=1; fi
+if [ "$NARGS" -eq 0 ]; then
+  if [ "$USE_GUI" = "1" ] || [ -t 0 ]; then INTERACTIVE=1; fi
+fi
+if [ "$DO_UNINSTALL" = "1" ] && [ "$USE_GUI" = "1" ] && [ "${ENUM_SETUP_NESTED:-0}" != "1" ] \
+   && [ "${ENUM_UNINSTALL_CONFIRMED:-0}" != "1" ] && [ "${WANT_YES:-0}" != "1" ]; then
+  INTERACTIVE=1
+fi
 
-if [ "$INTERACTIVE" = "1" ]; then
+if [ "$INTERACTIVE" = "1" ] && [ "$USE_GUI" = "1" ]; then
+  if [ "$DO_UNINSTALL" = "1" ]; then
+    _keep_ui=1
+    case "$SRC" in */Enum\ Code/github/*|*/Enum\ Code/*) _keep_ui=0 ;; esac
+    [ "${ENUM_DEV_TREE:-0}" = "1" ] && _keep_ui=0
+    if ! enum_gui_eval uninstall "$APP_NAME" "$_keep_ui"; then
+      say "已取消。" "Cancelled."; exit 0
+    fi
+    [ "${CANCELLED:-0}" = "1" ] && { say "已取消。" "Cancelled."; exit 0; }
+    ENUM_UNINSTALL_CONFIRMED=1
+  else
+    if ! enum_gui_eval install "$APP_NAME" "${ASK_AUTOSTART:-0}" "${ASK_AUTO_UPDATE:-0}"; then
+      say "已取消。" "Cancelled."; exit 0
+    fi
+    [ "${CANCELLED:-0}" = "1" ] && { say "已取消。" "Cancelled."; exit 0; }
+    if [ -n "${PREFIX:-}" ]; then
+      case "$PREFIX" in "~"|"~/"*) PREFIX="$HOME${PREFIX#\~}" ;; esac
+    fi
+  fi
+elif [ "$INTERACTIVE" = "1" ]; then
   say "▶ 安装 $APP_NAME" "▶ Installing $APP_NAME"
   echo ""
   say "安装位置：" "Install location:"
-  say "说明：默认装到 ~/.local/share/enum（与 ~/.config 配置分开）；对外卸载会删光程序+配置。" "Note: default install ~/.local/share/enum (config stays under ~/.config); uninstall removes both by default."
-  say "  1) 用户目录（默认，无需密码）" "  1) User directory (default, no password)"
+  say "  1) 用户程序目录 ~/.local/share/enum（默认）" "  1) User ~/.local/share/enum (default)"
   say "  2) 自定义路径" "  2) Custom path"
-  say "  3) 系统目录 /opt（所有用户可用，需要管理员密码）" "  3) System directory /opt (all users, admin password required)"
-  printf '%s' "$(tr_ "请选择 [1/2/3]（回车=1）: " "Choose [1/2/3] (Enter=1): ")"
+  say "  3) 系统目录 /opt/enum" "  3) System /opt/enum"
+  say "  4) 开发树原地" "  4) In-place from source"
+  printf '%s' "$(tr_ "请选择 [1/2/3/4]（回车=1）: " "Choose [1/2/3/4] (Enter=1): ")"
   read -r _choice || _choice=""
   case "$_choice" in
     2)
-      printf '%s' "$(tr_ "请输入安装路径（程序会复制到 该目录/$APP_ID）: " "Install path (program is copied to <path>/$APP_ID): ")"
+      printf '%s' "$(tr_ "请输入安装路径: " "Install path: ")"
       read -r _p || _p=""
       case "$_p" in "~"|"~/"*) _p="$HOME${_p#\~}" ;; esac
       if [ -n "$_p" ]; then PREFIX="$_p"; else say "未输入路径，改用用户目录。" "No path given, using user directory."; fi
       ;;
-    3)
-      MODE="system"
-      say "系统级安装需要管理员权限，接下来 sudo 可能提示输入密码。" "System-wide install needs admin rights; sudo may prompt for your password."
-      ;;
+    3) MODE="system" ;;
+    4) WANT_INPLACE="1" ;;
     *) : ;;
   esac
-  if [ "$ASK_AUTOSTART" = "1" ]; then
-    printf '%s' "$(tr_ "开机时自动启动？[y/N]: " "Start automatically at login? [y/N]: ")"
+  if [ "${ASK_AUTOSTART:-0}" = "1" ]; then
+    printf '%s' "$(tr_ "开机自启动 $APP_NAME？[y/N]: " "Start $APP_NAME at login? [y/N]: ")"
     read -r _a || _a=""
     case "$_a" in y|Y|yes|YES) WANT_AUTOSTART="1" ;; *) WANT_AUTOSTART="0" ;; esac
   fi
-  printf '%s' "$(tr_ "在桌面放一个图标？[Y/n]: " "Put an icon on the desktop? [Y/n]: ")"
+  if [ "${ASK_AUTO_UPDATE:-0}" = "1" ]; then
+    printf '%s' "$(tr_ "启动时自动检查更新？[Y/n]: " "Check for updates at startup? [Y/n]: ")"
+    read -r _u || _u=""
+    case "$_u" in n|N|no|NO) WANT_AUTO_UPDATE="0" ;; *) WANT_AUTO_UPDATE="1" ;; esac
+  fi
+  printf '%s' "$(tr_ "在桌面放一个图标？[Y/n]: " "Desktop icon? [Y/n]: ")"
   read -r _d || _d=""
   case "$_d" in n|N|no|NO) WANT_DESKTOP_ICON="0" ;; *) WANT_DESKTOP_ICON="1" ;; esac
   echo ""
@@ -359,6 +420,9 @@ if [ "$DO_UNINSTALL" = "1" ]; then
     fi
   fi
   say "✅ 已卸载。" "✅ Uninstalled."
+  if [ "${USE_GUI:-0}" = "1" ]; then
+    enum_gui_eval info "$(tr_ "卸载完成" "Uninstalled")" "$(tr_ "$APP_NAME 已卸载。" "$APP_NAME has been uninstalled.")" || true
+  fi
   exit 0
 fi
 
@@ -612,6 +676,11 @@ else
       "✅ Installed. Search \"$APP_NAME\" in the app menu to launch."
 fi
 [ -n "$POST_INSTALL_NOTE" ] && say "   $POST_INSTALL_NOTE" "   ${POST_INSTALL_NOTE_EN:-$POST_INSTALL_NOTE}"
+if [ "${USE_GUI:-0}" = "1" ]; then
+  _msg="$(tr_ "✅ $APP_NAME 安装完成。" "✅ $APP_NAME installed.")"
+  [ -n "$POST_INSTALL_NOTE" ] && _msg="$_msg\n$(tr_ "$POST_INSTALL_NOTE" "${POST_INSTALL_NOTE_EN:-$POST_INSTALL_NOTE}")"
+  enum_gui_eval info "$(tr_ "安装完成" "Installed")" "$_msg" || true
+fi
 
 # 安装前它就在运行，说明用户正在用——装完自动拉起新版本，
 # 不然用户看到的是「程序不见了」，还得自己去应用列表里重开一次。

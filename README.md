@@ -66,15 +66,15 @@ cd DigitalClock4
 bash install.sh
 ```
 
-The installer speaks English or Chinese depending on your system language and
-asks where to install (your home directory, any custom path — admin-owned
+With a display it opens a **graphical installer** (TTY interview if none) that asks
+where to install (your home directory, any custom path — admin-owned
 locations like `/opt` just prompt for your password via `sudo` — or
 system-wide), whether to start automatically at login, and whether you want a
 desktop icon. The desktop icon is marked trusted, so double-clicking it
 launches the clock directly, with no "allow launching" confirmation.
 
 Non-interactive use: `bash install.sh --system`, `--prefix DIR`, `--autostart`,
-`--no-desktop-icon`, `--uninstall`, `--help`.
+`--no-desktop-icon`, `--uninstall` (GUI confirmation when a display is available), `--help`.
 
 Build dependencies (Debian/Ubuntu; the installer builds from source
 automatically when no prebuilt binary is present):

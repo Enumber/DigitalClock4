@@ -62,7 +62,7 @@ bash install.sh
 不会弹「是否允许启动」确认框。
 
 非交互用法：`bash install.sh --system`、`--prefix 目录`、`--autostart`、
-`--no-desktop-icon`、`--uninstall`、`--help`。
+`--no-desktop-icon`、`--uninstall`（有显示器时弹出确认窗）、`--help`。
 
 编译依赖（Debian/Ubuntu；没有现成二进制时安装器会自动从源码编译）：
 
