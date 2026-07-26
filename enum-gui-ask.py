@@ -31,8 +31,16 @@ def T(zh: str, en: str) -> str:
 
 
 def emit(**kwargs) -> None:
+    """Print KEY=value lines for the installer shell to parse (never eval).
+
+    Values are written literally after the first ``=``. The companion shell
+    helper assigns ``${line#*=}`` wholesale — do not shell-quote here, or the
+    quotes become part of the path.
+    """
     for k, v in kwargs.items():
-        print(f"{k}={v}")
+        # Newlines would break the line-oriented parser; flatten them.
+        text = str(v).replace(chr(13), " ").replace(chr(10), " ")
+        print(f"{k}={text}")
 
 
 def run_window(win: Gtk.Window) -> int:

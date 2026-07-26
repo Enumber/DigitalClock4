@@ -201,17 +201,32 @@ enum_gui_available() {
   [ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ] || return 1
   [ -f "$SRC/enum-gui-ask.py" ] || return 1
   command -v python3 >/dev/null 2>&1 || return 1
-  python3 -c "import gi; gi.require_version('Gtk','3.0'); from gi.repository import Gtk" 2>/dev/null
+  # Importing GTK is not enough — DISPLAY may be set but unusable (ssh without
+  # X, stale xauth). Gtk.init_check() is the real probe.
+  python3 -c "import gi; gi.require_version('Gtk','3.0'); from gi.repository import Gtk; import sys; sys.exit(0 if Gtk.init_check()[0] else 1)" 2>/dev/null
 }
+
 enum_gui_eval() {
-  local out
-  out="$(python3 "$SRC/enum-gui-ask.py" "$@")" || return $?
-  eval "$out"
+  # Must not eval: the install-path field is free text. Spaces used to truncate
+  # PREFIX; a semicolon ran as a shell command. Parse KEY=rest-of-line instead.
+  local _out _line _key
+  local _keys=" CANCELLED MODE PREFIX WANT_INPLACE WANT_DESKTOP_ICON WANT_AUTOSTART WANT_AUTO_UPDATE DO_UNINSTALL KEEP_CONFIG WANT_KEEP_CONFIG APPS SELECTED CHOICE VALUE "
+  _out="$(python3 "$SRC/enum-gui-ask.py" "$@")" || return $?
+  while IFS= read -r _line; do
+    _line="${_line%$''}"
+    case "$_line" in *=*) ;; *) continue ;; esac
+    _key="${_line%%=*}"
+    case "$_key" in ''|*[!A-Za-z0-9_]*) continue ;; esac
+    case "$_keys" in
+      *" $_key "*) printf -v "$_key" '%s' "${_line#*=}" ;;
+    esac
+  done <<< "$_out"
   return 0
 }
 
+
 # ── ENum Setup 单实例锁（与 EnumSetup / 各 install.sh 共用）────────────────
-_ENUM_LOCK_DIR="${XDG_RUNTIME_DIR:-/tmp}"
+_ENUM_LOCK_DIR="${XDG_RUNTIME_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/enum}"
 _ENUM_LOCK_FILE="$_ENUM_LOCK_DIR/enum-setup-${UID:-$(id -u)}.lock"
 enum_setup_acquire_lock() {
   if [ "${ENUM_SETUP_NESTED:-0}" = "1" ]; then return 0; fi
