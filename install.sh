@@ -241,7 +241,7 @@ enum_setup_acquire_lock() {
 }
 enum_is_dev_tree() {
   case "$SRC" in
-    */Enum\ Code/github/*|*/Enum\ Code/*) return 0 ;;
+    */Enum\ Code/*) return 0 ;;
   esac
   [ "${ENUM_DEV_TREE:-0}" = "1" ] && return 0
   return 1
@@ -279,7 +279,7 @@ fi
 if [ "$INTERACTIVE" = "1" ] && [ "$USE_GUI" = "1" ]; then
   if [ "$DO_UNINSTALL" = "1" ]; then
     _keep_ui=1
-    case "$SRC" in */Enum\ Code/github/*|*/Enum\ Code/*) _keep_ui=0 ;; esac
+    case "$SRC" in */Enum\ Code/*) _keep_ui=0 ;; esac
     [ "${ENUM_DEV_TREE:-0}" = "1" ] && _keep_ui=0
     if ! enum_gui_eval uninstall "$APP_NAME" "$_keep_ui"; then
       say "已取消。" "Cancelled."; exit 0
@@ -436,7 +436,8 @@ if [ "$DO_UNINSTALL" = "1" ]; then
     fi
   fi
   say "✅ 已卸载。" "✅ Uninstalled."
-  if [ "${USE_GUI:-0}" = "1" ]; then
+  # 仅交互安装弹窗：被 ENum 安装中心批量调用时 INTERACTIVE=0，否则每卸一个就点一次确定。
+  if [ "${USE_GUI:-0}" = "1" ] && [ "${INTERACTIVE:-0}" = "1" ]; then
     enum_gui_eval info "$(tr_ "卸载完成" "Uninstalled")" "$(tr_ "$APP_NAME 已卸载。" "$APP_NAME has been uninstalled.")" || true
   fi
   exit 0
@@ -708,7 +709,8 @@ else
       "✅ Installed. Search \"$APP_NAME\" in the app menu to launch."
 fi
 [ -n "$POST_INSTALL_NOTE" ] && say "   $POST_INSTALL_NOTE" "   ${POST_INSTALL_NOTE_EN:-$POST_INSTALL_NOTE}"
-if [ "${USE_GUI:-0}" = "1" ]; then
+# 仅交互安装弹窗：批量/带参安装只写终端，避免装几个应用就弹几个「完成」。
+if [ "${USE_GUI:-0}" = "1" ] && [ "${INTERACTIVE:-0}" = "1" ]; then
   _msg="$(tr_ "✅ $APP_NAME 安装完成。" "✅ $APP_NAME installed.")"
   [ -n "$POST_INSTALL_NOTE" ] && _msg="$_msg\n$(tr_ "$POST_INSTALL_NOTE" "${POST_INSTALL_NOTE_EN:-$POST_INSTALL_NOTE}")"
   enum_gui_eval info "$(tr_ "安装完成" "Installed")" "$_msg" || true
