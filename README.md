@@ -46,8 +46,8 @@ Everything the official Windows build has, on Linux:
 * UI follows the system language — English and 简体中文 both complete
   (upstream also has Русский and Português across all components, and
   Nederlands for the main window only); anything else falls back to English
-* built-in "start at login" toggle in Settings, and the installer can set it
-  up for you too — no manual autostart setup either way
+* built-in "start at login" toggle in Settings — flip it there once installed,
+  no manual autostart setup needed (the installer itself does not enable it)
 * no update checker and no update notifications; the program does not contact
   the network on its own — 4.7.9 is the final 4.x release and there is
   nothing left to check for
@@ -69,9 +69,10 @@ bash install.sh
 With a display it opens a **graphical installer** (TTY interview if none) that asks
 where to install (your home directory, any custom path — admin-owned
 locations like `/opt` just prompt for your password via `sudo` — or
-system-wide), whether to start automatically at login, and whether you want a
-desktop icon. The desktop icon is marked trusted, so double-clicking it
-launches the clock directly, with no "allow launching" confirmation.
+system-wide) and whether you want a desktop icon. The desktop icon is marked
+trusted, so double-clicking it launches the clock directly, with no "allow
+launching" confirmation. Start-at-login is not part of the installer interview —
+use the program's own Settings → Misc toggle (or `--autostart` in scripts).
 
 Non-interactive use: `bash install.sh --system`, `--prefix DIR`, `--autostart`,
 `--no-desktop-icon`, `--uninstall` (GUI confirmation when a display is available), `--help`.

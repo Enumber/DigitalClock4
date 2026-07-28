@@ -12,9 +12,9 @@
 #  交互模式：在终端里直接运行（stdin 是 TTY 且不带任何参数）时进入问答：
 #     ① 安装位置：用户目录（默认）/ 自定义路径 / 系统目录 /opt
 #        （没有写权限的目录会走 sudo，密码由 sudo 自己在终端提示）
-#     ② 是否开机自启动（写的是程序自己认的那个 autostart 文件，与设置里的
-#        「开机启动」开关是同一件事——两边保持一致，不会出现重复启动）
-#     ③ 是否放桌面图标（免「信任」确认，双击即可启动）
+#     ② 是否放桌面图标（免「信任」确认，双击即可启动）
+#  开机自启动不在安装时询问（本项目非常驻类）：程序设置里自带「开机启动」
+#  开关，装完在 设置 → 杂项 里开即可；脚本化场景仍可用 --autostart。
 #
 #  普通用法：      bash install.sh
 #  高级用法(可选)：
@@ -44,7 +44,7 @@ NEEDS_VENV="0"
 VENV_DIR=".venv"
 PYDEPS=""
 VENV_SYSTEM_SITE="1"
-ASK_AUTOSTART="1"                        # 安装时询问；写的是程序自己认的那个 autostart 文件
+ASK_AUTOSTART="0"                        # 不询问（自启动仅限常驻类项目）；设置里的「开机启动」开关或 --autostart 可用
 AUTOSTART_ARGS=""
 POST_INSTALL_NOTE="开机自启动、皮肤、插件等都在程序的右键菜单 → 设置 里。"
 POST_INSTALL_NOTE_EN="Autostart, skins and plugins live in the app's right-click menu -> Settings."
@@ -114,10 +114,11 @@ Digital Clock 4 · Linux 一键安装器
 用法：
   bash install.sh                    交互安装（推荐）
 
-交互安装会依次问你：装到哪、要不要开机自启动、要不要桌面图标。
+交互安装会依次问你：装到哪、要不要桌面图标。
 桌面图标会被标记为可信，双击直接启动，不弹「是否允许启动」。
-开机自启动写的是程序自己认的那个 autostart 文件，和「设置 → 杂项」里的
-「开机启动」开关是同一件事，两边保持一致，不会重复启动。
+开机自启动不在安装时询问：装完在程序的「设置 → 杂项」里打开「开机启动」
+即可（脚本化场景可用 --autostart，写的是程序自己认的那个 autostart 文件，
+和设置里的开关是同一件事，两边保持一致，不会重复启动）。
 
 本目录若已有编译好的程序就直接安装；只有源码时会先自动编译
 （需要 Qt5 开发包，缺什么会提示，见 README）。
@@ -140,12 +141,12 @@ Digital Clock 4 - one-command installer for Linux
 Usage:
   bash install.sh                    interactive install (recommended)
 
-The interactive install asks where to put the program, whether to start it
-automatically at login, and whether you want a desktop icon. The desktop icon
-is marked trusted, so double-clicking it starts the clock directly with no
-"allow launching" prompt. The autostart entry uses the same file the program's
-own Settings -> Misc toggle does, so the two always agree and nothing starts
-twice.
+The interactive install asks where to put the program and whether you want a
+desktop icon. The desktop icon is marked trusted, so double-clicking it starts
+the clock directly with no "allow launching" prompt. Start-at-login is not
+asked during installation: turn it on afterwards in the program's own
+Settings -> Misc (or pass --autostart in scripts; both write the same
+autostart file, so the two always agree and nothing starts twice).
 
 If a compiled program is already present it is installed as is; from a source
 checkout it is built first (needs the Qt5 development packages - see README).
