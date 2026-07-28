@@ -591,11 +591,15 @@ if [ -f "$RUN_DIR/$APP_ICON" ]; then
     _d="$ICON_THEME_DIR/${_sz}x${_sz}/apps"
     as_desk_user mkdir -p "$_d" 2>/dev/null || $SUDO mkdir -p "$_d" 2>/dev/null || continue
     if command -v convert >/dev/null 2>&1; then
-      convert "$RUN_DIR/$APP_ICON" -resize ${_sz}x${_sz} "/tmp/.dc4icon.$$.png" 2>/dev/null \
-        && { as_desk_user cp "/tmp/.dc4icon.$$.png" "$_d/$APP_ID.png" 2>/dev/null \
-             || $SUDO cp "/tmp/.dc4icon.$$.png" "$_d/$APP_ID.png" 2>/dev/null; } \
+      # mktemp（而不是可预测的 /tmp 固定名）：固定名可被本地其他用户先放一个
+      # 符号链接，convert 会顺着链接写到别处去。
+      _tmpicon="$(mktemp --suffix=.png)"
+      convert "$RUN_DIR/$APP_ICON" -resize ${_sz}x${_sz} "$_tmpicon" 2>/dev/null \
+        && chmod 644 "$_tmpicon" 2>/dev/null \
+        && { as_desk_user cp "$_tmpicon" "$_d/$APP_ID.png" 2>/dev/null \
+             || $SUDO cp "$_tmpicon" "$_d/$APP_ID.png" 2>/dev/null; } \
         && _installed_theme_icon=1
-      rm -f "/tmp/.dc4icon.$$.png"
+      rm -f "$_tmpicon"
     elif [ "$_sz" = "256" ]; then
       # 没有 convert 就只放原图到 256 档
       { as_desk_user cp "$RUN_DIR/$APP_ICON" "$_d/$APP_ID.png" 2>/dev/null \
