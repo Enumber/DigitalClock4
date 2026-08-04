@@ -34,23 +34,24 @@ def translation_for(path: Path, source: str) -> str | None:
 
 def main() -> None:
     root = ET.parse(UI_PATH).getroot()
-    layout = root.find(".//layout[@name='gridLayout_3']")
-    assert layout is not None, "Experimental settings layout is missing"
+    # allow_over_panels lives in the Misc tab's plain QVBoxLayout, directly
+    # under "start on system startup" — not a QGridLayout, so items are only
+    # ordered (no row/column/colspan) and adjacency means "next sibling".
+    layout = root.find(".//layout[@name='verticalLayout']")
+    assert layout is not None, "Misc tab's checkbox column layout is missing"
 
-    overlap_item = layout.find("item/widget[@name='allow_over_panels']/..")
-    assert overlap_item is not None, "Panel-overlap checkbox is missing"
+    items = layout.findall("item")
+    names = [item.find("widget").attrib.get("name") for item in items]
+    assert "allow_over_panels" in names, "Panel-overlap checkbox is missing"
+    assert "allow_over_panels_description" in names, "Panel-overlap description is missing"
 
-    description_item = layout.find("item/widget[@name='allow_over_panels_description']/..")
-    assert description_item is not None, "Panel-overlap description is missing"
-    description = description_item.find("widget")
-    assert description is not None
-
-    expected_row = int(overlap_item.attrib["row"]) + 1
-    assert int(description_item.attrib["row"]) == expected_row, (
+    overlap_index = names.index("allow_over_panels")
+    description_index = names.index("allow_over_panels_description")
+    assert description_index == overlap_index + 1, (
         "Panel-overlap description must be directly below its checkbox"
     )
-    assert description_item.attrib.get("column") == overlap_item.attrib.get("column") == "0"
-    assert description_item.attrib.get("colspan") == overlap_item.attrib.get("colspan") == "2"
+
+    description = items[description_index].find("widget")
     assert description.attrib.get("class") == "QLabel"
     assert property_text(description, "text") == SOURCE_TEXT
     assert property_text(description, "wordWrap") == "true", (
