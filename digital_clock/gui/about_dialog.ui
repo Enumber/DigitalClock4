@@ -197,13 +197,34 @@
        <item>
         <widget class="QLabel" name="btc_address_label">
          <property name="text">
-          <string notr="true">1DLdUCqxXrkufqVqXU18tgsmtvxErHiMQS</string>
+          <string notr="true">&lt;a href=&quot;bitcoin:1DLdUCqxXrkufqVqXU18tgsmtvxErHiMQS&quot;&gt;1DLdUCqxXrkufqVqXU18tgsmtvxErHiMQS&lt;/a&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="donate_notice_lbl">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>This address belongs to the original author, Nick Korotysh. Donations go directly to him and are not received or handled by ENum, the maintainer of this Linux fork.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -215,9 +236,44 @@
       </attribute>
       <layout class="QVBoxLayout" name="links_tab_layout">
        <item>
+        <widget class="QGroupBox" name="fork_group">
+         <property name="title">
+          <string>This fork (ENum)</string>
+         </property>
+         <layout class="QVBoxLayout" name="fork_group_layout">
+          <item>
+           <widget class="QLabel" name="fork_home_lbl">
+            <property name="text">
+             <string notr="true">&lt;a href=&quot;https://github.com/Enumber/DigitalClock4&quot;&gt;github.com/Enumber/DigitalClock4&lt;/a&gt;</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="fork_issues_lbl">
+            <property name="text">
+             <string>&lt;a href=&quot;https://github.com/Enumber/DigitalClock4/issues&quot;&gt;report an issue with this fork&lt;/a&gt;</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="project_group">
          <property name="title">
-          <string>Useful links</string>
+          <string>Original project (upstream, archived)</string>
          </property>
          <layout class="QVBoxLayout" name="project_group_layout">
           <item>
@@ -236,7 +292,7 @@
           <item>
            <widget class="QLabel" name="support_lbl">
             <property name="text">
-             <string>&lt;a href=&quot;https://sourceforge.net/p/digitalclock4/tickets/&quot;&gt;bug report/feature request&lt;/a&gt;</string>
+             <string>&lt;a href=&quot;https://sourceforge.net/p/digitalclock4/tickets/&quot;&gt;bug report/feature request (ticket creation restricted)&lt;/a&gt;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -281,19 +337,6 @@
           <string>More info</string>
          </property>
          <layout class="QVBoxLayout" name="info_group_layout">
-          <item>
-           <widget class="QLabel" name="lnk_lbl_4">
-            <property name="text">
-             <string notr="true">&lt;a href=&quot;https://showroom.qt.io/digital-clock/&quot;&gt;showroom.qt.io&lt;/a&gt;</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="openExternalLinks">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item>
            <widget class="QLabel" name="lnk_lbl_1">
             <property name="text">

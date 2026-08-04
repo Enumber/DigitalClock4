@@ -88,10 +88,7 @@ SettingsDialog::SettingsDialog(core::ClockSettings* config, core::ClockState* st
   ui->defaults_bth->setVisible(false);   // temporary, not implemented
   // This fork does not check for updates: 4.7.9 is the final 4.x release and
   // upstream is archived, so there is nothing to find. The whole feature is
-  // gone (see MODIFICATIONS.md); the widgets stay in the .ui only to keep it
-  // mergeable with upstream.
-  ui->enable_autoupdate->setVisible(false);
-  ui->autoupdate_group->setVisible(false);
+  // gone (see MODIFICATIONS.md), including its settings widgets.
 #if !defined(Q_OS_WIN) && !defined(Q_OS_LINUX)
   ui->show_in_fullscreen->setVisible(false);   // needs per-platform window enumeration
   // taskbar_icon_enable stays visible: it is implemented with the Qt::Tool
@@ -104,10 +101,6 @@ SettingsDialog::SettingsDialog(core::ClockSettings* config, core::ClockState* st
 #if !defined(Q_OS_LINUX) && !defined(Q_OS_MACOS)
   ui->show_on_all_workspaces->setVisible(false);  // supported on Linux/Mac
 #endif
-#ifndef HAVE_SINGLEAPPLICATION
-  ui->only_one_instance->setVisible(false);
-#endif
-
   connect(config->GetBackend(), &SettingsStorage::reloaded, this, &SettingsDialog::InitControls);
 
   InitControls();
@@ -266,25 +259,29 @@ void SettingsDialog::InitControls()
     widget->blockSignals(false);
   }
 
-  // "Experimental" tab
+  // "Misc" tab (moved here from "Experimental" once verified to apply without a restart)
   ui->show_in_fullscreen->setChecked(!config_->GetValue(OPT_FULLSCREEN_DETECT).toBool());
   ui->show_on_all_workspaces->setChecked(config_->GetValue(OPT_SHOW_ON_ALL_DESKTOPS).toBool());
-  ui->better_stay_on_top->setChecked(config_->GetValue(OPT_BETTER_STAY_ON_TOP).toBool());
   ui->keep_always_visible->setChecked(config_->GetValue(OPT_KEEP_ALWAYS_VISIBLE).toBool());
   ui->allow_over_panels->setChecked(config_->GetValue(OPT_ALLOW_OVER_PANELS).toBool());
-  ui->show_on_all_monitors->setChecked(config_->GetValue(OPT_SHOW_ON_ALL_MONITORS).toBool());
-  ui->only_one_instance->setChecked(config_->GetValue(OPT_ONLY_ONE_INSTANCE).toBool());
   ui->hover_buttons_enabled->setChecked(config_->GetValue(OPT_USE_HOVER_BUTTONS).toBool());
-  ui->taskbar_icon_enable->setChecked(config_->GetValue(OPT_SHOW_TASKBAR_ICON).toBool());
+  ui->snap_to_edges->setChecked(config_->GetValue(OPT_SNAP_TO_EDGES).toBool());
+  ui->snap_threshold->setValue(config_->GetValue(OPT_SNAP_THRESHOLD).toInt());
+  ui->refresh_interval->setValue(config_->GetValue(OPT_REFRESH_INTERVAL).toInt());
+
+  // "Appearance" tab
   ui->transparent_on_hover->setChecked(config_->GetValue(OPT_TRANSPARENT_ON_HOVER).toBool());
-  ui->hide_on_mouse_hover->setChecked(config_->GetValue(OPT_OPACITY_ON_HOVER).toReal() < 0.02);
 #ifdef Q_OS_LINUX
   ui->transparent_on_hover->setEnabled(QX11Info::isPlatformX11());
   ui->hide_on_mouse_hover->setEnabled(QX11Info::isPlatformX11());
 #endif
-  ui->snap_to_edges->setChecked(config_->GetValue(OPT_SNAP_TO_EDGES).toBool());
-  ui->snap_threshold->setValue(config_->GetValue(OPT_SNAP_THRESHOLD).toInt());
-  ui->refresh_interval->setValue(config_->GetValue(OPT_REFRESH_INTERVAL).toInt());
+
+  // also live (moved out of the now-removed "Experimental" tab); hide_on_mouse_hover
+  // stays a permanently disabled placeholder unrelated to that move
+  ui->better_stay_on_top->setChecked(config_->GetValue(OPT_BETTER_STAY_ON_TOP).toBool());
+  ui->show_on_all_monitors->setChecked(config_->GetValue(OPT_SHOW_ON_ALL_MONITORS).toBool());
+  ui->taskbar_icon_enable->setChecked(config_->GetValue(OPT_SHOW_TASKBAR_ICON).toBool());
+  ui->hide_on_mouse_hover->setChecked(config_->GetValue(OPT_OPACITY_ON_HOVER).toReal() < 0.02);
 }
 
 void SettingsDialog::ChangePluginState(const QString& name, bool activated)
@@ -427,21 +424,6 @@ void SettingsDialog::on_custom_format_clicked()
 void SettingsDialog::on_format_box_currentTextChanged(const QString& arg1)
 {
   ui->format_box->setToolTip(time_to_str(QTime::currentTime(), arg1));
-}
-
-void SettingsDialog::on_enable_autoupdate_clicked(bool checked)
-{
-  emit OptionChanged(OPT_USE_AUTOUPDATE, checked);
-}
-
-void SettingsDialog::on_update_period_box_activated(int index)
-{
-  emit OptionChanged(OPT_UPDATE_PERIOD, ui->update_period_box->itemData(index));
-}
-
-void SettingsDialog::on_check_for_beta_clicked(bool checked)
-{
-  emit OptionChanged(OPT_CHECK_FOR_BETA, checked);
 }
 
 void SettingsDialog::on_space_slider_valueChanged(int arg1)
@@ -598,11 +580,6 @@ void digital_clock::gui::SettingsDialog::on_allow_over_panels_clicked(bool check
 void digital_clock::gui::SettingsDialog::on_show_on_all_monitors_clicked(bool checked)
 {
   emit OptionChanged(OPT_SHOW_ON_ALL_MONITORS, checked);
-}
-
-void digital_clock::gui::SettingsDialog::on_only_one_instance_clicked(bool checked)
-{
-  emit OptionChanged(OPT_ONLY_ONE_INSTANCE, checked);
 }
 
 void digital_clock::gui::SettingsDialog::on_hover_buttons_enabled_clicked(bool checked)

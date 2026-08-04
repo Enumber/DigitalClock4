@@ -125,9 +125,10 @@ ClockWindow::ClockWindow(core::ClockSettings* app_config, QScreen* screen,
   setWindowFlags(Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus);
 #ifdef Q_OS_MACOS
   setWindowFlag(Qt::NoDropShadowWindowHint);
-#else
-  if (!app_config->GetValue(OPT_SHOW_TASKBAR_ICON).toBool()) setWindowFlag(Qt::Tool);
 #endif
+  // OPT_SHOW_TASKBAR_ICON (Qt::Tool) is applied later via ApplyOption(),
+  // same as every other config-dependent flag (stay-on-top, transparent for
+  // input, ...) — Reset() pushes it in before the window is ever shown.
   setAttribute(Qt::WA_TranslucentBackground);
 
   c_menu_ = new ContextMenu(this);
@@ -324,6 +325,13 @@ void ClockWindow::ApplyOption(const Option opt, const QVariant& value)
       SetWindowFlag(Qt::WindowTransparentForInput, value.toBool());
       break;
 
+    case OPT_SHOW_TASKBAR_ICON:
+      // Qt::Tool is what actually hides the window from the taskbar/window
+      // switcher (on X11 as much as on Windows), so this is the same
+      // SetWindowFlag() plumbing OPT_STAY_ON_TOP/OPT_TRANSP_FOR_INPUT use.
+      SetWindowFlag(Qt::Tool, !value.toBool());
+      break;
+
     case OPT_ALIGNMENT:
       cur_alignment_ = static_cast<CAlignment>(value.toInt());
       clock_widget_->ApplyOption(opt, value);
@@ -362,6 +370,15 @@ void ClockWindow::ApplyOption(const Option opt, const QVariant& value)
 
     case OPT_ALLOW_OVER_PANELS:
       allow_over_panels_ = value.toBool();
+      c_menu_->allowOverPanelsAction()->setChecked(allow_over_panels_);
+      UpdateBypassWindowManager();
+      this->CorrectPosition();
+      break;
+
+    case OPT_BETTER_STAY_ON_TOP:
+      // UpdateBypassWindowManager() reads this option straight from
+      // app_config_ itself, so toggling it just needs a re-evaluation —
+      // there is no local member mirroring it the way allow_over_panels_ has.
       UpdateBypassWindowManager();
       this->CorrectPosition();
       break;

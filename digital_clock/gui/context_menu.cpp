@@ -48,6 +48,9 @@ ContextMenu::ContextMenu(QWidget* parent) : QObject(parent)
   b_menu->addAction(tr("Left"), [this] () { emit PositionChanged(Qt::AlignBottom | Qt::AlignLeft); });
   b_menu->addAction(tr("Middle"), [this] () { emit PositionChanged(Qt::AlignBottom | Qt::AlignHCenter); });
   b_menu->addAction(tr("Right"), [this] () { emit PositionChanged(Qt::AlignBottom | Qt::AlignRight); });
+
+  allow_over_panels_action_ = menu_->addAction(tr("&Cover Panels"), this, &ContextMenu::AllowOverPanelsChanged);
+  allow_over_panels_action_->setCheckable(true);
   menu_->addSeparator();
 
   menu_->addAction(QIcon(":/clock/images/info.svg.p"), tr("&About"),

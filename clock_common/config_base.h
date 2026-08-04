@@ -49,6 +49,18 @@ public:
    */
   QVariant GetValue(const int id) const;
 
+  /*!
+   * @brief Commit currently pending value for option @a id to permanent storage.
+   *
+   * Bypasses the batched Accept()/Reject() transaction used by the settings
+   * dialog: only this single option is written through, so toggling it from
+   * outside the dialog (e.g. a tray/context menu quick action) does not
+   * commit other options the dialog may still have pending.
+   * @param id - option id
+   * @see SetValue(), SettingsStorage::Commit()
+   */
+  void CommitValue(const int id);
+
 public slots:
   /*!
    * Change option value on runtime.

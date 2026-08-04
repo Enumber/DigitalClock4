@@ -43,8 +43,7 @@ static QString compilerString()
 
 AboutDialog::AboutDialog(QWidget* parent) :
   QDialog(parent),
-  ui(new Ui::AboutDialog),
-  click_counter_(0)
+  ui(new Ui::AboutDialog)
 {
   ui->setupUi(this);
   setAttribute(Qt::WA_DeleteOnClose);
@@ -65,24 +64,6 @@ AboutDialog::AboutDialog(QWidget* parent) :
 AboutDialog::~AboutDialog()
 {
   delete ui;
-}
-
-void AboutDialog::on_logo_lbl_clicked()
-{
-  switch (++click_counter_) {
-    case 1:
-      ui->logo_lbl->setPixmap(QIcon(":/clock/about/about-1.png").pixmap(logoSize()));
-      break;
-
-    case 2:
-      ui->logo_lbl->setPixmap(QIcon(":/clock/about/about-2.png").pixmap(logoSize()));
-      break;
-
-    default:
-      ui->logo_lbl->setPixmap(QApplication::windowIcon().pixmap(logoSize()));
-      click_counter_ = 0;
-      break;
-  }
 }
 
 int AboutDialog::logoSize() const Q_DECL_NOEXCEPT

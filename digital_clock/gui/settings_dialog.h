@@ -94,9 +94,6 @@ private slots:
   void on_system_format_clicked();
   void on_custom_format_clicked();
   void on_format_box_currentTextChanged(const QString& arg1);
-  void on_enable_autoupdate_clicked(bool checked);
-  void on_update_period_box_activated(int index);
-  void on_check_for_beta_clicked(bool checked);
   void on_space_slider_valueChanged(int arg1);
   void on_export_btn_clicked();
   void on_import_btn_clicked();
@@ -123,7 +120,6 @@ private slots:
   void on_keep_always_visible_clicked(bool checked);
   void on_allow_over_panels_clicked(bool checked);
   void on_show_on_all_monitors_clicked(bool checked);
-  void on_only_one_instance_clicked(bool checked);
   void on_hover_buttons_enabled_clicked(bool checked);
   void on_taskbar_icon_enable_clicked(bool checked);
   void on_transparent_on_hover_clicked(bool checked);

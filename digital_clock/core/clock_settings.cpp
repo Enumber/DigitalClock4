@@ -71,7 +71,6 @@ QMap<Option, QVariant> ClockSettings::GetSettings() const
   all_settings[OPT_SHOW_HIDE_ENABLED]     = GetValue(OPT_SHOW_HIDE_ENABLED);
   all_settings[OPT_EXPORT_STATE]          = GetValue(OPT_EXPORT_STATE);
   all_settings[OPT_KEEP_ALWAYS_VISIBLE]   = GetValue(OPT_KEEP_ALWAYS_VISIBLE);
-  all_settings[OPT_ONLY_ONE_INSTANCE]     = GetValue(OPT_ONLY_ONE_INSTANCE);
   all_settings[OPT_SHOW_WINDOW_BORDER]    = GetValue(OPT_SHOW_WINDOW_BORDER);
   all_settings[OPT_ALLOW_OVER_PANELS]     = GetValue(OPT_ALLOW_OVER_PANELS);
   all_settings[OPT_SNAP_TO_EDGES]         = GetValue(OPT_SNAP_TO_EDGES);
@@ -128,7 +127,6 @@ QString ClockSettings::GetKey(const int id) const
     case OPT_SHOW_HIDE_ENABLED:     return "misc/show_hide_enabled";
     case OPT_EXPORT_STATE:          return "misc/export_state";
     case OPT_KEEP_ALWAYS_VISIBLE:   return "window/always_visible";
-    case OPT_ONLY_ONE_INSTANCE:     return "app/single_instance";
     // window settings
     case OPT_SHOW_WINDOW_BORDER:    return "window/show_border";
     case OPT_ALLOW_OVER_PANELS:     return "window/allow_over_panels";
@@ -166,7 +164,7 @@ QVariant ClockSettings::GetDefaultValue(const int id) const
     case OPT_BACKGROUND_ENABLED:    return false;
     case OPT_BACKGROUND_COLOR:      return QVariant::fromValue<QColor>(Qt::white);
     case OPT_FULLSCREEN_DETECT:     return false;
-    case OPT_SHOW_ON_ALL_DESKTOPS:  return false;
+    case OPT_SHOW_ON_ALL_DESKTOPS:  return true;
     case OPT_DISPLAY_LOCAL_TIME:    return true;
     case OPT_TIME_ZONE:             return QString::fromLatin1(QTimeZone::systemTimeZoneId());
     // skin settings
@@ -190,11 +188,10 @@ QVariant ClockSettings::GetDefaultValue(const int id) const
     case OPT_CLOCK_URL_ENABLED:     return false;
     case OPT_CLOCK_URL_STRING:      return QString("https://digitalclock4.sourceforge.io/");
     case OPT_FULLSCREEN_IGNORE_LST: return ignored_fullscreen_windows;
-    case OPT_BETTER_STAY_ON_TOP:    return false;
+    case OPT_BETTER_STAY_ON_TOP:    return true;
     case OPT_SHOW_HIDE_ENABLED:     return false;
     case OPT_EXPORT_STATE:          return true;
-    case OPT_KEEP_ALWAYS_VISIBLE:   return false;
-    case OPT_ONLY_ONE_INSTANCE:     return true;
+    case OPT_KEEP_ALWAYS_VISIBLE:   return true;
     // window settings
     case OPT_SHOW_WINDOW_BORDER:    return true;
     case OPT_ALLOW_OVER_PANELS:     return false;
@@ -204,7 +201,7 @@ QVariant ClockSettings::GetDefaultValue(const int id) const
     case OPT_SHOW_ON_ALL_MONITORS:  return false;
     case OPT_TRANSPARENT_ON_HOVER:  return false;
     case OPT_OPACITY_ON_HOVER:      return 0.15;
-    case OPT_USE_HOVER_BUTTONS:     return false;
+    case OPT_USE_HOVER_BUTTONS:     return true;
     case OPT_WINDOW_MOVE_STEP:      return 20;
     case OPT_SHOW_TASKBAR_ICON:     return false;
   }

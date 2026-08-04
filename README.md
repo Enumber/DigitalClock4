@@ -38,8 +38,14 @@ Everything the official Windows build has, on Linux:
 * **resilient multi-monitor placement** — new setups prefer a non-primary display;
   positions are saved per physical monitor, a disconnected clock moves to an available
   screen, and it returns to its original screen and position after reconnect or reboot.
-  Non-primary screens may overlap their panel area (the position setting labels this
-  explicitly as **Allows overlap with panel**).
+* **cover the taskbar/panel/dock if you want** — a "Cover Panels" checkbox sits right
+  in the tray icon's menu and the clock's own right-click menu (next to Position), and
+  the same setting is in Settings → Misc; toggling it anywhere updates the other
+  instantly and takes effect without reopening Settings.
+* **most settings apply immediately** — no restart needed for fullscreen detection,
+  multi-workspace display, keep-visible, click-to-move, the taskbar-icon toggle, the
+  Linux "better stay on top" mode, or showing the clock on every monitor. Only one
+  clock instance ever runs; a second launch just raises the existing one.
 * **15 plugins**: alarm, chime, countdown timer, date, IP address, quick note,
   random position, scheduler, spectrum clock, stopwatch, talking clock, tray
   colour, variable translucency, power off, any zoom

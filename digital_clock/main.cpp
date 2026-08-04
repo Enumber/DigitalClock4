@@ -59,7 +59,8 @@ int main(int argc, char* argv[])
 #endif
   digital_clock::core::ClockSettings app_config(&config_backend);
 #ifdef HAVE_SINGLEAPPLICATION
-  SingleApplication app(argc, argv, !app_config.GetValue(OPT_ONLY_ONE_INSTANCE).toBool());
+  // Only one instance is a hard requirement, not a user preference.
+  SingleApplication app(argc, argv, /* allowSecondary = */ false);
 #else
   QApplication app(argc, argv);
 #endif

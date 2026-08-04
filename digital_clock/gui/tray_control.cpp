@@ -55,10 +55,13 @@ QIcon TrayControl::platform_tray_icon() const
   // falls back to writing a temporary PNG and publishing its absolute path,
   // which indicator-application (Ubuntu/GNOME) cannot resolve — the item
   // registers on the bus and nothing is ever drawn. The installer puts our
-  // icon into hicolor as "digitalclock4"; the resource stays as the fallback
-  // for running straight out of a build tree.
+  // icon into hicolor as "digitalclock4"; the resource fallback is for
+  // running straight out of a build tree (no installed theme icon yet) or
+  // when theme lookup fails for any other reason — it must be the real
+  // colour icon too, not the plain black tray glyph (clock-smaller.svg.p),
+  // otherwise an unthemed run silently shows a monochrome tray icon.
   tray_icon = QIcon::fromTheme(QStringLiteral("digitalclock4"),
-                               QIcon(":/clock/icons/tray/clock-smaller.svg.p"));
+                               QIcon(":/clock/images/app-icon.png"));
 #endif
   return tray_icon;
 }
@@ -75,6 +78,7 @@ TrayControl::TrayControl(QObject* parent) : QObject(parent)
 #endif
   tray_menu_ = new ContextMenu();
   connect(tray_menu_, &ContextMenu::VisibilityChanged, this, &TrayControl::VisibilityChanged);
+  connect(tray_menu_, &ContextMenu::AllowOverPanelsChanged, this, &TrayControl::AllowOverPanelsChanged);
   connect(tray_menu_, &ContextMenu::PositionChanged, this, &TrayControl::PositionChanged);
   connect(tray_menu_, &ContextMenu::ShowSettingsDlg, this, &TrayControl::ShowSettingsDlg);
   connect(tray_menu_, &ContextMenu::ShowAboutDlg, this, &TrayControl::ShowAboutDlg);
@@ -116,6 +120,11 @@ QSystemTrayIcon* TrayControl::GetTrayIcon() const Q_DECL_NOEXCEPT
 QAction* TrayControl::GetShowHideAction() const Q_DECL_NOEXCEPT
 {
   return tray_menu_->visibilityAction();
+}
+
+QAction* TrayControl::GetAllowOverPanelsAction() const Q_DECL_NOEXCEPT
+{
+  return tray_menu_->allowOverPanelsAction();
 }
 
 void TrayControl::TrayEventHandler(QSystemTrayIcon::ActivationReason reason)

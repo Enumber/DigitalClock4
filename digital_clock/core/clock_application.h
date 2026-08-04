@@ -59,6 +59,10 @@ private slots:
   void Reset();
   void ApplyOption(const Option opt, const QVariant& value);
 
+  // Quick tray/context-menu toggle: applies immediately and commits on its
+  // own, independent of the settings dialog's Accept()/Reject() transaction.
+  void SetAllowOverPanels(bool allow);
+
   void ShowSettingsDialog();
   void ShowAboutDialog();
 
@@ -74,6 +78,13 @@ private slots:
 private:
   void CreateWindows();
   void ConnectWindow(gui::ClockWindow* window);
+  // Reconciles clock_windows_ against the current screen list to match
+  // show_on_all; returns whether it actually changed anything. Does not call
+  // Reset() itself, so Reset() can call this directly without recursing.
+  bool ReconcileWindowsForAllMonitors(bool show_on_all);
+  // Live-toggle entry point: reconciles, then re-applies every option to the
+  // (possibly new) window list and re-syncs the tray visibility action.
+  void SyncWindowsForAllMonitors(bool show_on_all);
   void UpdatePluginWindowData();
   void ConnectTrayMessages();
 

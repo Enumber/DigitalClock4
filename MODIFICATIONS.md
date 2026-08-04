@@ -45,3 +45,33 @@ Language selection still follows `QLocale::system()`.
 - `$ORIGIN` RUNPATH for portable layout.
 - Interactive `install.sh`.
 - Documented build dependencies including `libxi-dev`.
+
+## Settings and UI (2026-08-04)
+
+- **New "Cover Panels" quick toggle**, in both the tray icon's context menu and the
+  clock window's own right-click menu (right under Position). It mirrors the existing
+  Settings → Misc checkbox, stays in sync with it in both directions, and takes effect
+  and saves immediately — no need to open Settings or restart the clock.
+- **Most options that used to require a restart now apply live**: fullscreen detection,
+  multi-workspace display, keep-always-visible, click-to-move, the Linux "better stay on
+  top" mode, showing the clock on all monitors, and the taskbar-icon toggle all take
+  effect immediately. The old "Experimental" tab is gone — the couple of settings that
+  genuinely still need a restart (see below) now carry a small note saying so, right
+  next to the checkbox, instead of one blanket warning covering everything on the tab.
+- **Single clock instance is now enforced, not a toggle** — the "allow only one
+  instance" checkbox is gone; a second launch always hands off to the already-running
+  one, same as the previous default.
+- Removed a leftover "enable autoupdate" checkbox that had been force-hidden since the
+  network update checker itself was removed (see Bug fixes below) — it did nothing and
+  contradicted the "never phones home" guarantee.
+- Tray icon: the Linux fallback icon (used when the desktop's icon theme can't resolve
+  the themed one — e.g. running straight from a build tree) is now the real colour
+  application icon instead of a plain black outline glyph.
+- About dialog: clicking the logo used to cycle through two hidden images the original
+  author left in there; that easter egg is gone, the logo now always shows the real
+  application icon. The Donate tab now says explicitly that the BTC address belongs to
+  the original author, Nick Korotysh, and that donations do not pass through or get
+  handled by ENum. The Links tab drops one dead link (`showroom.qt.io`, which now
+  redirects elsewhere), notes that the upstream SourceForge ticket tracker restricts
+  who can file new tickets, and adds a new section pointing at this fork's own GitHub
+  repository and issue tracker — previously nothing in the dialog linked back here.

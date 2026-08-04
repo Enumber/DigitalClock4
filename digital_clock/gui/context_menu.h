@@ -37,9 +37,11 @@ public:
 
   QMenu* menu() const Q_DECL_NOEXCEPT { return menu_; }
   QAction* visibilityAction() const Q_DECL_NOEXCEPT { return visibility_action_; }
+  QAction* allowOverPanelsAction() const Q_DECL_NOEXCEPT { return allow_over_panels_action_; }
 
 signals:
   void VisibilityChanged(bool visible);
+  void AllowOverPanelsChanged(bool allow);
   void PositionChanged(Qt::Alignment pos);
   void ShowSettingsDlg();
   void ShowAboutDlg();
@@ -48,6 +50,7 @@ signals:
 private:
   QMenu* menu_;
   QAction* visibility_action_;
+  QAction* allow_over_panels_action_;
 };
 
 } // namespace gui

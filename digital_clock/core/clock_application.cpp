@@ -92,6 +92,7 @@ ClockApplication::ClockApplication(ClockSettings* config, QObject* parent) :
   connect(tray_control_, &gui::TrayControl::ShowSettingsDlg, this, &ClockApplication::ShowSettingsDialog);
   connect(tray_control_, &gui::TrayControl::ShowAboutDlg, this, &ClockApplication::ShowAboutDialog);
   connect(tray_control_, &gui::TrayControl::AppExit, qApp, &QApplication::quit);
+  connect(tray_control_, &gui::TrayControl::AllowOverPanelsChanged, this, &ClockApplication::SetAllowOverPanels);
 
   mouse_tracker_ = new MouseTracker(this);
   mouse_tracker_->start();
@@ -136,6 +137,14 @@ void ClockApplication::UpdateVisibilityAction()
 
 void ClockApplication::Reset()
 {
+  // Must run before anything below pushes options to clock_windows_: Reset()
+  // is also what runs when the settings dialog is cancelled (via
+  // ClockSettings::rejected), and OPT_SHOW_ON_ALL_MONITORS has no ApplyOption
+  // case of its own that the loops below could reach — without this line,
+  // cancelling right after toggling it live would leave the window count out
+  // of sync with the reverted config value until the next restart.
+  ReconcileWindowsForAllMonitors(app_config_->GetValue(OPT_SHOW_ON_ALL_MONITORS).toBool());
+
   // widnow settings
   ApplyOption(OPT_OPACITY, app_config_->GetValue(OPT_OPACITY));
   ApplyOption(OPT_FULLSCREEN_DETECT, app_config_->GetValue(OPT_FULLSCREEN_DETECT));
@@ -144,6 +153,7 @@ void ClockApplication::Reset()
   ApplyOption(OPT_ALLOW_OVER_PANELS, app_config_->GetValue(OPT_ALLOW_OVER_PANELS));
   ApplyOption(OPT_STAY_ON_TOP, app_config_->GetValue(OPT_STAY_ON_TOP));
   ApplyOption(OPT_TRANSP_FOR_INPUT, app_config_->GetValue(OPT_TRANSP_FOR_INPUT));
+  ApplyOption(OPT_SHOW_TASKBAR_ICON, app_config_->GetValue(OPT_SHOW_TASKBAR_ICON));
   ApplyOption(OPT_ALIGNMENT, app_config_->GetValue(OPT_ALIGNMENT));
   ApplyOption(OPT_BACKGROUND_COLOR, app_config_->GetValue(OPT_BACKGROUND_COLOR));
   ApplyOption(OPT_BACKGROUND_ENABLED, app_config_->GetValue(OPT_BACKGROUND_ENABLED));
@@ -207,14 +217,33 @@ void ClockApplication::ApplyOption(const Option opt, const QVariant& value)
       timer_.start(value.toInt());
       break;
 
+    case OPT_SHOW_ON_ALL_MONITORS:
+      // Creating/destroying windows is not something an individual ClockWindow
+      // can do to itself, so this one is handled entirely here instead of
+      // being forwarded through the default case below.
+      SyncWindowsForAllMonitors(value.toBool());
+      break;
+
     case OPT_SHOW_HIDE_ENABLED:
       tray_control_->GetShowHideAction()->setVisible(value.toBool());
+      Q_FALLTHROUGH();
+      // fallthrough
+
+    case OPT_ALLOW_OVER_PANELS:
+      tray_control_->GetAllowOverPanelsAction()->setChecked(value.toBool());
       Q_FALLTHROUGH();
       // fallthrough
 
     default:
       for (auto w : qAsConst(clock_windows_)) w->ApplyOption(opt, value);
   }
+}
+
+void ClockApplication::SetAllowOverPanels(bool allow)
+{
+  app_config_->SetValue(OPT_ALLOW_OVER_PANELS, allow);
+  app_config_->CommitValue(OPT_ALLOW_OVER_PANELS);
+  ApplyOption(OPT_ALLOW_OVER_PANELS, allow);
 }
 
 void ClockApplication::ShowSettingsDialog()
@@ -310,6 +339,58 @@ void ClockApplication::OnScreenRemoved(QScreen* screen)
   } else {
     window->RestoreOnScreen(fallback, fallback_position, removed_geometry);
   }
+  UpdateVisibilityAction();
+}
+
+bool ClockApplication::ReconcileWindowsForAllMonitors(bool show_on_all)
+{
+  bool changed = false;
+
+  if (show_on_all) {
+    for (QScreen* screen : QGuiApplication::screens()) {
+      const QString id = gui::ClockWindow::ScreenId(screen);
+      const bool exists = std::any_of(clock_windows_.cbegin(), clock_windows_.cend(),
+                                      [&id] (gui::ClockWindow* window) {
+        return window->targetScreenId() == id;
+      });
+      if (exists) continue;
+
+      gui::ClockWindow* window = new gui::ClockWindow(app_config_, screen,
+                                                       next_legacy_window_id_++);
+      clock_windows_.append(window);
+      ConnectWindow(window);
+      window->LoadState();
+      changed = true;
+    }
+  } else if (clock_windows_.size() > 1) {
+    // Keep the window on the user's preferred screen if it is one of the
+    // current windows; otherwise keep whichever window happens to be first
+    // rather than risk deleting every window if that id is stale.
+    const auto keep_iter = std::find_if(clock_windows_.cbegin(), clock_windows_.cend(),
+                                        [this] (gui::ClockWindow* window) {
+      return window->targetScreenId() == preferred_screen_id_;
+    });
+    gui::ClockWindow* keep = (keep_iter != clock_windows_.cend()) ? *keep_iter : clock_windows_.first();
+    for (auto iter = clock_windows_.begin(); iter != clock_windows_.end();) {
+      if (*iter == keep) { ++iter; continue; }
+      gui::ClockWindow* window = *iter;
+      iter = clock_windows_.erase(iter);
+      window->deleteLater();
+      changed = true;
+    }
+  }
+
+  if (changed) UpdatePluginWindowData();
+  return changed;
+}
+
+void ClockApplication::SyncWindowsForAllMonitors(bool show_on_all)
+{
+  if (!ReconcileWindowsForAllMonitors(show_on_all)) return;
+  // Loaded plugins may retain per-window objects/pointers, and freshly added
+  // windows still need every current option applied — reinitialize against
+  // the now-final window list (mirrors OnScreenAdded()/OnScreenRemoved()).
+  Reset();
   UpdateVisibilityAction();
 }
 
@@ -419,6 +500,8 @@ void ClockApplication::ConnectWindow(gui::ClockWindow* window)
           skin_manager_, &SkinManager::SetSeparators);
   connect(window->contextMenu(), &gui::ContextMenu::VisibilityChanged,
           this, &ClockApplication::UpdateVisibilityAction);
+  connect(window->contextMenu(), &gui::ContextMenu::AllowOverPanelsChanged,
+          this, &ClockApplication::SetAllowOverPanels);
   connect(window->contextMenu(), &gui::ContextMenu::ShowSettingsDlg,
           this, &ClockApplication::ShowSettingsDialog);
   connect(window->contextMenu(), &gui::ContextMenu::ShowAboutDlg,
