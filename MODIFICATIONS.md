@@ -75,3 +75,30 @@ Language selection still follows `QLocale::system()`.
   redirects elsewhere), notes that the upstream SourceForge ticket tracker restricts
   who can file new tickets, and adds a new section pointing at this fork's own GitHub
   repository and issue tracker — previously nothing in the dialog linked back here.
+
+## Installer merged into a single file; fork now has its own version number (2026-08-05)
+
+- **`install.sh` + `enum-gui-ask.py` merged into one file.** The GUI (Gtk3) code used
+  to live in a sibling `enum-gui-ask.py` shipped next to `install.sh`; it is now
+  embedded directly inside `install.sh` as a heredoc and written to a private
+  `mktemp -d` directory right before each dialog is shown, then deleted. Trimmed to
+  only the four dialog modes this installer actually drives (install/uninstall/list/
+  info) — the multi-app picker mode from the shared template never applied here (this
+  installer only ever handles this one program) and was dropped rather than carried
+  along as dead code. Behaviour is unchanged; verified with real, simulated mouse
+  clicks (not just direct widget calls) through the full X11 event path.
+- **Installer window/taskbar icon** now matches ENum Setup's own icon (same
+  `GLib.set_prgname("enum-setup")`, same SVG artwork embedded alongside the GUI code)
+  instead of the generic system icon — visually this installer now reads as part of
+  the same ENum Setup family. Opening this installer while ENum Setup (or another
+  ENum installer) is already open switches you to that window instead of showing a
+  second one, via the single-instance lock the two already share; unaffected by this
+  change, just confirmed still correct with the merged file.
+- **New `digital_clock/core/fork_version.h`**, `DIGITALCLOCK4_FORK_VERSION = "1.0"` —
+  this fork previously had no version number of its own at all; the only version
+  string anywhere (`QApplication::setApplicationVersion("4.7.9")` in `main.cpp`) is
+  upstream's, frozen at whatever it was when this fork branched off, and does not
+  reflect any of the fork-side history in this document. `1.0` is the starting point
+  for this fork's own line, tracked independently from here on (bump this file +
+  tag releases to match, same convention as the other ENum forks that already have
+  one). `install.sh --enum-version` now reports it instead of always returning empty.

@@ -65,6 +65,7 @@ HEADERS += \
     platform/autostart.h \
     core/build_date.h \
     core/build_defs.h \
+    core/fork_version.h \
     core/clock_application.h \
     core/clock_settings.h \
     core/clock_state.h \

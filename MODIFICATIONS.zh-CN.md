@@ -46,3 +46,27 @@ GPL-3.0-or-later）的 **Linux 向维护版**。上游曾支持 Linux，但从�
   了一个已经失效跳转到无关页面的死链接（`showroom.qt.io`），给上游 SourceForge
   的工单链接加了"已限制创建工单"的说明，并新增了一个指向本 fork 自己 GitHub
   仓库主页和 issue 列表的分组——之前这个对话框完全没有指向本仓库的入口。
+
+## 安装器合并成单文件；这个 fork 有了自己的版本号（2026-08-05）
+
+- **`install.sh` + `enum-gui-ask.py` 合并成一个文件。** 原来 GUI（Gtk3）代码
+  在跟 `install.sh` 并排的 `enum-gui-ask.py` 里；现在直接以 heredoc 形式内嵌
+  进 `install.sh`，每次要弹窗前才落进一个私有的 `mktemp -d` 临时目录，用完
+  立刻删掉。顺手精简到只保留这个安装器真正会用到的四种对话框模式
+  （install/uninstall/list/info）——共用模板里的多应用选择器模式在这里从
+  没被用过（这个安装器只装这一个程序），没有当死代码继续带着，直接删掉了。
+  行为没变；用真实的模拟鼠标点击（不是直接调控件 API，走完整 X11 事件路径）
+  验证过。
+- **安装器窗口/任务栏图标**现在跟 ENum Setup 自己的图标一致了（同一个
+  `GLib.set_prgname("enum-setup")`，同一份 SVG 图标跟 GUI 代码一起内嵌），
+  不再是通用的系统图标——视觉上这个安装器现在看起来就是 ENum Setup 家族的
+  一部分。ENum Setup（或另一个 ENum 安装器）已经开着的时候再打开这个安装器，
+  会直接切到那个已有窗口而不是弹出第二个——这靠的是两边本来就共用的单实例锁，
+  这次改动没有动它，只是确认合并成单文件之后依然正确。
+- **新增 `digital_clock/core/fork_version.h`**，`DIGITALCLOCK4_FORK_VERSION =
+  "1.0"`——这个 fork 之前完全没有自己的版本号，唯一存在的版本字符串
+  （`main.cpp` 里 `QApplication::setApplicationVersion("4.7.9")`）是上游的，
+  停留在这个 fork 分出来那一刻的值，不会跟着这份文档记录的 fork 侧改动走。
+  `1.0` 是这个 fork 自己版本线的起点，从这里开始独立维护（以后发新版改这
+  一行 + 打同名 tag，跟其他已经有版本号的 ENum fork 是同一套约定）。
+  `install.sh --enum-version` 现在会真的报出这个号，不再永远返回空。

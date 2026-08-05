@@ -26,12 +26,22 @@
 # ============================================================================
 set -e
 
-# ── --enum-version：只给 EnumSetup 内部用。这个 fork 没有可靠、专属于本 fork
-# 的版本号来源（见项目笔记：上游遗留版本号不随 fork 改动而变），如实返回空，
-# 不瞎猜、不冒充有版本追踪能力。不联网、不动锁，用完立刻退出。
+# ── --enum-version：只给 EnumSetup 内部用，探测某个目录里这份程序的版本号，
+# 不联网、不动锁、不问任何问题，用完立刻退出。必须在其它一切之前处理掉，
+# 且不能依赖后面才定义的 SRC——这里自己算一次目录。
+# 版本号来源是 digital_clock/core/fork_version.h 的 DIGITALCLOCK4_FORK_VERSION
+# ——跟 main.cpp 里 QApplication::setApplicationVersion 设的上游版本（4.7.9，
+# 只在 fork 时同步过一次）是两回事，那个不代表这个 fork 自己改了多少版。
 if [ "${1:-}" = "--enum-version" ]; then
-  printf 'VERSION=\n'
-  printf 'REPO=\n'
+  _ev_dir="${2:-$(cd "$(dirname "$0")" && pwd)}"
+  _ev_version=""
+  _ev_repo=""
+  if [ -f "$_ev_dir/digital_clock/core/fork_version.h" ]; then
+    _ev_version="$(sed -n 's/^const char DIGITALCLOCK4_FORK_VERSION\[\] = "\([^"]*\)".*/\1/p' "$_ev_dir/digital_clock/core/fork_version.h" 2>/dev/null | head -n1)"
+    _ev_repo="$(sed -n 's#^const char DIGITALCLOCK4_FORK_API_LATEST\[\] = "https://api\.github\.com/repos/\([^/]*/[^/"]*\)/releases.*#\1#p' "$_ev_dir/digital_clock/core/fork_version.h" 2>/dev/null | head -n1)"
+  fi
+  printf 'VERSION=%s\n' "$_ev_version"
+  printf 'REPO=%s\n' "$_ev_repo"
   exit 0
 fi
 
@@ -49,7 +59,8 @@ APP_WMCLASS="Digital Clock"              # 窗口 WM_CLASS 的 Class 段（实�
 APP_NAME="Digital Clock 4"               # 菜单/桌面显示名称（固定英文，不跟随语言）
 APP_COMMENT="Customizable desktop clock with skins and plugins"
 APP_COMMENT_ZH="可换皮肤、带插件的桌面时钟"
-APP_ICON="clock-icon.png"                # 便携目录里的图标（真·Digital Clock 4 图标）
+APP_ICON="clock-icon.png"                # 便携目录里的图标（真·Digital Clock 4 图标，用于「程序列表」）
+APP_ICON_RAINBOW="clock-icon-rainbow.png" # 彩虹色盘图标，用于桌面快捷方式+托盘（跟程序列表分开）
 EXEC_REL="digital_clock"                 # 便携目录里的主程序
 EXEC_ARGS=""
 RUN_IN_TERMINAL="false"
@@ -213,23 +224,365 @@ done
 
 SRC="$(cd "$(dirname "$0")" && pwd)"
 
+# ── 图形界面：单文件安装器，GUI 代码内嵌在这个脚本里（不再是并排的
+# enum-gui-ask.py），运行时落一份临时文件再用 python3 跑。内嵌的是这个安装器
+# 专属的精简版：只有 install/uninstall/list/info 四种对话框，装的也只有
+# Digital Clock 4 这一个应用——不带 EnumSetup 那个多应用选择器（那个装几十个
+# 应用的场景跟这里完全不沾边，带着只会误导）。视觉上跟 ENum Setup 统一：
+# 同一个 GLib.set_prgname("enum-setup")（任务栏/窗口图标靠它跟 ENum Setup
+# 共用 WM_CLASS，两边窗口互认，见下面 enum_activate_running_instance 的锁
+# 逻辑）+ 同一份 enum-setup.svg 图标。
+_ENUM_GUI_PY="$(cat <<'ENUM_GUI_PY_EOF'
+#!/usr/bin/env python3
+"""ENum installer/uninstaller GUI (Gtk3), embedded single-app edition.
+
+Prints KEY=value lines for bash to eval. Only the modes this installer
+actually drives are here (install/uninstall/list/info) -- no multi-app
+picker, this installer only ever handles this one app.
+
+Modes (argv[1]):
+  install   -- location + option checkboxes
+  uninstall -- confirm + optional keep-config
+  list      -- single-choice list (title, text, then choices as remaining args)
+  info      -- info dialog; always exit 0
+"""
+from __future__ import annotations
+
+import os
+import sys
+
+import gi
+
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GLib  # noqa: E402
+
+
+def ui_lang() -> str:
+    loc = os.environ.get("LC_ALL") or os.environ.get("LC_MESSAGES") or os.environ.get("LANG") or ""
+    return "zh" if loc.lower().startswith("zh") else "en"
+
+
+def T(zh: str, en: str) -> str:
+    return zh if ui_lang() == "zh" else en
+
+
+def emit(**kwargs) -> None:
+    """Print KEY=value lines for the installer shell to parse (never eval).
+
+    Values are written literally after the first ``=``. The companion shell
+    helper assigns ``${line#*=}`` wholesale -- do not shell-quote here, or the
+    quotes become part of the path.
+    """
+    for k, v in kwargs.items():
+        text = str(v).replace(chr(13), " ").replace(chr(10), " ")
+        print(f"{k}={text}")
+
+
+def dialog_install(app_name: str, ask_autostart: bool, ask_auto_update: bool) -> int:
+    win = Gtk.Window(title=T(f"安装 {app_name}", f"Install {app_name}"))
+    win.set_default_size(480, 360)
+    win.set_border_width(14)
+    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+    win.add(box)
+    box.pack_start(
+        Gtk.Label(
+            label=T(
+                "程序默认装到 ~/.local/share/enum/，配置在 ~/.config（分开存放）。",
+                "Programs go under ~/.local/share/enum/; config stays in ~/.config.",
+            ),
+            wrap=True,
+            xalign=0,
+        ),
+        False,
+        False,
+        0,
+    )
+
+    box.pack_start(Gtk.Label(label=T("安装位置", "Install location"), xalign=0), False, False, 0)
+    loc_store = [
+        ("user", T("用户目录 ~/.local/share/enum（默认）", "User ~/.local/share/enum (default)")),
+        ("custom", T("自定义路径", "Custom path")),
+        ("system", T("系统 /opt/enum（需管理员）", "System /opt/enum (admin)")),
+        ("inplace", T("开发树原地（不复制）", "In-place from source (no copy)")),
+    ]
+    radios = []
+    group = None
+    for key, label in loc_store:
+        r = Gtk.RadioButton.new_with_label_from_widget(group, label)
+        if group is None:
+            group = r
+        r._enum_key = key  # type: ignore[attr-defined]
+        radios.append(r)
+        box.pack_start(r, False, False, 0)
+
+    path_entry = Gtk.Entry()
+    path_entry.set_placeholder_text(T("自定义安装根路径…", "Custom install root…"))
+    path_entry.set_sensitive(False)
+    box.pack_start(path_entry, False, False, 0)
+
+    def on_loc_toggled(btn):
+        if btn.get_active():
+            path_entry.set_sensitive(btn._enum_key == "custom")  # type: ignore[attr-defined]
+
+    for r in radios:
+        r.connect("toggled", on_loc_toggled)
+
+    chk_desk = Gtk.CheckButton(label=T("在桌面放图标", "Desktop icon"))
+    chk_desk.set_active(True)
+    box.pack_start(chk_desk, False, False, 0)
+
+    chk_auto = Gtk.CheckButton(label=T("开机自启动", "Start at login"))
+    chk_auto.set_active(False)
+    if ask_autostart:
+        box.pack_start(chk_auto, False, False, 0)
+
+    chk_upd = Gtk.CheckButton(label=T("启动时自动检查更新", "Check for updates at startup"))
+    chk_upd.set_active(True)
+    if ask_auto_update:
+        box.pack_start(chk_upd, False, False, 0)
+
+    btn_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+    btn_row.set_halign(Gtk.Align.END)
+    box.pack_end(btn_row, False, False, 0)
+    btn_cancel = Gtk.Button(label=T("取消", "Cancel"))
+    btn_ok = Gtk.Button(label=T("安装", "Install"))
+    btn_ok.get_style_context().add_class("suggested-action")
+    btn_row.pack_start(btn_cancel, False, False, 0)
+    btn_row.pack_start(btn_ok, False, False, 0)
+
+    state = {"ok": False}
+
+    def finish(ok: bool):
+        state["ok"] = ok
+        win.destroy()
+
+    btn_cancel.connect("clicked", lambda *_: finish(False))
+    btn_ok.connect("clicked", lambda *_: finish(True))
+    win.connect("delete-event", lambda *_: (finish(False), True)[1])
+    win.connect("destroy", lambda *_: Gtk.main_quit())
+
+    win.show_all()
+    Gtk.main()
+    if not state["ok"]:
+        emit(CANCELLED=1)
+        return 1
+
+    mode = "user"
+    for r in radios:
+        if r.get_active():
+            mode = r._enum_key  # type: ignore[attr-defined]
+            break
+    prefix = path_entry.get_text().strip() if mode == "custom" else ""
+    emit(
+        CANCELLED=0,
+        MODE=("system" if mode == "system" else "user"),
+        WANT_INPLACE=(1 if mode == "inplace" else 0),
+        PREFIX=prefix,
+        WANT_DESKTOP_ICON=(1 if chk_desk.get_active() else 0),
+        WANT_AUTOSTART=(1 if (ask_autostart and chk_auto.get_active()) else 0),
+        WANT_AUTO_UPDATE=(1 if (not ask_auto_update or chk_upd.get_active()) else 0),
+    )
+    return 0
+
+
+def dialog_uninstall(app_name: str, show_keep_config: bool) -> int:
+    win = Gtk.Window(title=T(f"卸载 {app_name}", f"Uninstall {app_name}"))
+    win.set_default_size(440, 220)
+    win.set_border_width(14)
+    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+    win.add(box)
+    box.pack_start(
+        Gtk.Label(
+            label=T(
+                f"确定卸载 {app_name}？\n对外安装会删除程序与配置；开发树只移除图标。",
+                f"Uninstall {app_name}?\nRelease installs remove program+config; "
+                "dev-tree uninstall only removes icons.",
+            ),
+            wrap=True,
+            xalign=0,
+        ),
+        False,
+        False,
+        0,
+    )
+    chk_keep = Gtk.CheckButton(label=T("保留配置与数据", "Keep config and data"))
+    chk_keep.set_active(False)
+    if show_keep_config:
+        box.pack_start(chk_keep, False, False, 0)
+
+    btn_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+    btn_row.set_halign(Gtk.Align.END)
+    box.pack_end(btn_row, False, False, 0)
+    btn_cancel = Gtk.Button(label=T("取消", "Cancel"))
+    btn_ok = Gtk.Button(label=T("卸载", "Uninstall"))
+    btn_ok.get_style_context().add_class("destructive-action")
+    btn_row.pack_start(btn_cancel, False, False, 0)
+    btn_row.pack_start(btn_ok, False, False, 0)
+
+    state = {"ok": False}
+
+    def finish(ok: bool):
+        state["ok"] = ok
+        win.destroy()
+
+    btn_cancel.connect("clicked", lambda *_: finish(False))
+    btn_ok.connect("clicked", lambda *_: finish(True))
+    win.connect("delete-event", lambda *_: (finish(False), True)[1])
+    win.connect("destroy", lambda *_: Gtk.main_quit())
+    win.show_all()
+    Gtk.main()
+    if not state["ok"]:
+        emit(CANCELLED=1)
+        return 1
+    emit(CANCELLED=0, WANT_KEEP_CONFIG=(1 if chk_keep.get_active() else 0))
+    return 0
+
+
+def dialog_list(title: str, text: str, choices: list[str]) -> int:
+    """choices are 'id|label' or plain label (id=1-based index)."""
+    win = Gtk.Window(title=title)
+    win.set_default_size(420, 280)
+    win.set_border_width(14)
+    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+    win.add(box)
+    if text:
+        box.pack_start(Gtk.Label(label=text, wrap=True, xalign=0), False, False, 0)
+    radios = []
+    group = None
+    parsed = []
+    for i, c in enumerate(choices, 1):
+        if "|" in c:
+            cid, lab = c.split("|", 1)
+        else:
+            cid, lab = str(i), c
+        parsed.append((cid, lab))
+        r = Gtk.RadioButton.new_with_label_from_widget(group, lab)
+        if group is None:
+            group = r
+        r._enum_id = cid  # type: ignore[attr-defined]
+        radios.append(r)
+        box.pack_start(r, False, False, 0)
+    btn_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+    btn_row.set_halign(Gtk.Align.END)
+    box.pack_end(btn_row, False, False, 0)
+    btn_cancel = Gtk.Button(label=T("取消", "Cancel"))
+    btn_ok = Gtk.Button(label=T("确定", "OK"))
+    btn_ok.get_style_context().add_class("suggested-action")
+    btn_row.pack_start(btn_cancel, False, False, 0)
+    btn_row.pack_start(btn_ok, False, False, 0)
+    state = {"ok": False}
+
+    def finish(ok: bool):
+        state["ok"] = ok
+        win.destroy()
+
+    btn_cancel.connect("clicked", lambda *_: finish(False))
+    btn_ok.connect("clicked", lambda *_: finish(True))
+    win.connect("delete-event", lambda *_: (finish(False), True)[1])
+    win.connect("destroy", lambda *_: Gtk.main_quit())
+    win.show_all()
+    Gtk.main()
+    if not state["ok"]:
+        emit(CANCELLED=1)
+        return 1
+    chosen = parsed[0][0]
+    for r in radios:
+        if r.get_active():
+            chosen = r._enum_id  # type: ignore[attr-defined]
+            break
+    emit(CANCELLED=0, CHOICE=chosen)
+    return 0
+
+
+def dialog_info(title: str, text: str) -> int:
+    dlg = Gtk.MessageDialog(
+        message_type=Gtk.MessageType.INFO,
+        buttons=Gtk.ButtonsType.OK,
+        text=title,
+        secondary_text=text,
+    )
+    dlg.run()
+    dlg.destroy()
+    return 0
+
+
+def main() -> int:
+    if len(sys.argv) < 2:
+        print("usage: enum-gui-ask.py <mode> ...", file=sys.stderr)
+        return 2
+    mode = sys.argv[1]
+    if mode == "install":
+        app = sys.argv[2] if len(sys.argv) > 2 else "App"
+        ask_as = sys.argv[3] == "1" if len(sys.argv) > 3 else False
+        ask_upd = sys.argv[4] == "1" if len(sys.argv) > 4 else False
+        return dialog_install(app, ask_as, ask_upd)
+    if mode == "uninstall":
+        app = sys.argv[2] if len(sys.argv) > 2 else "App"
+        keep = sys.argv[3] == "1" if len(sys.argv) > 3 else True
+        return dialog_uninstall(app, keep)
+    if mode == "list":
+        title = sys.argv[2] if len(sys.argv) > 2 else "Choose"
+        text = sys.argv[3] if len(sys.argv) > 3 else ""
+        return dialog_list(title, text, sys.argv[4:])
+    if mode == "info":
+        return dialog_info(sys.argv[2] if len(sys.argv) > 2 else "", sys.argv[3] if len(sys.argv) > 3 else "")
+    print(f"unknown mode: {mode}", file=sys.stderr)
+    return 2
+
+
+if __name__ == "__main__":
+    GLib.set_prgname("enum-setup")
+    _icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "enum-setup.svg")
+    if os.path.isfile(_icon_path):
+        try:
+            Gtk.Window.set_default_icon_from_file(_icon_path)
+        except Exception:
+            pass
+    sys.exit(main())
+ENUM_GUI_PY_EOF
+)"
+
+_ENUM_GUI_SVG="$(cat <<'ENUM_GUI_SVG_EOF'
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <rect x="24" y="24" width="176" height="176" rx="36" fill="#1a2a56"/>
+  <rect x="40" y="40" width="144" height="144" rx="24" fill="#2979ff"/>
+  <rect x="54" y="64" width="34" height="34" rx="9" fill="#f5f8fc" opacity="0.92"/>
+  <rect x="97" y="64" width="34" height="34" rx="9" fill="#f5f8fc" opacity="0.62"/>
+  <rect x="140" y="64" width="34" height="34" rx="9" fill="#f5f8fc" opacity="0.38"/>
+  <circle cx="200" cy="200" r="52" fill="#f5f8fc"/>
+  <circle cx="200" cy="200" r="44" fill="#00bed6"/>
+  <path d="M200 178 L200 214 M182 198 L200 216 L218 198"
+        fill="none" stroke="#f5f8fc" stroke-width="12"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+ENUM_GUI_SVG_EOF
+)"
+
 # ── 图形界面（有 DISPLAY 时默认走 GUI；ENUM_FORCE_CLI=1 或 --cli 强制终端）──
 enum_gui_available() {
   [ "${ENUM_FORCE_CLI:-0}" = "1" ] && return 1
   [ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ] || return 1
-  [ -f "$SRC/enum-gui-ask.py" ] || return 1
   command -v python3 >/dev/null 2>&1 || return 1
   # Importing GTK is not enough — DISPLAY may be set but unusable (ssh without
   # X, stale xauth). Gtk.init_check() is the real probe.
   python3 -c "import gi; gi.require_version('Gtk','3.0'); from gi.repository import Gtk; import sys; sys.exit(0 if Gtk.init_check()[0] else 1)" 2>/dev/null
 }
 
+# GUI 代码内嵌成字符串，不再是并排的文件——每次弹窗前落进一个 mktemp -d 建的
+# 临时目录（随机名、0700 权限，不是可预测的 /tmp 路径），图标 svg 落在同一
+# 目录，用完立刻整个目录删掉。
 enum_gui_eval() {
   # Must not eval: the install-path field is free text. Spaces used to truncate
   # PREFIX; a semicolon ran as a shell command. Parse KEY=rest-of-line instead.
-  local _out _line _key
+  local _out _line _key _tmpdir _pyfile _rc
   local _keys=" CANCELLED MODE PREFIX WANT_INPLACE WANT_DESKTOP_ICON WANT_AUTOSTART WANT_AUTO_UPDATE DO_UNINSTALL KEEP_CONFIG WANT_KEEP_CONFIG APPS SELECTED CHOICE VALUE "
-  _out="$(python3 "$SRC/enum-gui-ask.py" "$@")" || return $?
+  _tmpdir="$(mktemp -d)" || return 1
+  _pyfile="$_tmpdir/enum-gui-ask.py"
+  printf '%s\n' "$_ENUM_GUI_PY" > "$_pyfile"
+  printf '%s\n' "$_ENUM_GUI_SVG" > "$_tmpdir/enum-setup.svg"
+  _out="$(python3 "$_pyfile" "$@")"; _rc=$?
+  rm -rf "$_tmpdir"
+  [ "$_rc" = "0" ] || return "$_rc"
   while IFS= read -r _line; do
     _line="${_line%$'
 '}"
@@ -521,6 +874,7 @@ if [ "$DO_UNINSTALL" = "1" ]; then
   enum_scan_remove_desktop
   command -v update-desktop-database >/dev/null 2>&1 && $SUDO update-desktop-database "$APPS_DIR" 2>/dev/null || true
   remove_icon "$APP_ID"
+  remove_icon "$APP_ID-rainbow"
   for _pair in ${EXTRA_ICONS:-}; do remove_icon "${_pair%%:*}"; done
   refresh_icon_cache
   _dev=0
@@ -608,9 +962,11 @@ if ! is_exe "$SRC/digital_clock"; then
       mkdir -p "$PAYLOAD/translations"
       cp "$_qt_tr"/qt_*.qm "$_qt_tr"/qtbase_*.qm "$PAYLOAD/translations/" 2>/dev/null || true
     fi
-    # 程序图标：原作者藏在「关于」里的彩蛋插画（按明确要求用作正式图标，
-    # 不再是 Windows exe 用的彩虹色盘 clock_icon.png——那张仍在仓库里备用）。
+    # 程序图标：原作者藏在「关于」里的彩蛋插画，只用在「程序列表」这一处身份上
+    # （按明确要求）；彩虹色盘 clock_icon.png 另外单独打包一份，专供桌面快捷
+    # 方式和托盘图标使用——这两处不该跟着「程序列表」一起变成彩蛋图。
     cp "$SRC/digital_clock/resources/images/if_clock-c_750020.png" "$PAYLOAD/clock-icon.png"
+    cp "$SRC/digital_clock/resources/images/clock_icon.png" "$PAYLOAD/clock-icon-rainbow.png"
     # 皮肤与纹理：和 Windows 版一致，程序按 <程序目录>/skins、/textures 查找
     # 连同各自的来源/授权说明一起复制——这些素材是第三方的，
     # 真正产生授权风险的是「分发」这一步，说明必须跟着发布包走。
@@ -622,10 +978,14 @@ if ! is_exe "$SRC/digital_clock"; then
     say "▶ 编译完成" "▶ Build finished"
   fi
   # 数据文件每次都重新同步：dist/ 可能是上一次构建留下的，
-  # 二进制在就跳过编译，但皮肤/纹理/说明文件可能已经更新过。
+  # 二进制在就跳过编译，但皮肤/纹理/说明文件/图标可能已经更新过。
   for _d in skins textures; do
     [ -d "$SRC/$_d" ] && { rm -rf "$PAYLOAD/$_d"; cp -r "$SRC/$_d" "$PAYLOAD/"; }
   done
+  [ -f "$SRC/digital_clock/resources/images/if_clock-c_750020.png" ] && \
+    cp "$SRC/digital_clock/resources/images/if_clock-c_750020.png" "$PAYLOAD/clock-icon.png"
+  [ -f "$SRC/digital_clock/resources/images/clock_icon.png" ] && \
+    cp "$SRC/digital_clock/resources/images/clock_icon.png" "$PAYLOAD/clock-icon-rainbow.png"
   for _f in LICENSE.txt MODIFICATIONS.md changelog.txt README.md README.zh-CN.md; do
     [ -f "$SRC/$_f" ] && cp "$SRC/$_f" "$PAYLOAD/"
   done
@@ -646,15 +1006,22 @@ fi
 if [ "$INSTALL_DIR" = "$SRC" ] && [ "$PAYLOAD" != "$SRC" ]; then
   EXEC_REL="dist/$APP_ID/digital_clock"
   APP_ICON="dist/$APP_ID/clock-icon.png"
+  APP_ICON_RAINBOW="dist/$APP_ID/clock-icon-rainbow.png"
 fi
 # 开发树兜底：只有 build/ 二进制、没有 dist/ 时也能装图标（别再写不存在的
 # digital_clock/resources/clock-icon.png —— 真文件是 images/if_clock-c_750020.png）
 # 先查 PAYLOAD 再查 INSTALL_DIR：--prefix 拷贝式安装走到这里时目标目录还没
 # 复制，只查 INSTALL_DIR 会误判成「没图标」，把 APP_ICON 换成源码树相对路径，
-# 结果图标主题装不上、.desktop 的 Icon= 是解析不了的相对路径。
+# 结果图标主题装不上、.desktop 的 Icon= 是解析不了的相对路径。彩虹图标同理，
+# 直接落回源码树里的 clock_icon.png（不需要单独打包一份）。
 if [ ! -f "$PAYLOAD/$APP_ICON" ] && [ ! -f "$INSTALL_DIR/$APP_ICON" ]; then
   if [ -f "$SRC/digital_clock/resources/images/if_clock-c_750020.png" ]; then
     APP_ICON="digital_clock/resources/images/if_clock-c_750020.png"
+  fi
+fi
+if [ ! -f "$PAYLOAD/$APP_ICON_RAINBOW" ] && [ ! -f "$INSTALL_DIR/$APP_ICON_RAINBOW" ]; then
+  if [ -f "$SRC/digital_clock/resources/images/clock_icon.png" ]; then
+    APP_ICON_RAINBOW="digital_clock/resources/images/clock_icon.png"
   fi
 fi
 if [ "$INSTALL_DIR" = "$SRC" ] && ! is_exe "$INSTALL_DIR/$EXEC_REL"; then
@@ -701,37 +1068,45 @@ $SUDO chmod +x "$RUN_DIR/$EXEC_REL" 2>/dev/null || true
 # ── 把图标装进图标主题 ──────────────────────────────────────────────────────
 # 托盘图标必须走这条路：StatusNotifierItem 的 IconName 属性是按图标主题查名字的，
 # 给绝对路径的话 indicator-application（Ubuntu/GNOME）解析不了——托盘项注册成功
-# 但永远画不出来。装进 hicolor 后程序用 QIcon::fromTheme("digitalclock4") 取用。
-ICON_VALUE="$APP_ICON"
-if [ -f "$RUN_DIR/$APP_ICON" ]; then
-  if [ "$MODE" = "system" ]; then ICON_THEME_DIR="/usr/share/icons/hicolor"
-  else ICON_THEME_DIR="${XDG_DATA_HOME:-$DESK_HOME/.local/share}/icons/hicolor"; fi
-  _installed_theme_icon=0
+# 但永远画不出来。装进 hicolor 后程序按主题名取用。
+#
+# install_theme_icon <源文件（相对RUN_DIR）> <主题图标名>
+# 成功则把结果放进 $_THEME_ICON_RESULT（主题名，可直接写进 .desktop 的 Icon=），
+# 失败（没装进主题）则放绝对路径兜底。装两份不同身份的图标（程序列表用彩蛋、
+# 桌面快捷方式+托盘用彩虹），因为 GNOME 的 StatusNotifierItem host 和 .desktop
+# 的 Icon= 都是按图标名查找的，两个身份必须是两个不同的主题名，不能共用一个。
+install_theme_icon() {
+  local _src_rel="$1" _theme_name="$2"
+  _THEME_ICON_RESULT="$_src_rel"
+  [ -f "$RUN_DIR/$_src_rel" ] || return
+  if [ "$MODE" = "system" ]; then local _theme_dir="/usr/share/icons/hicolor"
+  else local _theme_dir="${XDG_DATA_HOME:-$DESK_HOME/.local/share}/icons/hicolor"; fi
+  local _installed=0
   for _sz in 256 128 64 48 32 24 16; do
-    _d="$ICON_THEME_DIR/${_sz}x${_sz}/apps"
+    local _d="$_theme_dir/${_sz}x${_sz}/apps"
     as_desk_user mkdir -p "$_d" 2>/dev/null || $SUDO mkdir -p "$_d" 2>/dev/null || continue
     if command -v convert >/dev/null 2>&1; then
       # mktemp（而不是可预测的 /tmp 固定名）：固定名可被本地其他用户先放一个
       # 符号链接，convert 会顺着链接写到别处去。
-      _tmpicon="$(mktemp --suffix=.png)"
-      convert "$RUN_DIR/$APP_ICON" -resize ${_sz}x${_sz} "$_tmpicon" 2>/dev/null \
+      local _tmpicon="$(mktemp --suffix=.png)"
+      convert "$RUN_DIR/$_src_rel" -resize ${_sz}x${_sz} "$_tmpicon" 2>/dev/null \
         && chmod 644 "$_tmpicon" 2>/dev/null \
-        && { as_desk_user cp "$_tmpicon" "$_d/$APP_ID.png" 2>/dev/null \
-             || $SUDO cp "$_tmpicon" "$_d/$APP_ID.png" 2>/dev/null; } \
-        && _installed_theme_icon=1
+        && { as_desk_user cp "$_tmpicon" "$_d/$_theme_name.png" 2>/dev/null \
+             || $SUDO cp "$_tmpicon" "$_d/$_theme_name.png" 2>/dev/null; } \
+        && _installed=1
       rm -f "$_tmpicon"
     elif [ "$_sz" = "256" ]; then
       # 没有 convert 就只放原图到 256 档
-      { as_desk_user cp "$RUN_DIR/$APP_ICON" "$_d/$APP_ID.png" 2>/dev/null \
-        || $SUDO cp "$RUN_DIR/$APP_ICON" "$_d/$APP_ID.png" 2>/dev/null; } && _installed_theme_icon=1
+      { as_desk_user cp "$RUN_DIR/$_src_rel" "$_d/$_theme_name.png" 2>/dev/null \
+        || $SUDO cp "$RUN_DIR/$_src_rel" "$_d/$_theme_name.png" 2>/dev/null; } && _installed=1
     fi
   done
-  if [ "$_installed_theme_icon" = "1" ]; then
+  if [ "$_installed" = "1" ]; then
     # 一个图标主题目录必须有 index.theme 才算合法主题，否则部分消费方
     # （包括 GNOME Shell 的托盘扩展）会直接跳过整个目录——表现就是
     # D-Bus 上图标名一切正常，屏幕上却什么都不显示。
-    if [ ! -f "$ICON_THEME_DIR/index.theme" ]; then
-      _idx="$(mktemp)"
+    if [ ! -f "$_theme_dir/index.theme" ]; then
+      local _idx="$(mktemp)"
       cat > "$_idx" <<'IDXEOF'
 [Icon Theme]
 Name=Hicolor
@@ -743,19 +1118,27 @@ IDXEOF
         printf '\n[%sx%s/apps]\nSize=%s\nContext=Applications\nType=Threshold\n' "$_s" "$_s" "$_s" >> "$_idx"
       done
       chmod 644 "$_idx" 2>/dev/null || true   # mktemp 默认 0600，cp 到系统主题目录后别人会读不到
-      as_desk_user cp "$_idx" "$ICON_THEME_DIR/index.theme" 2>/dev/null \
-        || $SUDO cp "$_idx" "$ICON_THEME_DIR/index.theme" 2>/dev/null || true
+      as_desk_user cp "$_idx" "$_theme_dir/index.theme" 2>/dev/null \
+        || $SUDO cp "$_idx" "$_theme_dir/index.theme" 2>/dev/null || true
       rm -f "$_idx"
     fi
     command -v gtk-update-icon-cache >/dev/null 2>&1 && \
-      { as_desk_user gtk-update-icon-cache -f -t "$ICON_THEME_DIR" 2>/dev/null \
-        || $SUDO gtk-update-icon-cache -f -t "$ICON_THEME_DIR" 2>/dev/null; } || true
-    ICON_VALUE="$APP_ID"          # .desktop 也用主题名，比绝对路径更规范
-    say "▶ 图标已装入图标主题（托盘图标依赖这一步）" "▶ Icon installed into the icon theme (the tray icon depends on this)"
+      { as_desk_user gtk-update-icon-cache -f -t "$_theme_dir" 2>/dev/null \
+        || $SUDO gtk-update-icon-cache -f -t "$_theme_dir" 2>/dev/null; } || true
+    _THEME_ICON_RESULT="$_theme_name"   # .desktop 也用主题名，比绝对路径更规范
   else
-    ICON_VALUE="$RUN_DIR/$APP_ICON"
+    _THEME_ICON_RESULT="$RUN_DIR/$_src_rel"
   fi
-fi
+}
+
+install_theme_icon "$APP_ICON" "$APP_ID"
+ICON_VALUE="$_THEME_ICON_RESULT"
+[ "$ICON_VALUE" = "$APP_ID" ] && \
+  say "▶ 图标已装入图标主题（程序列表/关于对话框用的彩蛋图，托盘图标依赖这一步的机制）" \
+      "▶ Icon installed into the icon theme (app list; the tray icon relies on this same mechanism)"
+
+install_theme_icon "$APP_ICON_RAINBOW" "$APP_ID-rainbow"
+ICON_VALUE_RAINBOW="$_THEME_ICON_RESULT"
 
 EXEC_LINE="\"$RUN_DIR/$EXEC_REL\""
 [ -n "$EXEC_ARGS" ] && EXEC_LINE="$EXEC_LINE $EXEC_ARGS"
@@ -763,9 +1146,10 @@ EXEC_LINE="\"$RUN_DIR/$EXEC_REL\""
 # ── 项目自定义安装钩子 ──────────────────────────────────────────────────────
 CUSTOMIZE_HOOK
 
-# make_desktop [额外Exec参数]
+# make_desktop [额外Exec参数] [图标覆盖，默认 $ICON_VALUE]
 make_desktop() {
 local extra="${1:-}"
+local icon="${2:-$ICON_VALUE}"
 local exec_line="$EXEC_LINE"
 [ -n "$extra" ] && exec_line="$exec_line $extra"
 cat <<EOF
@@ -780,7 +1164,7 @@ EOF
 [ -n "$APP_COMMENT_ZH" ] && printf 'Comment[zh_CN]=%s\nComment[zh_TW]=%s\n' "$APP_COMMENT_ZH" "$APP_COMMENT_ZH"
 cat <<EOF
 Exec=$exec_line
-Icon=$ICON_VALUE
+Icon=$icon
 Terminal=$RUN_IN_TERMINAL
 Categories=$CATEGORIES
 StartupNotify=false
@@ -796,10 +1180,12 @@ command -v update-desktop-database >/dev/null 2>&1 && $SUDO update-desktop-datab
 say "▶ 已添加到应用程序列表" "▶ Added to the application menu"
 
 # ── 写到【桌面】并标记为「已允许运行」──────────────────────────────────────
+# 桌面快捷方式用彩虹图标，不跟「程序列表」共用彩蛋图——两者是各自独立的
+# .desktop 文件，图标身份可以分开指定。
 if [ "$WANT_DESKTOP_ICON" = "1" ]; then
   as_desk_user mkdir -p "$DESKTOP_DIR"
   DESKTOP_FILE="$DESKTOP_DIR/$APP_ID.desktop"
-  make_desktop | as_desk_user tee "$DESKTOP_FILE" >/dev/null
+  make_desktop "" "$ICON_VALUE_RAINBOW" | as_desk_user tee "$DESKTOP_FILE" >/dev/null
   as_desk_user chmod +x "$DESKTOP_FILE"
   # GNOME/Nautilus 下标记可信，双击直接运行不弹「允许启动」确认。
   as_desk_user gio set "$DESKTOP_FILE" metadata::trusted true 2>/dev/null || true
