@@ -26,7 +26,21 @@
 # ============================================================================
 set -e
 
-CONFIG_PATHS="$HOME/.config/DigitalClock4 $HOME/.config/digitalclock4"
+# ── --enum-version：只给 EnumSetup 内部用。这个 fork 没有可靠、专属于本 fork
+# 的版本号来源（见项目笔记：上游遗留版本号不随 fork 改动而变），如实返回空，
+# 不瞎猜、不冒充有版本追踪能力。不联网、不动锁，用完立刻退出。
+if [ "${1:-}" = "--enum-version" ]; then
+  printf 'VERSION=\n'
+  printf 'REPO=\n'
+  exit 0
+fi
+
+# 程序真实配置在 ~/.config/Nick Korotysh/Digital Clock.conf（Qt 的
+# organizationName 是上游作者名，含空格）——所以这个列表用换行分隔、
+# 卸载循环里用换行 IFS，空格路径才不会被拆碎。后两个目录是历史猜测值，保留兜底。
+CONFIG_PATHS="$HOME/.config/Nick Korotysh/Digital Clock.conf
+$HOME/.config/DigitalClock4
+$HOME/.config/digitalclock4"
 DATA_PATHS=""
 
 # ── 配置区（换项目时只改这里）───────────────────────────────────────────────
@@ -179,7 +193,10 @@ WANT_INPLACE="0"
 while [ $# -gt 0 ]; do
   case "$1" in
     --system) MODE="system" ;;
-    --prefix) PREFIX="$2"; shift ;;
+    --prefix)
+      # 作为最后一个参数出现时 $2 不存在，set -e 会让脚本无提示退出——先查再取
+      [ $# -ge 2 ] || { say "--prefix 需要一个目录参数（--help 查看用法）" "--prefix needs a directory argument (see --help)"; exit 1; }
+      PREFIX="$2"; shift ;;
     --prefix=*) PREFIX="${1#*=}" ;;
     --no-desktop-icon) WANT_DESKTOP_ICON="0" ;;
     --autostart) WANT_AUTOSTART="1" ;;
@@ -214,7 +231,8 @@ enum_gui_eval() {
   local _keys=" CANCELLED MODE PREFIX WANT_INPLACE WANT_DESKTOP_ICON WANT_AUTOSTART WANT_AUTO_UPDATE DO_UNINSTALL KEEP_CONFIG WANT_KEEP_CONFIG APPS SELECTED CHOICE VALUE "
   _out="$(python3 "$SRC/enum-gui-ask.py" "$@")" || return $?
   while IFS= read -r _line; do
-    _line="${_line%$''}"
+    _line="${_line%$'
+'}"
     case "$_line" in *=*) ;; *) continue ;; esac
     _key="${_line%%=*}"
     case "$_key" in ''|*[!A-Za-z0-9_]*) continue ;; esac
@@ -229,15 +247,87 @@ enum_gui_eval() {
 # ── ENum Setup 单实例锁（与 EnumSetup / 各 install.sh 共用）────────────────
 _ENUM_LOCK_DIR="${XDG_RUNTIME_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/enum}"
 _ENUM_LOCK_FILE="$_ENUM_LOCK_DIR/enum-setup-${UID:-$(id -u)}.lock"
+# 锁被别人占着时，别只甩一句「自己去找那个窗口关掉」——试着直接把它拉到前台。
+# 所有 enum-gui-ask.py（EnumSetup 那份 + 各应用自己这份）都用同一个
+# GLib.set_prgname "enum-setup"，不管当前弹的是总安装中心还是这个应用自己的
+# 对话框，WM_CLASS 都一样，靠它找、不用管标题文字。wmctrl/xdotool 都是可选的
+# X11 工具，两个都没有或者压根没找到窗口（比如另一个实例是纯终端问答，没有
+# 窗口）就照旧退回文字提示。
+enum_activate_running_instance() {
+  [ -n "${DISPLAY:-}" ] || return 1
+  if command -v wmctrl >/dev/null 2>&1; then
+    wmctrl -x -a enum-setup 2>/dev/null && return 0
+  fi
+  if command -v xdotool >/dev/null 2>&1; then
+    xdotool search --class enum-setup windowactivate 2>/dev/null && return 0
+  fi
+  return 1
+}
+# run_one() 真开始装一个应用时一定会多出一个 bash 子进程（bash "$app/install.sh"
+# ...）——这是"已经在装"和"还停在选择界面"之间唯一靠谱的分界。GUI 选择器本身
+# 是 python 不是 bash；纯终端问答连子进程都没有。查不清楚（没有 ps）就当作
+# "不确定"，什么都不做，宁可不动手也不能误杀真在干活的实例。
+enum_lock_holder_is_idle() {
+  local pids="$1" p line
+  command -v ps >/dev/null 2>&1 || return 1
+  for p in $pids; do
+    while IFS= read -r line; do
+      [ -n "$line" ] || continue
+      case "$line" in *bash*|*/sh|sh) return 1 ;; esac
+    done < <(ps -o comm= --ppid "$p" 2>/dev/null)
+  done
+  return 0
+}
+
+# 拉不到窗口的最后一步：确认对方真的没在干活（见上）才会走到这——先礼后兵，
+# TERM 给它几秒钟自己正常退出、自己放开 flock，仍不放手才 KILL。fuser/ps
+# 缺一个都直接放弃，不摸黑硬来。
+enum_reclaim_stale_lock() {
+  local pids p other_pids="" i=0
+  command -v fuser >/dev/null 2>&1 || return 1
+  command -v ps >/dev/null 2>&1 || return 1
+  pids="$(fuser "$_ENUM_LOCK_FILE" 2>/dev/null)"
+  [ -n "$pids" ] || return 1
+  # fuser 报的是"谁对这个文件开着 fd"——本进程自己刚 exec 9> 过它，也会被算
+  # 进去，绝不能把自己也 kill 掉。
+  for p in $pids; do
+    [ "$p" = "$$" ] && continue
+    other_pids="$other_pids $p"
+  done
+  [ -n "$other_pids" ] || return 1
+  enum_lock_holder_is_idle "$other_pids" || return 1
+  for p in $other_pids; do kill -TERM "$p" 2>/dev/null; done
+  while [ "$i" -lt 20 ]; do
+    flock -n 9 2>/dev/null && return 0
+    sleep 0.2
+    i=$((i + 1))
+  done
+  for p in $other_pids; do kill -KILL "$p" 2>/dev/null; done
+  sleep 0.3
+  flock -n 9 2>/dev/null
+}
+
 enum_setup_acquire_lock() {
   if [ "${ENUM_SETUP_NESTED:-0}" = "1" ]; then return 0; fi
   mkdir -p "$_ENUM_LOCK_DIR"
   exec 9>"$_ENUM_LOCK_FILE"
-  if ! flock -n 9; then
-    say "已有安装器在运行，请先关掉另一个窗口。" \
-        "Another installer is already running; close it first."
+  flock -n 9 && return 0
+
+  if enum_activate_running_instance; then
+    say "已经有一个安装器在运行，已经帮你切过去了。" \
+        "An installer is already running; switched you to that window."
     exit 1
   fi
+
+  if enum_reclaim_stale_lock && flock -n 9 2>/dev/null; then
+    say "另一个安装器实例卡住了（拉不到前台，也没有在装任何东西），已经帮你结束并接管。" \
+        "The other installer instance was stuck (no window to switch to, and it wasn't installing anything); ended it and took over."
+    return 0
+  fi
+
+  say "已有安装器在运行，请先关掉另一个窗口。" \
+      "Another installer is already running; close it first."
+  exit 1
 }
 enum_is_dev_tree() {
   case "$SRC" in
@@ -360,6 +450,27 @@ as_desk_user() {
   fi
 }
 
+# 卸载配套：把安装阶段放进图标主题的 PNG 撤掉。装的时候进的是哪个主题目录
+# 取决于当时的模式，卸载不一定带同样的参数，所以用户级、系统级两处都清。
+remove_icon() {
+  _icon_id="$1"
+  for _thd in "${XDG_DATA_HOME:-$DESK_HOME/.local/share}/icons/hicolor" /usr/share/icons/hicolor; do
+    for _sz in 256 128 64 48 32 24 16; do
+      _f="$_thd/${_sz}x${_sz}/apps/$_icon_id.png"
+      [ -e "$_f" ] || continue
+      as_desk_user rm -f "$_f" 2>/dev/null || $SUDO rm -f "$_f" 2>/dev/null || true
+    done
+  done
+}
+refresh_icon_cache() {
+  command -v gtk-update-icon-cache >/dev/null 2>&1 || return 0
+  for _thd in "${XDG_DATA_HOME:-$DESK_HOME/.local/share}/icons/hicolor" /usr/share/icons/hicolor; do
+    [ -d "$_thd" ] || continue
+    as_desk_user gtk-update-icon-cache -f -t "$_thd" 2>/dev/null \
+      || $SUDO gtk-update-icon-cache -f -t "$_thd" 2>/dev/null || true
+  done
+}
+
 if [ "$MODE" = "system" ]; then
   APPS_DIR="/usr/share/applications"
   DEFAULT_PREFIX="/opt/enum"
@@ -410,7 +521,7 @@ if [ "$DO_UNINSTALL" = "1" ]; then
   enum_scan_remove_desktop
   command -v update-desktop-database >/dev/null 2>&1 && $SUDO update-desktop-database "$APPS_DIR" 2>/dev/null || true
   remove_icon "$APP_ID"
-  for _pair in $EXTRA_ICONS; do remove_icon "${_pair%%:*}"; done
+  for _pair in ${EXTRA_ICONS:-}; do remove_icon "${_pair%%:*}"; done
   refresh_icon_cache
   _dev=0
   enum_is_dev_tree && _dev=1
@@ -423,6 +534,8 @@ if [ "$DO_UNINSTALL" = "1" ]; then
       say "已删除程序目录：$INSTALL_DIR" "Removed program directory: $INSTALL_DIR"
     fi
     if [ "${WANT_KEEP_CONFIG:-0}" != "1" ]; then
+      _oldifs="$IFS"; IFS='
+'
       for _c in $CONFIG_PATHS; do
         case "$_c" in "~"|"~/"*) _c="$HOME${_c#\~}" ;; esac
         [ -e "$_c" ] && rm -rf "$_c" && say "已删除配置：$_c" "Removed config: $_c"
@@ -431,6 +544,9 @@ if [ "$DO_UNINSTALL" = "1" ]; then
         case "$_d" in "~"|"~/"*) _d="$HOME${_d#\~}" ;; esac
         [ -e "$_d" ] && rm -rf "$_d" && say "已删除数据：$_d" "Removed data: $_d"
       done
+      IFS="$_oldifs"
+      # 组织目录是上游作者名，可能被他的其他程序共用——只在空了之后才收掉
+      rmdir "$HOME/.config/Nick Korotysh" 2>/dev/null || true
     else
       say "已按 --keep-config 保留配置与数据。" "Kept config/data per --keep-config."
     fi
@@ -492,9 +608,9 @@ if ! is_exe "$SRC/digital_clock"; then
       mkdir -p "$PAYLOAD/translations"
       cp "$_qt_tr"/qt_*.qm "$_qt_tr"/qtbase_*.qm "$PAYLOAD/translations/" 2>/dev/null || true
     fi
-    # 真·Digital Clock 4 图标（Windows 版 exe 用的那张，彩虹色盘）。
-    # 别用 images/if_clock-c_750020.png——那是作者藏在「关于」里的彩蛋插画。
-    cp "$SRC/digital_clock/resources/images/clock_icon.png" "$PAYLOAD/clock-icon.png"
+    # 程序图标：原作者藏在「关于」里的彩蛋插画（按明确要求用作正式图标，
+    # 不再是 Windows exe 用的彩虹色盘 clock_icon.png——那张仍在仓库里备用）。
+    cp "$SRC/digital_clock/resources/images/if_clock-c_750020.png" "$PAYLOAD/clock-icon.png"
     # 皮肤与纹理：和 Windows 版一致，程序按 <程序目录>/skins、/textures 查找
     # 连同各自的来源/授权说明一起复制——这些素材是第三方的，
     # 真正产生授权风险的是「分发」这一步，说明必须跟着发布包走。
@@ -532,10 +648,13 @@ if [ "$INSTALL_DIR" = "$SRC" ] && [ "$PAYLOAD" != "$SRC" ]; then
   APP_ICON="dist/$APP_ID/clock-icon.png"
 fi
 # 开发树兜底：只有 build/ 二进制、没有 dist/ 时也能装图标（别再写不存在的
-# digital_clock/resources/clock-icon.png —— 真文件是 images/clock_icon.png）
-if [ ! -f "$INSTALL_DIR/$APP_ICON" ]; then
-  if [ -f "$SRC/digital_clock/resources/images/clock_icon.png" ]; then
-    APP_ICON="digital_clock/resources/images/clock_icon.png"
+# digital_clock/resources/clock-icon.png —— 真文件是 images/if_clock-c_750020.png）
+# 先查 PAYLOAD 再查 INSTALL_DIR：--prefix 拷贝式安装走到这里时目标目录还没
+# 复制，只查 INSTALL_DIR 会误判成「没图标」，把 APP_ICON 换成源码树相对路径，
+# 结果图标主题装不上、.desktop 的 Icon= 是解析不了的相对路径。
+if [ ! -f "$PAYLOAD/$APP_ICON" ] && [ ! -f "$INSTALL_DIR/$APP_ICON" ]; then
+  if [ -f "$SRC/digital_clock/resources/images/if_clock-c_750020.png" ]; then
+    APP_ICON="digital_clock/resources/images/if_clock-c_750020.png"
   fi
 fi
 if [ "$INSTALL_DIR" = "$SRC" ] && ! is_exe "$INSTALL_DIR/$EXEC_REL"; then
@@ -623,6 +742,7 @@ IDXEOF
       for _s in 16 24 32 48 64 128 256; do
         printf '\n[%sx%s/apps]\nSize=%s\nContext=Applications\nType=Threshold\n' "$_s" "$_s" "$_s" >> "$_idx"
       done
+      chmod 644 "$_idx" 2>/dev/null || true   # mktemp 默认 0600，cp 到系统主题目录后别人会读不到
       as_desk_user cp "$_idx" "$ICON_THEME_DIR/index.theme" 2>/dev/null \
         || $SUDO cp "$_idx" "$ICON_THEME_DIR/index.theme" 2>/dev/null || true
       rm -f "$_idx"

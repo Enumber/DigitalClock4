@@ -43,18 +43,6 @@ def emit(**kwargs) -> None:
         print(f"{k}={text}")
 
 
-def run_window(win: Gtk.Window) -> int:
-    result = {"code": 1}
-
-    def on_destroy(*_a):
-        Gtk.main_quit()
-
-    win.connect("destroy", on_destroy)
-    win.show_all()
-    Gtk.main()
-    return int(result.get("code", 1)), result
-
-
 def dialog_install(app_name: str, ask_autostart: bool, ask_auto_update: bool) -> int:
     win = Gtk.Window(title=T(f"安装 {app_name}", f"Install {app_name}"))
     win.set_default_size(480, 360)
@@ -136,6 +124,9 @@ def dialog_install(app_name: str, ask_autostart: bool, ask_auto_update: bool) ->
     btn_cancel.connect("clicked", lambda *_: finish(False))
     btn_ok.connect("clicked", lambda *_: finish(True))
     win.connect("delete-event", lambda *_: (finish(False), True)[1])
+    # 没有这行 Gtk.main() 永远不会返回：destroy() 只是拆窗口，不会自己退出
+    # 主循环（GtkApplication 才会带这个，这里是手搓的 Gtk.main()，得自己接）。
+    win.connect("destroy", lambda *_: Gtk.main_quit())
 
     win.show_all()
     Gtk.main()
@@ -204,6 +195,9 @@ def dialog_uninstall(app_name: str, show_keep_config: bool) -> int:
     btn_cancel.connect("clicked", lambda *_: finish(False))
     btn_ok.connect("clicked", lambda *_: finish(True))
     win.connect("delete-event", lambda *_: (finish(False), True)[1])
+    # 没有这行 Gtk.main() 永远不会返回：destroy() 只是拆窗口，不会自己退出
+    # 主循环（GtkApplication 才会带这个，这里是手搓的 Gtk.main()，得自己接）。
+    win.connect("destroy", lambda *_: Gtk.main_quit())
     win.show_all()
     Gtk.main()
     if not state["ok"]:
@@ -291,6 +285,9 @@ def dialog_setup(apps: list[str]) -> int:
     btn_cancel.connect("clicked", lambda *_: finish(False))
     btn_ok.connect("clicked", lambda *_: finish(True))
     win.connect("delete-event", lambda *_: (finish(False), True)[1])
+    # 没有这行 Gtk.main() 永远不会返回：destroy() 只是拆窗口，不会自己退出
+    # 主循环（GtkApplication 才会带这个，这里是手搓的 Gtk.main()，得自己接）。
+    win.connect("destroy", lambda *_: Gtk.main_quit())
     win.show_all()
     Gtk.main()
     if not state["ok"]:
@@ -358,6 +355,9 @@ def dialog_list(title: str, text: str, choices: list[str]) -> int:
     btn_cancel.connect("clicked", lambda *_: finish(False))
     btn_ok.connect("clicked", lambda *_: finish(True))
     win.connect("delete-event", lambda *_: (finish(False), True)[1])
+    # 没有这行 Gtk.main() 永远不会返回：destroy() 只是拆窗口，不会自己退出
+    # 主循环（GtkApplication 才会带这个，这里是手搓的 Gtk.main()，得自己接）。
+    win.connect("destroy", lambda *_: Gtk.main_quit())
     win.show_all()
     Gtk.main()
     if not state["ok"]:
@@ -401,6 +401,9 @@ def dialog_entry(title: str, text: str, default: str = "") -> int:
     btn_ok.connect("clicked", lambda *_: finish(True))
     entry.connect("activate", lambda *_: finish(True))
     win.connect("delete-event", lambda *_: (finish(False), True)[1])
+    # 没有这行 Gtk.main() 永远不会返回：destroy() 只是拆窗口，不会自己退出
+    # 主循环（GtkApplication 才会带这个，这里是手搓的 Gtk.main()，得自己接）。
+    win.connect("destroy", lambda *_: Gtk.main_quit())
     win.show_all()
     entry.grab_focus()
     Gtk.main()
