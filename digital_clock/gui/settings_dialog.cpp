@@ -32,6 +32,7 @@
 #endif
 
 #include "skin_drawer.h"
+#include "advanced_settings_dialog.h"
 #include "settings_storage.h"
 
 #include "platform/autostart.h"
@@ -89,22 +90,14 @@ SettingsDialog::SettingsDialog(core::ClockSettings* config, core::ClockState* st
   // This fork does not check for updates: 4.7.9 is the final 4.x release and
   // upstream is archived, so there is nothing to find. The whole feature is
   // gone (see MODIFICATIONS.md), including its settings widgets.
-#if !defined(Q_OS_WIN) && !defined(Q_OS_LINUX)
-  ui->show_in_fullscreen->setVisible(false);   // needs per-platform window enumeration
-  // taskbar_icon_enable stays visible: it is implemented with the Qt::Tool
-  // window flag (clock_window.cpp), which X11 honours the same way Windows
-  // does — only the checkbox was hidden, never the feature.
-#endif
-#ifndef Q_OS_LINUX
-  ui->better_stay_on_top->setVisible(false);  // supported only on Linux
-#endif
 #if !defined(Q_OS_LINUX) && !defined(Q_OS_MACOS)
   ui->show_on_all_workspaces->setVisible(false);  // supported on Linux/Mac
 #endif
   connect(config->GetBackend(), &SettingsStorage::reloaded, this, &SettingsDialog::InitControls);
 
   InitControls();
-  resize(minimumSizeHint());
+  // Keep the original author-designed window size (the .ui's declared 613x447)
+  // instead of auto-fitting to content.
 
   connect(this, SIGNAL(accepted()), this, SLOT(SaveState()));
   connect(ui->defaults_bth, SIGNAL(clicked()), this, SIGNAL(ResetSettings()));
@@ -233,13 +226,6 @@ void SettingsDialog::InitControls()
   ui->space_slider->setValue(spacing);
   ui->space_slider->setToolTip(QString::number(spacing));
 
-
-  ui->clock_url_enabled->setChecked(config_->GetValue(OPT_CLOCK_URL_ENABLED).toBool());
-  ui->clock_url_edit->setText(config_->GetValue(OPT_CLOCK_URL_STRING).toString());
-
-  ui->show_hide_enable->setChecked(config_->GetValue(OPT_SHOW_HIDE_ENABLED).toBool());
-  ui->export_state->setChecked(config_->GetValue(OPT_EXPORT_STATE).toBool());
-
   ui->change_time_zone_cbx->setChecked(!config_->GetValue(OPT_DISPLAY_LOCAL_TIME).toBool());
   ui->time_zone_box->clear();
   for (auto& tz : QTimeZone::availableTimeZoneIds())
@@ -260,14 +246,8 @@ void SettingsDialog::InitControls()
   }
 
   // "Misc" tab (moved here from "Experimental" once verified to apply without a restart)
-  ui->show_in_fullscreen->setChecked(!config_->GetValue(OPT_FULLSCREEN_DETECT).toBool());
   ui->show_on_all_workspaces->setChecked(config_->GetValue(OPT_SHOW_ON_ALL_DESKTOPS).toBool());
-  ui->keep_always_visible->setChecked(config_->GetValue(OPT_KEEP_ALWAYS_VISIBLE).toBool());
-  ui->allow_over_panels->setChecked(config_->GetValue(OPT_ALLOW_OVER_PANELS).toBool());
   ui->hover_buttons_enabled->setChecked(config_->GetValue(OPT_USE_HOVER_BUTTONS).toBool());
-  ui->snap_to_edges->setChecked(config_->GetValue(OPT_SNAP_TO_EDGES).toBool());
-  ui->snap_threshold->setValue(config_->GetValue(OPT_SNAP_THRESHOLD).toInt());
-  ui->refresh_interval->setValue(config_->GetValue(OPT_REFRESH_INTERVAL).toInt());
 
   // "Appearance" tab
   ui->transparent_on_hover->setChecked(config_->GetValue(OPT_TRANSPARENT_ON_HOVER).toBool());
@@ -275,12 +255,6 @@ void SettingsDialog::InitControls()
   ui->transparent_on_hover->setEnabled(QX11Info::isPlatformX11());
   ui->hide_on_mouse_hover->setEnabled(QX11Info::isPlatformX11());
 #endif
-
-  // also live (moved out of the now-removed "Experimental" tab); hide_on_mouse_hover
-  // stays a permanently disabled placeholder unrelated to that move
-  ui->better_stay_on_top->setChecked(config_->GetValue(OPT_BETTER_STAY_ON_TOP).toBool());
-  ui->show_on_all_monitors->setChecked(config_->GetValue(OPT_SHOW_ON_ALL_MONITORS).toBool());
-  ui->taskbar_icon_enable->setChecked(config_->GetValue(OPT_SHOW_TASKBAR_ICON).toBool());
   ui->hide_on_mouse_hover->setChecked(config_->GetValue(OPT_OPACITY_ON_HOVER).toReal() < 0.02);
 }
 
@@ -448,34 +422,31 @@ void SettingsDialog::on_import_btn_clicked()
   if (!filename.isEmpty()) emit ImportSettings(filename);
 }
 
-} // namespace gui
-} // namespace digital_clock
-
-void digital_clock::gui::SettingsDialog::on_cust_texturing_toggled(bool checked)
+void SettingsDialog::on_cust_texturing_toggled(bool checked)
 {
   ui->image_group->setEnabled(checked ? ui->type_image->isChecked() : false);
 }
 
-void digital_clock::gui::SettingsDialog::on_cust_none_clicked()
+void SettingsDialog::on_cust_none_clicked()
 {
   ui->image_group->setDisabled(true);
   emit OptionChanged(OPT_CUSTOMIZATION, static_cast<int>(Customization::C_NONE));
 }
 
-void digital_clock::gui::SettingsDialog::on_cust_texturing_clicked()
+void SettingsDialog::on_cust_texturing_clicked()
 {
   emit OptionChanged(OPT_CUSTOMIZATION, static_cast<int>(Customization::C_TEXTURING));
   if (ui->type_color->isChecked()) emit OptionChanged(OPT_TEXTURE_TYPE, SkinDrawer::CT_COLOR);
   if (ui->type_image->isChecked()) emit OptionChanged(OPT_TEXTURE_TYPE, SkinDrawer::CT_TEXTURE);
 }
 
-void digital_clock::gui::SettingsDialog::on_cust_colorize_clicked()
+void SettingsDialog::on_cust_colorize_clicked()
 {
   ui->image_group->setDisabled(true);
   emit OptionChanged(OPT_CUSTOMIZATION, static_cast<int>(Customization::C_COLORIZE));
 }
 
-void digital_clock::gui::SettingsDialog::on_img_color_btn_clicked()
+void SettingsDialog::on_img_color_btn_clicked()
 {
   QColor color = QColorDialog::getColor(last_colorize_color_, this);
   if (color.isValid()) {
@@ -485,32 +456,32 @@ void digital_clock::gui::SettingsDialog::on_img_color_btn_clicked()
   }
 }
 
-void digital_clock::gui::SettingsDialog::on_level_slider_valueChanged(int value)
+void SettingsDialog::on_level_slider_valueChanged(int value)
 {
   emit OptionChanged(OPT_COLORIZE_LEVEL, value / 100.);
 }
 
-void digital_clock::gui::SettingsDialog::on_align_left_rbtn_clicked()
+void SettingsDialog::on_align_left_rbtn_clicked()
 {
   emit OptionChanged(OPT_ALIGNMENT, static_cast<int>(CAlignment::A_LEFT));
 }
 
-void digital_clock::gui::SettingsDialog::on_align_center_rbtn_clicked()
+void SettingsDialog::on_align_center_rbtn_clicked()
 {
   emit OptionChanged(OPT_ALIGNMENT, static_cast<int>(CAlignment::A_CENTER));
 }
 
-void digital_clock::gui::SettingsDialog::on_align_right_rbtn_clicked()
+void SettingsDialog::on_align_right_rbtn_clicked()
 {
   emit OptionChanged(OPT_ALIGNMENT, static_cast<int>(CAlignment::A_RIGHT));
 }
 
-void digital_clock::gui::SettingsDialog::on_background_enabled_clicked(bool checked)
+void SettingsDialog::on_background_enabled_clicked(bool checked)
 {
   emit OptionChanged(OPT_BACKGROUND_ENABLED, checked);
 }
 
-void digital_clock::gui::SettingsDialog::on_background_color_btn_clicked()
+void SettingsDialog::on_background_color_btn_clicked()
 {
   QColor color = QColorDialog::getColor(last_background_color_, this,
                                         QString(), QColorDialog::ShowAlphaChannel);
@@ -521,103 +492,42 @@ void digital_clock::gui::SettingsDialog::on_background_color_btn_clicked()
   }
 }
 
-void digital_clock::gui::SettingsDialog::on_clock_url_enabled_clicked(bool checked)
-{
-  emit OptionChanged(OPT_CLOCK_URL_ENABLED, checked);
-}
-
-void digital_clock::gui::SettingsDialog::on_clock_url_edit_textEdited(const QString& arg1)
-{
-  emit OptionChanged(OPT_CLOCK_URL_STRING, arg1);
-}
-
-void digital_clock::gui::SettingsDialog::on_browse_url_file_btn_clicked()
-{
-  QUrl url = QFileDialog::getOpenFileUrl(this);
-  if (url.isValid()) ui->clock_url_edit->setText(url.toString());
-}
-
-void digital_clock::gui::SettingsDialog::on_show_hide_enable_clicked(bool checked)
-{
-  emit OptionChanged(OPT_SHOW_HIDE_ENABLED, checked);
-}
-
-void digital_clock::gui::SettingsDialog::on_export_state_clicked(bool checked)
-{
-  emit OptionChanged(OPT_EXPORT_STATE, checked);
-}
-
-void digital_clock::gui::SettingsDialog::on_show_in_fullscreen_clicked(bool checked)
-{
-  emit OptionChanged(OPT_FULLSCREEN_DETECT, !checked);
-}
-
-void digital_clock::gui::SettingsDialog::on_show_on_all_workspaces_clicked(bool checked)
+void SettingsDialog::on_show_on_all_workspaces_clicked(bool checked)
 {
   emit OptionChanged(OPT_SHOW_ON_ALL_DESKTOPS, checked);
 }
 
-void digital_clock::gui::SettingsDialog::on_better_stay_on_top_clicked(bool checked)
-{
-  emit OptionChanged(OPT_BETTER_STAY_ON_TOP, checked);
-}
-
-void digital_clock::gui::SettingsDialog::on_change_time_zone_cbx_clicked(bool checked)
+void SettingsDialog::on_change_time_zone_cbx_clicked(bool checked)
 {
   emit OptionChanged(OPT_DISPLAY_LOCAL_TIME, !checked);
 }
 
-void digital_clock::gui::SettingsDialog::on_keep_always_visible_clicked(bool checked)
-{
-  emit OptionChanged(OPT_KEEP_ALWAYS_VISIBLE, checked);
-}
-
-void digital_clock::gui::SettingsDialog::on_allow_over_panels_clicked(bool checked)
-{
-  emit OptionChanged(OPT_ALLOW_OVER_PANELS, checked);
-}
-
-void digital_clock::gui::SettingsDialog::on_show_on_all_monitors_clicked(bool checked)
-{
-  emit OptionChanged(OPT_SHOW_ON_ALL_MONITORS, checked);
-}
-
-void digital_clock::gui::SettingsDialog::on_hover_buttons_enabled_clicked(bool checked)
+void SettingsDialog::on_hover_buttons_enabled_clicked(bool checked)
 {
   emit OptionChanged(OPT_USE_HOVER_BUTTONS, checked);
 }
 
-void digital_clock::gui::SettingsDialog::on_taskbar_icon_enable_clicked(bool checked)
-{
-  emit OptionChanged(OPT_SHOW_TASKBAR_ICON, checked);
-}
-
-void digital_clock::gui::SettingsDialog::on_transparent_on_hover_clicked(bool checked)
+void SettingsDialog::on_transparent_on_hover_clicked(bool checked)
 {
   emit OptionChanged(OPT_TRANSPARENT_ON_HOVER, checked);
 }
 
-void digital_clock::gui::SettingsDialog::on_hide_on_mouse_hover_clicked(bool checked)
+void SettingsDialog::on_hide_on_mouse_hover_clicked(bool checked)
 {
   emit OptionChanged(OPT_OPACITY_ON_HOVER, checked ? 0.0 : 0.15);
 }
 
-void digital_clock::gui::SettingsDialog::on_snap_to_edges_clicked(bool checked)
-{
-  emit OptionChanged(OPT_SNAP_TO_EDGES, checked);
-}
-
-void digital_clock::gui::SettingsDialog::on_snap_threshold_valueChanged(int value)
-{
-  emit OptionChanged(OPT_SNAP_THRESHOLD, value);
-}
-
-void digital_clock::gui::SettingsDialog::on_refresh_interval_valueChanged(int value)
-{
-  emit OptionChanged(OPT_REFRESH_INTERVAL, value);
-}
-
-void digital_clock::gui::SettingsDialog::on_time_zone_box_activated(int index)
+void SettingsDialog::on_time_zone_box_activated(int index)
 {
   emit OptionChanged(OPT_TIME_ZONE, ui->time_zone_box->itemText(index));
 }
+
+void SettingsDialog::on_advanced_settings_btn_clicked()
+{
+  AdvancedSettingsDialog* dlg = new AdvancedSettingsDialog(config_, this);
+  connect(dlg, &AdvancedSettingsDialog::OptionChanged, this, &SettingsDialog::OptionChanged);
+  dlg->exec();
+}
+
+} // namespace gui
+} // namespace digital_clock

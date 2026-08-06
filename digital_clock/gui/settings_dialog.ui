@@ -110,23 +110,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="better_stay_on_top">
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>better 'stay on top' for Linux</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="taskbar_icon_enable">
-           <property name="text">
-            <string>show app icon in the taskbar (and in the window switcher), can be useful for screen recording software</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QCheckBox" name="transp_for_input">
            <property name="text">
             <string>transparent for mouse</string>
@@ -137,23 +120,6 @@
           <widget class="QCheckBox" name="sep_flash">
            <property name="text">
             <string>separator flashes</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="transparent_on_hover">
-           <property name="text">
-            <string>become almost transparent on mouse hover</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="hide_on_mouse_hover">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>hide completely</string>
            </property>
           </widget>
          </item>
@@ -483,7 +449,7 @@
          </property>
          <layout class="QHBoxLayout" name="colorize_layout">
           <item>
-           <widget class="LedToolButton" name="img_color_btn"/>
+           <widget class="LedToolButton" name="img_color_btn" />
           </item>
           <item>
            <spacer name="horizontalSpacer_3">
@@ -537,7 +503,7 @@
       <attribute name="title">
        <string>Misc</string>
       </attribute>
-      <layout class="QGridLayout" name="misc_layout">
+      <layout class="QVBoxLayout" name="misc_layout">
        <property name="leftMargin">
         <number>12</number>
        </property>
@@ -547,48 +513,51 @@
        <property name="bottomMargin">
         <number>12</number>
        </property>
-       <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QCheckBox" name="autostart">
-           <property name="text">
-            <string>start on system startup</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="allow_over_panels">
-           <property name="toolTip">
-            <string>Lets the clock be placed on top of taskbars, docks and panels. The clock window has to bypass the window manager to do that, so it will no longer be minimized, arranged or restacked by it.</string>
-           </property>
-           <property name="text">
-            <string>allow clock to cover taskbar/tray panels (bypasses window manager)</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="allow_over_panels_description">
-           <property name="text">
-            <string>Allows overlap with panel</string>
-           </property>
-           <property name="indent">
-            <number>20</number>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="show_on_all_monitors">
-           <property name="text">
-            <string>show clock on all available monitors</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       <item>
+        <widget class="QCheckBox" name="autostart">
+         <property name="text">
+          <string>start on system startup</string>
+         </property>
+        </widget>
        </item>
-       <item row="0" column="1" colspan="2">
+       <item>
+        <widget class="QCheckBox" name="show_on_all_workspaces">
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>show clock on all workspaces/virtual desktops</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="hover_buttons_enabled">
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>move clock on click on it (has no effect if "transparent for mouse" is enabled)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="transparent_on_hover">
+         <property name="text">
+          <string>become almost transparent on mouse hover</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="hide_on_mouse_hover">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>hide completely</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="time_format_group">
          <property name="title">
           <string>Time format</string>
@@ -706,275 +675,118 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QGroupBox" name="align_group">
-         <property name="title">
-          <string>Alignment</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QRadioButton" name="align_left_rbtn">
-            <property name="text">
-             <string>left</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="align_center_rbtn">
-            <property name="text">
-             <string>center</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="align_right_rbtn">
-            <property name="text">
-             <string>right</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="1" colspan="2">
-        <widget class="QGroupBox" name="space_group">
-         <property name="title">
-          <string>Space between digits</string>
-         </property>
-         <layout class="QHBoxLayout" name="space_layout">
-          <item>
-           <widget class="QLabel" name="space_less_label">
-            <property name="text">
-             <string>less</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSlider" name="space_slider">
-            <property name="minimum">
-             <number>-10</number>
-            </property>
-            <property name="maximum">
-             <number>50</number>
-            </property>
-            <property name="value">
-             <number>4</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="tickPosition">
-             <enum>QSlider::NoTicks</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="space_more_label">
-            <property name="text">
-             <string>more</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="3">
-        <layout class="QGridLayout" name="gridLayout_2">
-         <property name="verticalSpacing">
-          <number>2</number>
-         </property>
-         <item row="1" column="0" colspan="5">
-          <widget class="QLabel" name="refresh_interval_warning_label">
-           <property name="text">
-            <string>ATTENTION! Refreshing at a quick rate can cause a high CPU load. Default is 500ms.</string>
+       <item>
+        <layout class="QHBoxLayout" name="align_space_row">
+         <item>
+          <widget class="QGroupBox" name="align_group">
+           <property name="title">
+            <string>Alignment</string>
            </property>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QRadioButton" name="align_left_rbtn">
+              <property name="text">
+               <string>left</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="align_center_rbtn">
+              <property name="text">
+               <string>center</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="align_right_rbtn">
+              <property name="text">
+               <string>right</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="snap_to_edges">
-           <property name="text">
-            <string>snap to edges, threshold</string>
+         <item>
+          <widget class="QGroupBox" name="space_group">
+           <property name="title">
+            <string>Space between digits</string>
            </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="4">
-          <widget class="QSpinBox" name="refresh_interval">
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="suffix">
-            <string notr="true"> ms</string>
-           </property>
-           <property name="minimum">
-            <number>50</number>
-           </property>
-           <property name="maximum">
-            <number>500</number>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QLabel" name="refresh_interval_label">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>window refresh interval</string>
-           </property>
-           <property name="buddy">
-            <cstring>refresh_interval</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <spacer name="horizontalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="1">
-          <widget class="QSpinBox" name="snap_threshold">
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="suffix">
-            <string notr="true"> px</string>
-           </property>
-           <property name="minimum">
-            <number>10</number>
-           </property>
-           <property name="maximum">
-            <number>50</number>
-           </property>
+           <layout class="QHBoxLayout" name="space_layout">
+            <item>
+             <widget class="QLabel" name="space_less_label">
+              <property name="text">
+               <string>less</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="space_slider">
+              <property name="minimum">
+               <number>-10</number>
+              </property>
+              <property name="maximum">
+               <number>50</number>
+              </property>
+              <property name="value">
+               <number>4</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="tickPosition">
+               <enum>QSlider::NoTicks</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="space_more_label">
+              <property name="text">
+               <string>more</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
         </layout>
        </item>
-       <item row="3" column="0" colspan="3">
-        <widget class="QGroupBox" name="clock_url_group">
-         <property name="toolTip">
-          <string>If enabled, given URL will be opened with default web browser when you click on clock</string>
-         </property>
-         <property name="title">
-          <string>Clock URL</string>
-         </property>
-         <layout class="QHBoxLayout" name="clock_url_layout">
-          <item>
-           <widget class="QCheckBox" name="clock_url_enabled">
-            <property name="text">
-             <string>enable</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="clock_url_edit">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string notr="true">https://digitalclock4.sourceforge.io/</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="browse_url_file_btn">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="toolTip">
-             <string>Browse for local file instead of URL</string>
-            </property>
-            <property name="text">
-             <string notr="true">...</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="4" column="0" colspan="2">
-        <widget class="QCheckBox" name="show_hide_enable">
-         <property name="text">
-          <string>display 'Show/Hide' menu item</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
+       <item>
         <widget class="QCheckBox" name="change_time_zone_cbx">
          <property name="text">
           <string>display time in another time zone</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="0" colspan="2">
-        <widget class="QCheckBox" name="export_state">
-         <property name="text">
-          <string>export state (e.g. position)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="2">
+       <item>
         <widget class="QComboBox" name="time_zone_box">
          <property name="enabled">
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="6" column="0" colspan="3">
-        <widget class="QCheckBox" name="show_in_fullscreen">
-         <property name="checked">
-          <bool>true</bool>
-         </property>
+       <item>
+        <widget class="QPushButton" name="advanced_settings_btn">
          <property name="text">
-          <string>show clock in fullscreen mode (may not work for some apps)</string>
+          <string>Advanced Settings...</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="0" colspan="3">
-        <widget class="QCheckBox" name="show_on_all_workspaces">
-         <property name="checked">
-          <bool>true</bool>
+       <item>
+        <spacer name="misc_bottom_spacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <property name="text">
-          <string>show clock on all workspaces/virtual desktops</string>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
          </property>
-        </widget>
-       </item>
-       <item row="8" column="0" colspan="3">
-        <widget class="QCheckBox" name="keep_always_visible">
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>always keep clock visible on screen, prevent out of screen position</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="0" colspan="3">
-        <widget class="QCheckBox" name="hover_buttons_enabled">
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>move clock on click on it (has no effect if &quot;transparent for mouse&quot; is enabled)</string>
-         </property>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -993,7 +805,7 @@
         <number>12</number>
        </property>
        <item row="0" column="0">
-        <widget class="QListWidget" name="plugins_list"/>
+        <widget class="QListWidget" name="plugins_list" />
        </item>
       </layout>
      </widget>
@@ -1009,7 +821,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/icons.qrc"/>
+  <include location="../resources/icons.qrc" />
  </resources>
  <connections>
   <connection>
@@ -1041,6 +853,166 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>use_font</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sel_font_btn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>515</x>
+     <y>185</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>571</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>use_skin</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>skin_box</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>185</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>370</x>
+     <y>186</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>use_skin</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>skin_info_btn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>185</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>185</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>custom_format</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>format_box</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>383</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>486</x>
+     <y>101</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>custom_format</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>apply_btn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>383</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>549</x>
+     <y>101</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>change_time_zone_cbx</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>time_zone_box</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>404</x>
+     <y>359</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>406</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>opacity_value</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>opacity_slider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>548</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>501</x>
+     <y>68</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>opacity_slider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>opacity_value</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>402</x>
+     <y>64</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>527</x>
+     <y>65</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>zoom_value</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>zoom_slider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>531</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>504</x>
+     <y>107</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>zoom_slider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>zoom_value</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>407</x>
+     <y>102</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>527</x>
+     <y>104</y>
     </hint>
    </hints>
   </connection>
@@ -1141,86 +1113,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>use_font</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>sel_font_btn</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>515</x>
-     <y>185</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>571</x>
-     <y>183</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>use_skin</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>skin_box</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>109</x>
-     <y>185</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>370</x>
-     <y>186</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>use_skin</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>skin_info_btn</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>109</x>
-     <y>185</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>185</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>custom_format</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>format_box</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>383</x>
-     <y>100</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>486</x>
-     <y>101</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>custom_format</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>apply_btn</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>383</x>
-     <y>100</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>549</x>
-     <y>101</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>background_enabled</sender>
    <signal>toggled(bool)</signal>
    <receiver>background_color_btn</receiver>
@@ -1233,134 +1125,6 @@
     <hint type="destinationlabel">
      <x>184</x>
      <y>377</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>clock_url_enabled</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>clock_url_edit</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>100</x>
-     <y>321</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>290</x>
-     <y>322</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>clock_url_enabled</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>browse_url_file_btn</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>100</x>
-     <y>321</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>571</x>
-     <y>319</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>change_time_zone_cbx</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>time_zone_box</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>404</x>
-     <y>359</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>406</x>
-     <y>387</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>opacity_value</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>opacity_slider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>548</x>
-     <y>67</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>501</x>
-     <y>68</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>opacity_slider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>opacity_value</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>402</x>
-     <y>64</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>527</x>
-     <y>65</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>zoom_value</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>zoom_slider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>531</x>
-     <y>110</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>504</x>
-     <y>107</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>zoom_slider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>zoom_value</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>407</x>
-     <y>102</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>527</x>
-     <y>104</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>snap_to_edges</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>snap_threshold</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>113</x>
-     <y>264</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>223</x>
-     <y>261</y>
     </hint>
    </hints>
   </connection>

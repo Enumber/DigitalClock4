@@ -122,13 +122,13 @@ ClockWindow::ClockWindow(core::ClockSettings* app_config, QScreen* screen,
   // A clock never needs keyboard focus. Without this the window maps as
   // "demands attention", and GNOME answers that with a "… is ready"
   // notification every single time the clock starts.
-  setWindowFlags(Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus);
+  // Qt::Tool keeps it out of the taskbar and the Alt+Tab switcher — this is
+  // not a user-facing option, a desktop clock has no business appearing in
+  // either.
+  setWindowFlags(Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus | Qt::Tool);
 #ifdef Q_OS_MACOS
   setWindowFlag(Qt::NoDropShadowWindowHint);
 #endif
-  // OPT_SHOW_TASKBAR_ICON (Qt::Tool) is applied later via ApplyOption(),
-  // same as every other config-dependent flag (stay-on-top, transparent for
-  // input, ...) — Reset() pushes it in before the window is ever shown.
   setAttribute(Qt::WA_TranslucentBackground);
 
   c_menu_ = new ContextMenu(this);
@@ -159,7 +159,6 @@ ClockWindow::ClockWindow(core::ClockSettings* app_config, QScreen* screen,
   dragging_ = false;
   last_visibility_ = true;
   fullscreen_detect_enabled_ = false;
-  keep_always_visible_ = true;
 
   SetTargetScreen(screen);
 }
@@ -325,13 +324,6 @@ void ClockWindow::ApplyOption(const Option opt, const QVariant& value)
       SetWindowFlag(Qt::WindowTransparentForInput, value.toBool());
       break;
 
-    case OPT_SHOW_TASKBAR_ICON:
-      // Qt::Tool is what actually hides the window from the taskbar/window
-      // switcher (on X11 as much as on Windows), so this is the same
-      // SetWindowFlag() plumbing OPT_STAY_ON_TOP/OPT_TRANSP_FOR_INPUT use.
-      SetWindowFlag(Qt::Tool, !value.toBool());
-      break;
-
     case OPT_ALIGNMENT:
       cur_alignment_ = static_cast<CAlignment>(value.toInt());
       clock_widget_->ApplyOption(opt, value);
@@ -361,26 +353,6 @@ void ClockWindow::ApplyOption(const Option opt, const QVariant& value)
 
     case OPT_EXPORT_STATE:
       state_->SetExportable(value.toBool());
-      break;
-
-    case OPT_KEEP_ALWAYS_VISIBLE:
-      keep_always_visible_ = value.toBool();
-      this->CorrectPosition();
-      break;
-
-    case OPT_ALLOW_OVER_PANELS:
-      allow_over_panels_ = value.toBool();
-      c_menu_->allowOverPanelsAction()->setChecked(allow_over_panels_);
-      UpdateBypassWindowManager();
-      this->CorrectPosition();
-      break;
-
-    case OPT_BETTER_STAY_ON_TOP:
-      // UpdateBypassWindowManager() reads this option straight from
-      // app_config_ itself, so toggling it just needs a re-evaluation —
-      // there is no local member mirroring it the way allow_over_panels_ has.
-      UpdateBypassWindowManager();
-      this->CorrectPosition();
       break;
 
     case OPT_SHOW_HIDE_ENABLED:
@@ -681,7 +653,9 @@ void ClockWindow::onHoverButtonClicked(HoverButtons::Direction direction)
 
 void ClockWindow::CorrectPosition()
 {
-  if (keep_always_visible_) CorrectPositionImpl();
+  // Always clamp — keeping the clock on screen is not something anyone would
+  // want to turn off, so there is no config option gating this anymore.
+  CorrectPositionImpl();
 }
 
 void ClockWindow::SetTargetScreen(QScreen* screen)
@@ -719,21 +693,29 @@ void ClockWindow::AdoptScreenFromCurrentPosition()
 QRect ClockWindow::UsableScreenRect(const QScreen* screen) const
 {
   if (!screen) return QRect();
-  return core::placement::usableRect(screenDescriptor(screen), allow_over_panels_);
+  // Always allowed to claim the panel strip — see UpdateBypassWindowManager()
+  // for why this is no longer a user-facing option.
+  return core::placement::usableRect(screenDescriptor(screen), true);
 }
 
 void ClockWindow::UpdateBypassWindowManager()
 {
 #ifdef Q_OS_LINUX
-  // "better stay on top" asks for the very same window manager bypass, so the
-  // flag may only be dropped when none of the placement/topmost policies wants it.
-  // A non-primary display intentionally gets the whole screen, including panel
-  // strips; bypassing is required for the clock to be stacked above those docks.
-  const bool non_primary = target_screen_ && target_screen_ != QGuiApplication::primaryScreen();
-  bool want_bypass = allow_over_panels_ || non_primary ||
-                     (stay_on_top_ && app_config_->GetValue(OPT_BETTER_STAY_ON_TOP).toBool());
-  if (want_bypass == bool(windowFlags() & Qt::X11BypassWindowManagerHint)) return;
-  SetWindowFlag(Qt::X11BypassWindowManagerHint, want_bypass);
+  // Plain Qt::WindowStaysOnTopHint only asks the window manager nicely, and
+  // not every WM honours it reliably, so the clock always bypasses the
+  // window manager on Linux — unconditionally, not gated by "stay on top"
+  // or an opt-in "cover panels" checkbox anymore. This used to be two
+  // separate settings the user could turn off; both had the same problem
+  // as "better stay on top for Linux" and the other removed toggles: the
+  // only thing turning them off did was opt into a worse default. On
+  // compositing shells that draw their own panel above every client window
+  // by design (GNOME Shell/Mutter is the well-documented case — see e.g.
+  // the dash-to-panel project's "panel is above always-on-top windows"
+  // issue), no X11 hint a regular application can set will make its window
+  // render above that panel — this bypass still does the right thing on
+  // window managers that don't special-case their own panel this way
+  // (tested against a plain X11 WM with a docked strut window).
+  SetWindowFlag(Qt::X11BypassWindowManagerHint, true);
 #endif
 }
 

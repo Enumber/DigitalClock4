@@ -48,7 +48,7 @@ AboutDialog::AboutDialog(QWidget* parent) :
   ui->setupUi(this);
   setAttribute(Qt::WA_DeleteOnClose);
 
-  ui->logo_lbl->setPixmap(QApplication::windowIcon().pixmap(logoSize()));
+  ui->logo_lbl->setPixmap(QIcon(":/clock/images/about-logo.png").pixmap(logoSize()));
   ui->btc_adress_qr->setPixmap(QIcon(":/clock/about/donate.png").pixmap(2*logoSize()));
 
   QString version = QCoreApplication::applicationVersion();
@@ -64,6 +64,14 @@ AboutDialog::AboutDialog(QWidget* parent) :
 AboutDialog::~AboutDialog()
 {
   delete ui;
+}
+
+void AboutDialog::on_logo_lbl_clicked()
+{
+  logo_showing_alt_ = !logo_showing_alt_;
+  const char* path = logo_showing_alt_ ? ":/clock/images/about-logo-alt.png"
+                                        : ":/clock/images/about-logo.png";
+  ui->logo_lbl->setPixmap(QIcon(path).pixmap(logoSize()));
 }
 
 int AboutDialog::logoSize() const Q_DECL_NOEXCEPT

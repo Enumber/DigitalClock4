@@ -36,11 +36,21 @@ public:
   explicit AboutDialog(QWidget* parent = nullptr);
   ~AboutDialog();
 
+private slots:
+  // The original author's own "surprise": triple-click the logo (see
+  // ClickableLabel's requiredClicksCount) to toggle it between the two
+  // easter-egg images. Unlike the pristine upstream version, this never
+  // reverts to the plain rainbow icon — the About logo is permanently the
+  // easter-egg artwork in this fork, by explicit request; the toggle only
+  // switches between the two easter-egg images themselves.
+  void on_logo_lbl_clicked();
+
 private:
   int logoSize() const Q_DECL_NOEXCEPT;
 
 private:
   Ui::AboutDialog* ui;
+  bool logo_showing_alt_ = false;
 };
 
 } // namespace gui

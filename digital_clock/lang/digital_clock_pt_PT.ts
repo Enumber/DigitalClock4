@@ -20,7 +20,7 @@
         <translation type="vanished">Atualização disponível (%1). Clique nesta mensagem para descarregar.</translation>
     </message>
     <message>
-        <location filename="../core/clock_application.cpp" line="522"/>
+        <location filename="../core/clock_application.cpp" line="514"/>
         <source>%1 Error</source>
         <translation>%1 Erro</translation>
     </message>
@@ -130,16 +130,159 @@
     </message>
 </context>
 <context>
+    <name>digital_clock::gui::AdvancedSettingsDialog</name>
+    <message>
+        <source>Appearance</source>
+        <translation type="obsolete">Aparência</translation>
+    </message>
+    <message>
+        <source>skin customization</source>
+        <translation type="obsolete">personalização do tema</translation>
+    </message>
+    <message>
+        <source>none</source>
+        <translation type="obsolete">nenhum</translation>
+    </message>
+    <message>
+        <source>change texture</source>
+        <translation type="obsolete">alterar textura</translation>
+    </message>
+    <message>
+        <source>colorize</source>
+        <translation type="obsolete">colorir</translation>
+    </message>
+    <message>
+        <source>texture type</source>
+        <translation type="obsolete">tipo de textura</translation>
+    </message>
+    <message>
+        <source>solid color</source>
+        <translation type="obsolete">cor sólida</translation>
+    </message>
+    <message>
+        <source>custom image</source>
+        <translation type="obsolete">imagem personalizada</translation>
+    </message>
+    <message>
+        <source>texture per element</source>
+        <translation type="obsolete">textura por elemento</translation>
+    </message>
+    <message>
+        <source>stretch</source>
+        <translation type="obsolete">esticar</translation>
+    </message>
+    <message>
+        <source>tile</source>
+        <translation type="obsolete">mosaico</translation>
+    </message>
+    <message>
+        <source>background color</source>
+        <translation type="obsolete">cor do fundo</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="153"/>
+        <source>enable</source>
+        <translation type="unfinished">ativar</translation>
+    </message>
+    <message>
+        <source>Current background color</source>
+        <translation type="obsolete">Cor do fundo atual</translation>
+    </message>
+    <message>
+        <source>Space between digits</source>
+        <translation type="obsolete">Espaço entre dígitos</translation>
+    </message>
+    <message>
+        <source>less</source>
+        <translation type="obsolete">menos</translation>
+    </message>
+    <message>
+        <source>more</source>
+        <translation type="obsolete">mais</translation>
+    </message>
+    <message>
+        <source>Misc</source>
+        <translation type="obsolete">Vários</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="39"/>
+        <source>show clock on all available monitors</source>
+        <translation type="unfinished">mostrar relógio em todos os monitores disponíveis</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="49"/>
+        <source>show clock in fullscreen mode (may not work for some apps)</source>
+        <translation type="unfinished">mostrar relógio no modo ecrã total (pode não funcionar para algumas aplicações)</translation>
+    </message>
+    <message>
+        <source>transparent for mouse</source>
+        <translation type="obsolete">transparente para o rato</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="14"/>
+        <source>Advanced Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="33"/>
+        <source>Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="64"/>
+        <source>ATTENTION! Refreshing at a quick rate can cause a high CPU load. Default is 500ms.</source>
+        <translation type="unfinished">ATENÇÃO! Refrescar a uma taxa rápida pode sobrecarregar o processador. O padrão é 500ms.</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="71"/>
+        <source>snap to edges, threshold</source>
+        <translation type="unfinished">atrair às bordas, limiar</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="103"/>
+        <source>window refresh interval</source>
+        <translation type="unfinished">intervalo de refrescamento da janela</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="144"/>
+        <source>If enabled, given URL will be opened with default web browser when you click on clock</source>
+        <translation type="unfinished">Se ativado, o URL indicado será aberto com o navegador de internet padrão quando clicar no relógio</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="147"/>
+        <source>Clock URL</source>
+        <translation type="unfinished">URL do relógio</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="173"/>
+        <source>Browse for local file instead of URL</source>
+        <translation type="unfinished">Navegar pelos ficheiros locais em vez do URL</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="186"/>
+        <source>display &apos;Show/Hide&apos; menu item</source>
+        <translation type="unfinished">mostrar o item do menu &apos;Mostrar/Ocultar&apos;</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="193"/>
+        <source>export state (e.g. position)</source>
+        <translation type="unfinished">exportar estado (por ex. posição)</translation>
+    </message>
+    <message>
+        <source>Open texture file</source>
+        <translation type="obsolete">Abrir ficheiro de textura</translation>
+    </message>
+    <message>
+        <source>Images (*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</source>
+        <translation type="obsolete">Imagens (*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</translation>
+    </message>
+</context>
+<context>
     <name>digital_clock::gui::ContextMenu</name>
     <message>
         <location filename="../gui/context_menu.cpp" line="32"/>
         <source>&amp;Visible</source>
         <translation>&amp;Visível</translation>
-    </message>
-    <message>
-        <location filename="../gui/context_menu.cpp" line="52"/>
-        <source>&amp;Cover Panels</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../gui/context_menu.cpp" line="35"/>
@@ -184,7 +327,7 @@
         <translation>Fundo</translation>
     </message>
     <message>
-        <location filename="../gui/context_menu.cpp" line="56"/>
+        <location filename="../gui/context_menu.cpp" line="54"/>
         <source>&amp;About</source>
         <translation>&amp;Sobre</translation>
     </message>
@@ -193,7 +336,7 @@
         <translation type="vanished">&amp;A&amp;tualizar</translation>
     </message>
     <message>
-        <location filename="../gui/context_menu.cpp" line="60"/>
+        <location filename="../gui/context_menu.cpp" line="57"/>
         <source>&amp;Quit</source>
         <translation>&amp;Sair</translation>
     </message>
@@ -259,174 +402,188 @@
         <translation>manter por cima de tudo</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="132"/>
+        <location filename="../gui/settings_dialog.ui" line="115"/>
         <source>transparent for mouse</source>
         <translation>transparente para o rato</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="139"/>
+        <location filename="../gui/settings_dialog.ui" line="122"/>
         <source>separator flashes</source>
         <translation>flashes do separador</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="202"/>
+        <location filename="../gui/settings_dialog.ui" line="168"/>
         <source>opacity</source>
         <translation>opacidade</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="228"/>
+        <location filename="../gui/settings_dialog.ui" line="194"/>
         <source>zoom</source>
         <translation>aproximação</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="256"/>
+        <location filename="../gui/settings_dialog.ui" line="222"/>
         <source>Skin</source>
         <translation>Tema</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="262"/>
+        <location filename="../gui/settings_dialog.ui" line="228"/>
         <source>use skin</source>
         <translation>usar tema</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="312"/>
+        <location filename="../gui/settings_dialog.ui" line="278"/>
         <source>use font</source>
         <translation>usar fonte</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="332"/>
+        <location filename="../gui/settings_dialog.ui" line="298"/>
         <source>skin customization</source>
         <translation>personalização do tema</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="344"/>
+        <location filename="../gui/settings_dialog.ui" line="310"/>
         <source>none</source>
         <translation>nenhum</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="351"/>
+        <location filename="../gui/settings_dialog.ui" line="317"/>
         <source>change texture</source>
         <translation>alterar textura</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="361"/>
-        <location filename="../gui/settings_dialog.ui" line="482"/>
+        <location filename="../gui/settings_dialog.ui" line="327"/>
+        <location filename="../gui/settings_dialog.ui" line="448"/>
         <source>colorize</source>
         <translation>colorir</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="371"/>
+        <location filename="../gui/settings_dialog.ui" line="337"/>
         <source>texture type</source>
         <translation>tipo de textura</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="377"/>
+        <location filename="../gui/settings_dialog.ui" line="343"/>
         <source>solid color</source>
         <translation>cor sólida</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="394"/>
-        <location filename="../gui/settings_dialog.ui" line="414"/>
+        <location filename="../gui/settings_dialog.ui" line="360"/>
+        <location filename="../gui/settings_dialog.ui" line="380"/>
         <source>custom image</source>
         <translation>imagem personalizada</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="426"/>
+        <location filename="../gui/settings_dialog.ui" line="392"/>
         <source>texture per element</source>
         <translation>textura por elemento</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="433"/>
+        <location filename="../gui/settings_dialog.ui" line="399"/>
         <source>stretch</source>
         <translation>esticar</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="443"/>
+        <location filename="../gui/settings_dialog.ui" line="409"/>
         <source>tile</source>
         <translation>mosaico</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="453"/>
+        <location filename="../gui/settings_dialog.ui" line="419"/>
         <source>background color</source>
         <translation>cor do fundo</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="459"/>
-        <location filename="../gui/settings_dialog.ui" line="881"/>
+        <location filename="../gui/settings_dialog.ui" line="425"/>
         <source>enable</source>
         <translation>ativar</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="469"/>
+        <location filename="../gui/settings_dialog.ui" line="435"/>
         <source>Current background color</source>
         <translation>Cor do fundo atual</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="538"/>
+        <location filename="../gui/settings_dialog.ui" line="504"/>
         <source>Misc</source>
         <translation>Vários</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="555"/>
+        <location filename="../gui/settings_dialog.ui" line="774"/>
+        <source>Advanced Settings...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/settings_dialog.ui" line="519"/>
         <source>start on system startup</source>
         <translation>Iniciar no arranque do sistema</translation>
+    </message>
+    <message>
+        <location filename="../gui/settings_dialog.ui" line="546"/>
+        <source>become almost transparent on mouse hover</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/settings_dialog.ui" line="556"/>
+        <source>hide completely</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>enable autoupdate</source>
         <translation type="vanished">ativar atualização automática</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="594"/>
+        <location filename="../gui/settings_dialog.ui" line="563"/>
         <source>Time format</source>
         <translation>Formato de tempo</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="612"/>
+        <location filename="../gui/settings_dialog.ui" line="581"/>
         <source>system</source>
         <translation>sistema</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="622"/>
+        <location filename="../gui/settings_dialog.ui" line="591"/>
         <source>custom</source>
         <translation>personalizado</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="702"/>
+        <location filename="../gui/settings_dialog.ui" line="671"/>
         <source>Apply</source>
         <translation>Aplicar</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="712"/>
+        <location filename="../gui/settings_dialog.ui" line="683"/>
         <source>Alignment</source>
         <translation>Alinhamento</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="718"/>
+        <location filename="../gui/settings_dialog.ui" line="689"/>
         <source>left</source>
         <translation>esquerda</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="728"/>
+        <location filename="../gui/settings_dialog.ui" line="699"/>
         <source>center</source>
         <translation>centro</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="735"/>
+        <location filename="../gui/settings_dialog.ui" line="706"/>
         <source>right</source>
         <translation>direita</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="745"/>
+        <location filename="../gui/settings_dialog.ui" line="716"/>
         <source>Space between digits</source>
         <translation>Espaço entre dígitos</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="751"/>
+        <location filename="../gui/settings_dialog.ui" line="722"/>
         <source>less</source>
         <translation>menos</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="777"/>
+        <location filename="../gui/settings_dialog.ui" line="748"/>
         <source>more</source>
         <translation>mais</translation>
     </message>
@@ -447,37 +604,32 @@
         <translation type="vanished">verificar lançamentos beta</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="872"/>
         <source>If enabled, given URL will be opened with default web browser when you click on clock</source>
-        <translation>Se ativado, o URL indicado será aberto com o navegador de internet padrão quando clicar no relógio</translation>
+        <translation type="vanished">Se ativado, o URL indicado será aberto com o navegador de internet padrão quando clicar no relógio</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="875"/>
         <source>Clock URL</source>
-        <translation>URL do relógio</translation>
+        <translation type="vanished">URL do relógio</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="901"/>
         <source>Browse for local file instead of URL</source>
-        <translation>Navegar pelos ficheiros locais em vez do URL</translation>
+        <translation type="vanished">Navegar pelos ficheiros locais em vez do URL</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="914"/>
         <source>display &apos;Show/Hide&apos; menu item</source>
-        <translation>mostrar o item do menu &apos;Mostrar/Ocultar&apos;</translation>
+        <translation type="vanished">mostrar o item do menu &apos;Mostrar/Ocultar&apos;</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="921"/>
+        <location filename="../gui/settings_dialog.ui" line="760"/>
         <source>display time in another time zone</source>
         <translation>mostrar tempo noutro fuso horário</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="928"/>
         <source>export state (e.g. position)</source>
-        <translation>exportar estado (por ex. posição)</translation>
+        <translation type="vanished">exportar estado (por ex. posição)</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="983"/>
+        <location filename="../gui/settings_dialog.ui" line="795"/>
         <source>Plugins</source>
         <translation>Módulos</translation>
     </message>
@@ -486,83 +638,46 @@
         <translation type="vanished">Experimental</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="562"/>
-        <source>Lets the clock be placed on top of taskbars, docks and panels. The clock window has to bypass the window manager to do that, so it will no longer be minimized, arranged or restacked by it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="565"/>
-        <source>allow clock to cover taskbar/tray panels (bypasses window manager)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="572"/>
-        <source>Allows overlap with panel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="945"/>
         <source>show clock in fullscreen mode (may not work for some apps)</source>
-        <translation>mostrar relógio no modo ecrã total (pode não funcionar para algumas aplicações)</translation>
+        <translation type="vanished">mostrar relógio no modo ecrã total (pode não funcionar para algumas aplicações)</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="955"/>
+        <location filename="../gui/settings_dialog.ui" line="529"/>
         <source>show clock on all workspaces/virtual desktops</source>
         <translation>mostrar relógio em todos os espaços de trabalho/espaços de trabalho virtuais</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="125"/>
-        <source>show app icon in the taskbar (and in the window switcher), can be useful for screen recording software</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="118"/>
         <source>better &apos;stay on top&apos; for Linux</source>
-        <translation>melhor &apos;manter por cima de tudo&apos; em Linux</translation>
+        <translation type="vanished">melhor &apos;manter por cima de tudo&apos; em Linux</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="965"/>
         <source>always keep clock visible on screen, prevent out of screen position</source>
-        <translation>manter o relógio sempre visível no ecrã, previne que saia da área do ecrã</translation>
+        <translation type="vanished">manter o relógio sempre visível no ecrã, previne que saia da área do ecrã</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="585"/>
         <source>show clock on all available monitors</source>
-        <translation>mostrar relógio em todos os monitores disponíveis</translation>
+        <translation type="vanished">mostrar relógio em todos os monitores disponíveis</translation>
     </message>
     <message>
         <source>allow only one clock instance at a time</source>
         <translation type="vanished">permitir apenas 1 relógio de cada vez</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="975"/>
+        <location filename="../gui/settings_dialog.ui" line="539"/>
         <source>move clock on click on it (has no effect if &quot;transparent for mouse&quot; is enabled)</source>
         <translation>mover o relógio ao clicar nele (não tem efeito se estiver ativa a opção &quot;transparente para o rato&quot;)</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="146"/>
-        <source>become almost transparent on mouse hover</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="156"/>
-        <source>hide completely</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="792"/>
         <source>ATTENTION! Refreshing at a quick rate can cause a high CPU load. Default is 500ms.</source>
-        <translation>ATENÇÃO! Refrescar a uma taxa rápida pode sobrecarregar o processador. O padrão é 500ms.</translation>
+        <translation type="vanished">ATENÇÃO! Refrescar a uma taxa rápida pode sobrecarregar o processador. O padrão é 500ms.</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="799"/>
         <source>snap to edges, threshold</source>
-        <translation>atrair às bordas, limiar</translation>
+        <translation type="vanished">atrair às bordas, limiar</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="831"/>
         <source>window refresh interval</source>
-        <translation>intervalo de refrescamento da janela</translation>
+        <translation type="vanished">intervalo de refrescamento da janela</translation>
     </message>
     <message>
         <source>Please restart clock after changing any of these options!</source>
@@ -573,7 +688,7 @@
         <translation type="vanished">Existem funcionalidades experimentais neste separador. Estas estão desativadas por padrão. Ativar e usá-las é completamente seguro para o computador, mas pode levar a comportamentos do relógio inesperados. Teste-as conforme quiser. Se notar algum comportamento estranho após ativar qualquer uma destas opções, por favor indique-me. Pode encontrar a informação de contacto na janela &apos;Sobre&apos;.</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="137"/>
+        <location filename="../gui/settings_dialog.cpp" line="130"/>
         <source>unknown</source>
         <translation>desconhecido</translation>
     </message>
@@ -594,33 +709,33 @@
         <translation type="vanished">2 semanas</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="360"/>
+        <location filename="../gui/settings_dialog.cpp" line="335"/>
         <source>Open texture file</source>
         <translation>Abrir ficheiro de textura</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="362"/>
+        <location filename="../gui/settings_dialog.cpp" line="337"/>
         <source>Images (*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</source>
         <translation>Imagens (*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="401"/>
+        <location filename="../gui/settings_dialog.cpp" line="376"/>
         <source>Select Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="436"/>
+        <location filename="../gui/settings_dialog.cpp" line="411"/>
         <source>Export settings to ...</source>
         <translation>Exportar configurações para...</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="438"/>
-        <location filename="../gui/settings_dialog.cpp" line="446"/>
+        <location filename="../gui/settings_dialog.cpp" line="413"/>
+        <location filename="../gui/settings_dialog.cpp" line="421"/>
         <source>Digital Clock settings files (*.dcs)</source>
         <translation>Ficheiros de configuração do Relógio Digital (*.dcs)</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="444"/>
+        <location filename="../gui/settings_dialog.cpp" line="419"/>
         <source>Import settings from ...</source>
         <translation>Importar configuração de...</translation>
     </message>

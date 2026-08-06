@@ -44,6 +44,7 @@ SOURCES += main.cpp \
     core/screen_placement_policy.cpp \
     core/skin_manager.cpp \
     gui/about_dialog.cpp \
+    gui/advanced_settings_dialog.cpp \
     gui/card_layout.cpp \
     gui/clickable_label.cpp \
     gui/clock_display.cpp \
@@ -74,6 +75,7 @@ HEADERS += \
     core/screen_placement_policy.h \
     core/skin_manager.h \
     gui/about_dialog.h \
+    gui/advanced_settings_dialog.h \
     gui/card_layout.h \
     gui/clickable_label.h \
     gui/clock_display.h \
@@ -125,6 +127,7 @@ HEADERS += \
 
 FORMS += \
     gui/about_dialog.ui \
+    gui/advanced_settings_dialog.ui \
     gui/plugin_info_dialog.ui \
     gui/plugin_list_item_widget.ui \
     gui/settings_dialog.ui

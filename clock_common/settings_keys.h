@@ -80,10 +80,8 @@ enum Option {
   OPT_CLOCK_URL_ENABLED,        /*!< enable/disable quick URL feature, bool, true/false */
   OPT_CLOCK_URL_STRING,         /*!< URL value for quick URL feature, QString, any URL */
   OPT_FULLSCREEN_IGNORE_LST,    /*!< list of fullscreen windows to ignore, QStringList, any strings */
-  OPT_BETTER_STAY_ON_TOP,       /*!< use Qt::X11BypassWindowManagerHint, bool, true/false */
   OPT_SHOW_HIDE_ENABLED,        /*!< enable/disable 'Show/Hide' menu item, bool, true/false */
   OPT_EXPORT_STATE,             /*!< enable/disable state export with settings, bool, true/false */
-  OPT_KEEP_ALWAYS_VISIBLE,      /*!< prevent out of range positions, bool, true/false */
   // window settings
   OPT_SHOW_WINDOW_BORDER,       /*!< highlight window border during configuration, bool, true/false */
   OPT_SNAP_TO_EDGES,            /*!< snap to edges/corners flag, bool, true/false */
@@ -94,8 +92,6 @@ enum Option {
   OPT_OPACITY_ON_HOVER,         /*!< window opacity on mouse hover, qreal, 0..1 */
   OPT_USE_HOVER_BUTTONS,        /*!< enable/disable navigation buttons on mouse hover, bool, true/false */
   OPT_WINDOW_MOVE_STEP,         /*!< movement distance when hover button is clicked, int, 5..100 */
-  OPT_SHOW_TASKBAR_ICON,        /*!< show app icon in Windows TaskBar, bool, true/false */
-  OPT_ALLOW_OVER_PANELS,        /*!< allow clock to cover taskbars/docks/panels, bool, true/false */
 };
 
 #endif // SETTINGS_KEYS_H

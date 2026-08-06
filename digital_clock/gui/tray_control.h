@@ -42,11 +42,9 @@ public:
 
   QSystemTrayIcon* GetTrayIcon() const Q_DECL_NOEXCEPT;
   QAction* GetShowHideAction() const Q_DECL_NOEXCEPT;
-  QAction* GetAllowOverPanelsAction() const Q_DECL_NOEXCEPT;
 
 signals:
   void VisibilityChanged(bool visible);
-  void AllowOverPanelsChanged(bool allow);
   void PositionChanged(Qt::Alignment pos);
   void ShowSettingsDlg();
   void ShowAboutDlg();

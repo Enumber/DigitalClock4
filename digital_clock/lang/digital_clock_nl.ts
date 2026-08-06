@@ -20,7 +20,7 @@
         <translation type="vanished">Update beschikbaar (%1). Klik op dit bericht om te downloaden.</translation>
     </message>
     <message>
-        <location filename="../core/clock_application.cpp" line="522"/>
+        <location filename="../core/clock_application.cpp" line="514"/>
         <source>%1 Error</source>
         <translation>%1 Fout</translation>
     </message>
@@ -130,16 +130,155 @@
     </message>
 </context>
 <context>
+    <name>digital_clock::gui::AdvancedSettingsDialog</name>
+    <message>
+        <source>Appearance</source>
+        <translation type="obsolete">Uiterlijk</translation>
+    </message>
+    <message>
+        <source>skin customization</source>
+        <translation type="obsolete">aanpassen thema</translation>
+    </message>
+    <message>
+        <source>none</source>
+        <translation type="obsolete">geen</translation>
+    </message>
+    <message>
+        <source>change texture</source>
+        <translation type="obsolete">verander textuur</translation>
+    </message>
+    <message>
+        <source>colorize</source>
+        <translation type="obsolete">inkleuren</translation>
+    </message>
+    <message>
+        <source>texture type</source>
+        <translation type="obsolete">textuur type</translation>
+    </message>
+    <message>
+        <source>solid color</source>
+        <translation type="obsolete">effen kleur</translation>
+    </message>
+    <message>
+        <source>custom image</source>
+        <translation type="obsolete">aangepaste afbeelding</translation>
+    </message>
+    <message>
+        <source>texture per element</source>
+        <translation type="obsolete">textuur per element</translation>
+    </message>
+    <message>
+        <source>stretch</source>
+        <translation type="obsolete">spreiden</translation>
+    </message>
+    <message>
+        <source>tile</source>
+        <translation type="obsolete">naast elkaar</translation>
+    </message>
+    <message>
+        <source>background color</source>
+        <translation type="obsolete">achtergrond kleur</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="153"/>
+        <source>enable</source>
+        <translation type="unfinished">inschakelen</translation>
+    </message>
+    <message>
+        <source>Current background color</source>
+        <translation type="obsolete">Huidige achtergrond kleur</translation>
+    </message>
+    <message>
+        <source>Space between digits</source>
+        <translation type="obsolete">Ruimte tussen getallen</translation>
+    </message>
+    <message>
+        <source>less</source>
+        <translation type="obsolete">minder</translation>
+    </message>
+    <message>
+        <source>more</source>
+        <translation type="obsolete">meer</translation>
+    </message>
+    <message>
+        <source>Misc</source>
+        <translation type="obsolete">Diversen</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="39"/>
+        <source>show clock on all available monitors</source>
+        <translation type="unfinished">klok weergeven op alle beschikbare monitoren</translation>
+    </message>
+    <message>
+        <source>transparent for mouse</source>
+        <translation type="obsolete">transparant voor muis</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="14"/>
+        <source>Advanced Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="33"/>
+        <source>Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="49"/>
+        <source>show clock in fullscreen mode (may not work for some apps)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="64"/>
+        <source>ATTENTION! Refreshing at a quick rate can cause a high CPU load. Default is 500ms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="71"/>
+        <source>snap to edges, threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="103"/>
+        <source>window refresh interval</source>
+        <translation type="unfinished">venster vernieuwingsinterval</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="144"/>
+        <source>If enabled, given URL will be opened with default web browser when you click on clock</source>
+        <translation type="unfinished">Indien ingeschakeld, wanneer u op klok klikt, wordt de opgegeven URL geopend met de standaardwebbrowser</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="147"/>
+        <source>Clock URL</source>
+        <translation type="unfinished">Klok URL</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="173"/>
+        <source>Browse for local file instead of URL</source>
+        <translation type="unfinished">Blader naar een lokaal bestand in plaats van URL</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="186"/>
+        <source>display &apos;Show/Hide&apos; menu item</source>
+        <translation type="unfinished">menu item &apos;Tonen/verbergen&apos; weergeven</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="193"/>
+        <source>export state (e.g. position)</source>
+        <translation type="unfinished">exportstatus (bijv. positie)</translation>
+    </message>
+    <message>
+        <source>Images (*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</source>
+        <translation type="obsolete">Afbeeldingen (*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</translation>
+    </message>
+</context>
+<context>
     <name>digital_clock::gui::ContextMenu</name>
     <message>
         <location filename="../gui/context_menu.cpp" line="32"/>
         <source>&amp;Visible</source>
         <translation>&amp;Zichtbaar</translation>
-    </message>
-    <message>
-        <location filename="../gui/context_menu.cpp" line="52"/>
-        <source>&amp;Cover Panels</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../gui/context_menu.cpp" line="35"/>
@@ -184,7 +323,7 @@
         <translation>Onderste</translation>
     </message>
     <message>
-        <location filename="../gui/context_menu.cpp" line="56"/>
+        <location filename="../gui/context_menu.cpp" line="54"/>
         <source>&amp;About</source>
         <translation>&amp;Over</translation>
     </message>
@@ -193,7 +332,7 @@
         <translation type="vanished">&amp;Bijwerken</translation>
     </message>
     <message>
-        <location filename="../gui/context_menu.cpp" line="60"/>
+        <location filename="../gui/context_menu.cpp" line="57"/>
         <source>&amp;Quit</source>
         <translation>&amp;Afsluiten</translation>
     </message>
@@ -259,174 +398,188 @@
         <translation>op voorgrond laten</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="132"/>
+        <location filename="../gui/settings_dialog.ui" line="115"/>
         <source>transparent for mouse</source>
         <translation>transparant voor muis</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="139"/>
+        <location filename="../gui/settings_dialog.ui" line="122"/>
         <source>separator flashes</source>
         <translation>knipperend scheidingsteken</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="202"/>
+        <location filename="../gui/settings_dialog.ui" line="168"/>
         <source>opacity</source>
         <translation>ondoorzichtigheid</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="228"/>
+        <location filename="../gui/settings_dialog.ui" line="194"/>
         <source>zoom</source>
         <translation>zoom</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="256"/>
+        <location filename="../gui/settings_dialog.ui" line="222"/>
         <source>Skin</source>
         <translation>Thema</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="262"/>
+        <location filename="../gui/settings_dialog.ui" line="228"/>
         <source>use skin</source>
         <translation>gebruik thema</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="312"/>
+        <location filename="../gui/settings_dialog.ui" line="278"/>
         <source>use font</source>
         <translation>gebruik lettertype</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="332"/>
+        <location filename="../gui/settings_dialog.ui" line="298"/>
         <source>skin customization</source>
         <translation>aanpassen thema</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="344"/>
+        <location filename="../gui/settings_dialog.ui" line="310"/>
         <source>none</source>
         <translation>geen</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="351"/>
+        <location filename="../gui/settings_dialog.ui" line="317"/>
         <source>change texture</source>
         <translation>verander textuur</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="361"/>
-        <location filename="../gui/settings_dialog.ui" line="482"/>
+        <location filename="../gui/settings_dialog.ui" line="327"/>
+        <location filename="../gui/settings_dialog.ui" line="448"/>
         <source>colorize</source>
         <translation>inkleuren</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="371"/>
+        <location filename="../gui/settings_dialog.ui" line="337"/>
         <source>texture type</source>
         <translation>textuur type</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="377"/>
+        <location filename="../gui/settings_dialog.ui" line="343"/>
         <source>solid color</source>
         <translation>effen kleur</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="394"/>
-        <location filename="../gui/settings_dialog.ui" line="414"/>
+        <location filename="../gui/settings_dialog.ui" line="360"/>
+        <location filename="../gui/settings_dialog.ui" line="380"/>
         <source>custom image</source>
         <translation>aangepaste afbeelding</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="426"/>
+        <location filename="../gui/settings_dialog.ui" line="392"/>
         <source>texture per element</source>
         <translation>textuur per element</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="433"/>
+        <location filename="../gui/settings_dialog.ui" line="399"/>
         <source>stretch</source>
         <translation>spreiden</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="443"/>
+        <location filename="../gui/settings_dialog.ui" line="409"/>
         <source>tile</source>
         <translation>naast elkaar</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="453"/>
+        <location filename="../gui/settings_dialog.ui" line="419"/>
         <source>background color</source>
         <translation>achtergrond kleur</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="459"/>
-        <location filename="../gui/settings_dialog.ui" line="881"/>
+        <location filename="../gui/settings_dialog.ui" line="425"/>
         <source>enable</source>
         <translation>inschakelen</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="469"/>
+        <location filename="../gui/settings_dialog.ui" line="435"/>
         <source>Current background color</source>
         <translation>Huidige achtergrond kleur</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="538"/>
+        <location filename="../gui/settings_dialog.ui" line="504"/>
         <source>Misc</source>
         <translation>Diversen</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="555"/>
+        <location filename="../gui/settings_dialog.ui" line="774"/>
+        <source>Advanced Settings...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/settings_dialog.ui" line="519"/>
         <source>start on system startup</source>
         <translation>start gedurende opstarten systeem</translation>
+    </message>
+    <message>
+        <location filename="../gui/settings_dialog.ui" line="546"/>
+        <source>become almost transparent on mouse hover</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/settings_dialog.ui" line="556"/>
+        <source>hide completely</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>enable autoupdate</source>
         <translation type="vanished">autoupdate inschakelen</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="594"/>
+        <location filename="../gui/settings_dialog.ui" line="563"/>
         <source>Time format</source>
         <translation>Tijd formaat</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="612"/>
+        <location filename="../gui/settings_dialog.ui" line="581"/>
         <source>system</source>
         <translation>systeem</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="622"/>
+        <location filename="../gui/settings_dialog.ui" line="591"/>
         <source>custom</source>
         <translation>aanpassen</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="702"/>
+        <location filename="../gui/settings_dialog.ui" line="671"/>
         <source>Apply</source>
         <translation>Toepassen</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="712"/>
+        <location filename="../gui/settings_dialog.ui" line="683"/>
         <source>Alignment</source>
         <translation>Uitlijning</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="718"/>
+        <location filename="../gui/settings_dialog.ui" line="689"/>
         <source>left</source>
         <translation>links</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="728"/>
+        <location filename="../gui/settings_dialog.ui" line="699"/>
         <source>center</source>
         <translation>midden</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="735"/>
+        <location filename="../gui/settings_dialog.ui" line="706"/>
         <source>right</source>
         <translation>rechts</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="745"/>
+        <location filename="../gui/settings_dialog.ui" line="716"/>
         <source>Space between digits</source>
         <translation>Ruimte tussen getallen</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="751"/>
+        <location filename="../gui/settings_dialog.ui" line="722"/>
         <source>less</source>
         <translation>minder</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="777"/>
+        <location filename="../gui/settings_dialog.ui" line="748"/>
         <source>more</source>
         <translation>meer</translation>
     </message>
@@ -447,37 +600,32 @@
         <translation type="vanished">controleer op beta versies</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="872"/>
         <source>If enabled, given URL will be opened with default web browser when you click on clock</source>
-        <translation>Indien ingeschakeld, wanneer u op klok klikt, wordt de opgegeven URL geopend met de standaardwebbrowser</translation>
+        <translation type="vanished">Indien ingeschakeld, wanneer u op klok klikt, wordt de opgegeven URL geopend met de standaardwebbrowser</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="875"/>
         <source>Clock URL</source>
-        <translation>Klok URL</translation>
+        <translation type="vanished">Klok URL</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="901"/>
         <source>Browse for local file instead of URL</source>
-        <translation>Blader naar een lokaal bestand in plaats van URL</translation>
+        <translation type="vanished">Blader naar een lokaal bestand in plaats van URL</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="914"/>
         <source>display &apos;Show/Hide&apos; menu item</source>
-        <translation>menu item &apos;Tonen/verbergen&apos; weergeven</translation>
+        <translation type="vanished">menu item &apos;Tonen/verbergen&apos; weergeven</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="921"/>
+        <location filename="../gui/settings_dialog.ui" line="760"/>
         <source>display time in another time zone</source>
         <translation>geef tijd weer in andere tijdzone</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="928"/>
         <source>export state (e.g. position)</source>
-        <translation>exportstatus (bijv. positie)</translation>
+        <translation type="vanished">exportstatus (bijv. positie)</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="983"/>
+        <location filename="../gui/settings_dialog.ui" line="795"/>
         <source>Plugins</source>
         <translation>Plug-ins</translation>
     </message>
@@ -486,86 +634,29 @@
         <translation type="vanished">Experimenteel</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="562"/>
-        <source>Lets the clock be placed on top of taskbars, docks and panels. The clock window has to bypass the window manager to do that, so it will no longer be minimized, arranged or restacked by it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="565"/>
-        <source>allow clock to cover taskbar/tray panels (bypasses window manager)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="572"/>
-        <source>Allows overlap with panel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="945"/>
-        <source>show clock in fullscreen mode (may not work for some apps)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="955"/>
+        <location filename="../gui/settings_dialog.ui" line="529"/>
         <source>show clock on all workspaces/virtual desktops</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="125"/>
-        <source>show app icon in the taskbar (and in the window switcher), can be useful for screen recording software</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="118"/>
-        <source>better &apos;stay on top&apos; for Linux</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="965"/>
-        <source>always keep clock visible on screen, prevent out of screen position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="585"/>
         <source>show clock on all available monitors</source>
-        <translation>klok weergeven op alle beschikbare monitoren</translation>
+        <translation type="vanished">klok weergeven op alle beschikbare monitoren</translation>
     </message>
     <message>
         <source>allow only one clock instance at a time</source>
         <translation type="vanished">sta slechts één klok start tegelijk toe</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="975"/>
+        <location filename="../gui/settings_dialog.ui" line="539"/>
         <source>move clock on click on it (has no effect if &quot;transparent for mouse&quot; is enabled)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="146"/>
-        <source>become almost transparent on mouse hover</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="156"/>
-        <source>hide completely</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="792"/>
-        <source>ATTENTION! Refreshing at a quick rate can cause a high CPU load. Default is 500ms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="799"/>
-        <source>snap to edges, threshold</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/settings_dialog.ui" line="831"/>
         <source>window refresh interval</source>
-        <translation>venster vernieuwingsinterval</translation>
+        <translation type="vanished">venster vernieuwingsinterval</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="137"/>
+        <location filename="../gui/settings_dialog.cpp" line="130"/>
         <source>unknown</source>
         <translation>onbekend</translation>
     </message>
@@ -586,33 +677,33 @@
         <translation type="vanished">2 weken</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="360"/>
+        <location filename="../gui/settings_dialog.cpp" line="335"/>
         <source>Open texture file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="362"/>
+        <location filename="../gui/settings_dialog.cpp" line="337"/>
         <source>Images (*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</source>
         <translation>Afbeeldingen (*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="401"/>
+        <location filename="../gui/settings_dialog.cpp" line="376"/>
         <source>Select Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="436"/>
+        <location filename="../gui/settings_dialog.cpp" line="411"/>
         <source>Export settings to ...</source>
         <translation>Exporteer instellingen naar ...</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="438"/>
-        <location filename="../gui/settings_dialog.cpp" line="446"/>
+        <location filename="../gui/settings_dialog.cpp" line="413"/>
+        <location filename="../gui/settings_dialog.cpp" line="421"/>
         <source>Digital Clock settings files (*.dcs)</source>
         <translation>Digital Clock instelling bestanden (*.dcs)</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="444"/>
+        <location filename="../gui/settings_dialog.cpp" line="419"/>
         <source>Import settings from ...</source>
         <translation>Importeer instellingen van ...</translation>
     </message>

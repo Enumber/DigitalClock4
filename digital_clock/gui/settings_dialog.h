@@ -108,28 +108,16 @@ private slots:
   void on_align_right_rbtn_clicked();
   void on_background_enabled_clicked(bool checked);
   void on_background_color_btn_clicked();
-  void on_clock_url_enabled_clicked(bool checked);
-  void on_clock_url_edit_textEdited(const QString& arg1);
-  void on_browse_url_file_btn_clicked();
-  void on_show_hide_enable_clicked(bool checked);
-  void on_export_state_clicked(bool checked);
 
-  void on_show_in_fullscreen_clicked(bool checked);
   void on_show_on_all_workspaces_clicked(bool checked);
-  void on_better_stay_on_top_clicked(bool checked);
-  void on_keep_always_visible_clicked(bool checked);
-  void on_allow_over_panels_clicked(bool checked);
-  void on_show_on_all_monitors_clicked(bool checked);
   void on_hover_buttons_enabled_clicked(bool checked);
-  void on_taskbar_icon_enable_clicked(bool checked);
   void on_transparent_on_hover_clicked(bool checked);
   void on_hide_on_mouse_hover_clicked(bool checked);
-  void on_snap_to_edges_clicked(bool checked);
-  void on_snap_threshold_valueChanged(int value);
-  void on_refresh_interval_valueChanged(int value);
 
   void on_change_time_zone_cbx_clicked(bool checked);
   void on_time_zone_box_activated(int index);
+
+  void on_advanced_settings_btn_clicked();
 
 private:
   Ui::SettingsDialog* ui;

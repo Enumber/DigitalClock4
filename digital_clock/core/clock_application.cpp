@@ -92,7 +92,6 @@ ClockApplication::ClockApplication(ClockSettings* config, QObject* parent) :
   connect(tray_control_, &gui::TrayControl::ShowSettingsDlg, this, &ClockApplication::ShowSettingsDialog);
   connect(tray_control_, &gui::TrayControl::ShowAboutDlg, this, &ClockApplication::ShowAboutDialog);
   connect(tray_control_, &gui::TrayControl::AppExit, qApp, &QApplication::quit);
-  connect(tray_control_, &gui::TrayControl::AllowOverPanelsChanged, this, &ClockApplication::SetAllowOverPanels);
 
   mouse_tracker_ = new MouseTracker(this);
   mouse_tracker_->start();
@@ -148,12 +147,8 @@ void ClockApplication::Reset()
   // widnow settings
   ApplyOption(OPT_OPACITY, app_config_->GetValue(OPT_OPACITY));
   ApplyOption(OPT_FULLSCREEN_DETECT, app_config_->GetValue(OPT_FULLSCREEN_DETECT));
-  // must be applied before 'stay on top': both drive the same window manager
-  // bypass flag, and this one decides whether the clock may cover panels
-  ApplyOption(OPT_ALLOW_OVER_PANELS, app_config_->GetValue(OPT_ALLOW_OVER_PANELS));
   ApplyOption(OPT_STAY_ON_TOP, app_config_->GetValue(OPT_STAY_ON_TOP));
   ApplyOption(OPT_TRANSP_FOR_INPUT, app_config_->GetValue(OPT_TRANSP_FOR_INPUT));
-  ApplyOption(OPT_SHOW_TASKBAR_ICON, app_config_->GetValue(OPT_SHOW_TASKBAR_ICON));
   ApplyOption(OPT_ALIGNMENT, app_config_->GetValue(OPT_ALIGNMENT));
   ApplyOption(OPT_BACKGROUND_COLOR, app_config_->GetValue(OPT_BACKGROUND_COLOR));
   ApplyOption(OPT_BACKGROUND_ENABLED, app_config_->GetValue(OPT_BACKGROUND_ENABLED));
@@ -192,7 +187,6 @@ void ClockApplication::Reset()
   ApplyOption(OPT_CLOCK_URL_STRING, app_config_->GetValue(OPT_CLOCK_URL_STRING));
   ApplyOption(OPT_SHOW_HIDE_ENABLED, app_config_->GetValue(OPT_SHOW_HIDE_ENABLED));
   ApplyOption(OPT_EXPORT_STATE, app_config_->GetValue(OPT_EXPORT_STATE));
-  ApplyOption(OPT_KEEP_ALWAYS_VISIBLE, app_config_->GetValue(OPT_KEEP_ALWAYS_VISIBLE));
   ApplyOption(OPT_SHOW_ON_ALL_DESKTOPS, app_config_->GetValue(OPT_SHOW_ON_ALL_DESKTOPS));
 
   plugin_manager_->UnloadPlugins();
@@ -229,21 +223,9 @@ void ClockApplication::ApplyOption(const Option opt, const QVariant& value)
       Q_FALLTHROUGH();
       // fallthrough
 
-    case OPT_ALLOW_OVER_PANELS:
-      tray_control_->GetAllowOverPanelsAction()->setChecked(value.toBool());
-      Q_FALLTHROUGH();
-      // fallthrough
-
     default:
       for (auto w : qAsConst(clock_windows_)) w->ApplyOption(opt, value);
   }
-}
-
-void ClockApplication::SetAllowOverPanels(bool allow)
-{
-  app_config_->SetValue(OPT_ALLOW_OVER_PANELS, allow);
-  app_config_->CommitValue(OPT_ALLOW_OVER_PANELS);
-  ApplyOption(OPT_ALLOW_OVER_PANELS, allow);
 }
 
 void ClockApplication::ShowSettingsDialog()
@@ -500,8 +482,6 @@ void ClockApplication::ConnectWindow(gui::ClockWindow* window)
           skin_manager_, &SkinManager::SetSeparators);
   connect(window->contextMenu(), &gui::ContextMenu::VisibilityChanged,
           this, &ClockApplication::UpdateVisibilityAction);
-  connect(window->contextMenu(), &gui::ContextMenu::AllowOverPanelsChanged,
-          this, &ClockApplication::SetAllowOverPanels);
   connect(window->contextMenu(), &gui::ContextMenu::ShowSettingsDlg,
           this, &ClockApplication::ShowSettingsDialog);
   connect(window->contextMenu(), &gui::ContextMenu::ShowAboutDlg,

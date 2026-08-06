@@ -20,7 +20,7 @@
         <translation type="vanished">有可用更新 (%1)。点击此消息下载。</translation>
     </message>
     <message>
-        <location filename="../core/clock_application.cpp" line="522"/>
+        <location filename="../core/clock_application.cpp" line="514"/>
         <source>%1 Error</source>
         <translation>%1 错误</translation>
     </message>
@@ -130,6 +130,178 @@
     </message>
 </context>
 <context>
+    <name>digital_clock::gui::AdvancedSettingsDialog</name>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="14"/>
+        <source>Advanced Settings</source>
+        <translation>高级设置</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="vanished">外观</translation>
+    </message>
+    <message>
+        <source>skin customization</source>
+        <translation type="vanished">皮肤自定义</translation>
+    </message>
+    <message>
+        <source>none</source>
+        <translation type="vanished">不进行自定义</translation>
+    </message>
+    <message>
+        <source>change texture</source>
+        <translation type="vanished">改变纹理</translation>
+    </message>
+    <message>
+        <source>colorize</source>
+        <translation type="vanished">改变颜色</translation>
+    </message>
+    <message>
+        <source>texture type</source>
+        <translation type="vanished">纹理选项</translation>
+    </message>
+    <message>
+        <source>solid color</source>
+        <translation type="vanished">使用颜色填充</translation>
+    </message>
+    <message>
+        <source>custom image</source>
+        <translation type="vanished">自定义图片</translation>
+    </message>
+    <message>
+        <source>texture per element</source>
+        <translation type="vanished">每个部分独立使用纹理</translation>
+    </message>
+    <message>
+        <source>stretch</source>
+        <translation type="vanished">拉伸</translation>
+    </message>
+    <message>
+        <source>tile</source>
+        <translation type="vanished">平铺</translation>
+    </message>
+    <message>
+        <source>background color</source>
+        <translation type="vanished">背景颜色</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="153"/>
+        <source>enable</source>
+        <translation>启用</translation>
+    </message>
+    <message>
+        <source>Current background color</source>
+        <translation type="vanished">当前背景颜色</translation>
+    </message>
+    <message>
+        <source>Space between digits</source>
+        <translation type="vanished">各部分数字间距</translation>
+    </message>
+    <message>
+        <source>less</source>
+        <translation type="vanished">小</translation>
+    </message>
+    <message>
+        <source>more</source>
+        <translation type="vanished">大</translation>
+    </message>
+    <message>
+        <source>Misc</source>
+        <translation type="vanished">杂项</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="33"/>
+        <source>Window</source>
+        <translation>窗口</translation>
+    </message>
+    <message>
+        <source>Lets the clock be placed on top of taskbars, docks and panels. The clock window has to bypass the window manager to do that, so it will no longer be minimized, arranged or restacked by it.</source>
+        <translation type="vanished">允许把时钟摆到任务栏、程序坞和面板的上面。为此时钟窗口必须绕过窗口管理器，因此窗口管理器不再对它做最小化、排列和层级调整。</translation>
+    </message>
+    <message>
+        <source>allow clock to cover taskbar/tray panels (bypasses window manager)</source>
+        <translation type="vanished">允许时钟覆盖任务栏/托盘面板（绕过窗口管理器）</translation>
+    </message>
+    <message>
+        <source>Allows overlap with panel</source>
+        <translation type="vanished">可覆盖面板</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="39"/>
+        <source>show clock on all available monitors</source>
+        <translation>在所有可用的显示屏上显示时钟</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="49"/>
+        <source>show clock in fullscreen mode (may not work for some apps)</source>
+        <translation>以全屏模式显示时钟（对某些程序可能不生效）</translation>
+    </message>
+    <message>
+        <source>Mouse and Interaction</source>
+        <translation type="vanished">鼠标与交互</translation>
+    </message>
+    <message>
+        <source>transparent for mouse</source>
+        <translation type="vanished">不响应鼠标操作</translation>
+    </message>
+    <message>
+        <source>become almost transparent on mouse hover</source>
+        <translation type="vanished">鼠标经过时透明化</translation>
+    </message>
+    <message>
+        <source>hide completely</source>
+        <translation type="vanished">完全隐藏</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="64"/>
+        <source>ATTENTION! Refreshing at a quick rate can cause a high CPU load. Default is 500ms.</source>
+        <translation>注意！过高的刷新率将导致CPU占用升高。默认值为500ms。</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="71"/>
+        <source>snap to edges, threshold</source>
+        <translation>靠近边缘时自动吸附；阈值</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="103"/>
+        <source>window refresh interval</source>
+        <translation>窗口刷新间隔</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="144"/>
+        <source>If enabled, given URL will be opened with default web browser when you click on clock</source>
+        <translation>启用此选项后，点击时钟将使用默认浏览器打开您所设定的网页链接</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="147"/>
+        <source>Clock URL</source>
+        <translation>快捷链接</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="173"/>
+        <source>Browse for local file instead of URL</source>
+        <translation>浏览本地文件</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="186"/>
+        <source>display &apos;Show/Hide&apos; menu item</source>
+        <translation>在菜单中显示“可见性”选项</translation>
+    </message>
+    <message>
+        <location filename="../gui/advanced_settings_dialog.ui" line="193"/>
+        <source>export state (e.g. position)</source>
+        <translation>导出时钟状态（位置）</translation>
+    </message>
+    <message>
+        <source>Open texture file</source>
+        <translation type="vanished">打开贴图文件</translation>
+    </message>
+    <message>
+        <source>Images (*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</source>
+        <translation type="vanished">图片文件(*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</translation>
+    </message>
+</context>
+<context>
     <name>digital_clock::gui::ContextMenu</name>
     <message>
         <location filename="../gui/context_menu.cpp" line="32"/>
@@ -137,9 +309,8 @@
         <translation>可见性(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../gui/context_menu.cpp" line="52"/>
         <source>&amp;Cover Panels</source>
-        <translation>可覆盖面板(&amp;C)</translation>
+        <translation type="vanished">可覆盖面板(&amp;C)</translation>
     </message>
     <message>
         <location filename="../gui/context_menu.cpp" line="35"/>
@@ -184,7 +355,7 @@
         <translation>底部</translation>
     </message>
     <message>
-        <location filename="../gui/context_menu.cpp" line="56"/>
+        <location filename="../gui/context_menu.cpp" line="54"/>
         <source>&amp;About</source>
         <translation>关于(&amp;A)</translation>
     </message>
@@ -193,7 +364,7 @@
         <translation type="vanished">更新(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../gui/context_menu.cpp" line="60"/>
+        <location filename="../gui/context_menu.cpp" line="57"/>
         <source>&amp;Quit</source>
         <translation>退出(&amp;Q)</translation>
     </message>
@@ -259,115 +430,127 @@
         <translation>始终置顶</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="132"/>
+        <location filename="../gui/settings_dialog.ui" line="774"/>
+        <source>Advanced Settings...</source>
+        <translation>高级设置...</translation>
+    </message>
+    <message>
+        <source>Mouse and Interaction</source>
+        <translation type="vanished">鼠标与交互</translation>
+    </message>
+    <message>
+        <location filename="../gui/settings_dialog.ui" line="115"/>
         <source>transparent for mouse</source>
         <translation>不响应鼠标操作</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="139"/>
+        <location filename="../gui/settings_dialog.ui" line="122"/>
         <source>separator flashes</source>
         <translation>分隔符闪烁</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="202"/>
+        <location filename="../gui/settings_dialog.ui" line="168"/>
         <source>opacity</source>
         <translation>不透明度</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="228"/>
+        <location filename="../gui/settings_dialog.ui" line="194"/>
         <source>zoom</source>
         <translation>缩放</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="256"/>
+        <location filename="../gui/settings_dialog.ui" line="222"/>
         <source>Skin</source>
         <translation>皮肤</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="262"/>
+        <location filename="../gui/settings_dialog.ui" line="228"/>
         <source>use skin</source>
         <translation>使用皮肤</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="312"/>
+        <location filename="../gui/settings_dialog.ui" line="278"/>
         <source>use font</source>
         <translation>使用字体</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="332"/>
+        <location filename="../gui/settings_dialog.ui" line="298"/>
         <source>skin customization</source>
         <translation>皮肤自定义</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="344"/>
+        <location filename="../gui/settings_dialog.ui" line="310"/>
         <source>none</source>
         <translation>不进行自定义</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="351"/>
+        <location filename="../gui/settings_dialog.ui" line="317"/>
         <source>change texture</source>
         <translation>改变纹理</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="361"/>
-        <location filename="../gui/settings_dialog.ui" line="482"/>
+        <location filename="../gui/settings_dialog.ui" line="327"/>
+        <location filename="../gui/settings_dialog.ui" line="448"/>
         <source>colorize</source>
         <translation>改变颜色</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="371"/>
+        <location filename="../gui/settings_dialog.ui" line="337"/>
         <source>texture type</source>
         <translation>纹理选项</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="377"/>
+        <location filename="../gui/settings_dialog.ui" line="343"/>
         <source>solid color</source>
         <translation>使用颜色填充</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="394"/>
-        <location filename="../gui/settings_dialog.ui" line="414"/>
+        <location filename="../gui/settings_dialog.ui" line="360"/>
+        <location filename="../gui/settings_dialog.ui" line="380"/>
         <source>custom image</source>
         <translation>自定义图片</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="426"/>
+        <location filename="../gui/settings_dialog.ui" line="392"/>
         <source>texture per element</source>
         <translation>每个部分独立使用纹理</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="433"/>
+        <location filename="../gui/settings_dialog.ui" line="399"/>
         <source>stretch</source>
         <translation>拉伸</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="443"/>
+        <location filename="../gui/settings_dialog.ui" line="409"/>
         <source>tile</source>
         <translation>平铺</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="453"/>
+        <location filename="../gui/settings_dialog.ui" line="419"/>
         <source>background color</source>
         <translation>背景颜色</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="459"/>
-        <location filename="../gui/settings_dialog.ui" line="881"/>
+        <location filename="../gui/settings_dialog.ui" line="425"/>
         <source>enable</source>
         <translation>启用</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="469"/>
+        <location filename="../gui/settings_dialog.ui" line="435"/>
         <source>Current background color</source>
         <translation>当前背景颜色</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="538"/>
+        <source>Window</source>
+        <translation type="vanished">窗口</translation>
+    </message>
+    <message>
+        <location filename="../gui/settings_dialog.ui" line="504"/>
         <source>Misc</source>
         <translation>杂项</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="555"/>
+        <location filename="../gui/settings_dialog.ui" line="519"/>
         <source>start on system startup</source>
         <translation>开机自启</translation>
     </message>
@@ -376,57 +559,57 @@
         <translation type="vanished">自动更新</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="594"/>
+        <location filename="../gui/settings_dialog.ui" line="563"/>
         <source>Time format</source>
         <translation>时间格式</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="612"/>
+        <location filename="../gui/settings_dialog.ui" line="581"/>
         <source>system</source>
         <translation>跟随系统</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="622"/>
+        <location filename="../gui/settings_dialog.ui" line="591"/>
         <source>custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="702"/>
+        <location filename="../gui/settings_dialog.ui" line="671"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="712"/>
+        <location filename="../gui/settings_dialog.ui" line="683"/>
         <source>Alignment</source>
         <translation>对齐方式</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="718"/>
+        <location filename="../gui/settings_dialog.ui" line="689"/>
         <source>left</source>
         <translation>左对齐</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="728"/>
+        <location filename="../gui/settings_dialog.ui" line="699"/>
         <source>center</source>
         <translation>中心对齐</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="735"/>
+        <location filename="../gui/settings_dialog.ui" line="706"/>
         <source>right</source>
         <translation>右对齐</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="745"/>
+        <location filename="../gui/settings_dialog.ui" line="716"/>
         <source>Space between digits</source>
         <translation>各部分数字间距</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="751"/>
+        <location filename="../gui/settings_dialog.ui" line="722"/>
         <source>less</source>
         <translation>小</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="777"/>
+        <location filename="../gui/settings_dialog.ui" line="748"/>
         <source>more</source>
         <translation>大</translation>
     </message>
@@ -447,37 +630,32 @@
         <translation type="vanished">检查Beta版本</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="872"/>
         <source>If enabled, given URL will be opened with default web browser when you click on clock</source>
-        <translation>启用此选项后，点击时钟将使用默认浏览器打开您所设定的网页链接</translation>
+        <translation type="vanished">启用此选项后，点击时钟将使用默认浏览器打开您所设定的网页链接</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="875"/>
         <source>Clock URL</source>
-        <translation>快捷链接</translation>
+        <translation type="vanished">快捷链接</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="901"/>
         <source>Browse for local file instead of URL</source>
-        <translation>浏览本地文件</translation>
+        <translation type="vanished">浏览本地文件</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="914"/>
         <source>display &apos;Show/Hide&apos; menu item</source>
-        <translation>在菜单中显示“可见性”选项</translation>
+        <translation type="vanished">在菜单中显示“可见性”选项</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="921"/>
+        <location filename="../gui/settings_dialog.ui" line="760"/>
         <source>display time in another time zone</source>
         <translation>显示另一时区的时间</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="928"/>
         <source>export state (e.g. position)</source>
-        <translation>导出时钟状态（位置）</translation>
+        <translation type="vanished">导出时钟状态（位置）</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="983"/>
+        <location filename="../gui/settings_dialog.ui" line="795"/>
         <source>Plugins</source>
         <translation>插件</translation>
     </message>
@@ -486,83 +664,72 @@
         <translation type="vanished">实验性选项</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="945"/>
         <source>show clock in fullscreen mode (may not work for some apps)</source>
-        <translation>以全屏模式显示时钟（对某些程序可能不生效）</translation>
+        <translation type="vanished">以全屏模式显示时钟（对某些程序可能不生效）</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="955"/>
+        <location filename="../gui/settings_dialog.ui" line="529"/>
         <source>show clock on all workspaces/virtual desktops</source>
         <translation>在所有工作空间/虚拟桌面上都显示时钟</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="125"/>
         <source>show app icon in the taskbar (and in the window switcher), can be useful for screen recording software</source>
-        <translation>在任务栏（以及 Alt+Tab 切换窗口）中显示程序图标，录屏软件可能会用到</translation>
+        <translation type="vanished">在任务栏（以及 Alt+Tab 切换窗口）中显示程序图标，录屏软件可能会用到</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="118"/>
         <source>better &apos;stay on top&apos; for Linux</source>
-        <translation>针对Linux优化的“始终置顶”功能</translation>
+        <translation type="vanished">针对Linux优化的“始终置顶”功能</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="965"/>
         <source>always keep clock visible on screen, prevent out of screen position</source>
-        <translation>保持时钟在屏幕中可见，防止时钟出现在屏幕内容以外的位置</translation>
+        <translation type="vanished">保持时钟在屏幕中可见，防止时钟出现在屏幕内容以外的位置</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="562"/>
         <source>Lets the clock be placed on top of taskbars, docks and panels. The clock window has to bypass the window manager to do that, so it will no longer be minimized, arranged or restacked by it.</source>
-        <translation>允许把时钟摆到任务栏、程序坞和面板的上面。为此时钟窗口必须绕过窗口管理器，因此窗口管理器不再对它做最小化、排列和层级调整。</translation>
+        <translation type="vanished">允许把时钟摆到任务栏、程序坞和面板的上面。为此时钟窗口必须绕过窗口管理器，因此窗口管理器不再对它做最小化、排列和层级调整。</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="565"/>
         <source>allow clock to cover taskbar/tray panels (bypasses window manager)</source>
-        <translation>允许时钟覆盖任务栏/托盘面板（绕过窗口管理器）</translation>
+        <translation type="vanished">允许时钟覆盖任务栏/托盘面板（绕过窗口管理器）</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="572"/>
         <source>Allows overlap with panel</source>
-        <translation>可覆盖面板</translation>
+        <translation type="vanished">可覆盖面板</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="585"/>
         <source>show clock on all available monitors</source>
-        <translation>在所有可用的显示屏上显示时钟</translation>
+        <translation type="vanished">在所有可用的显示屏上显示时钟</translation>
     </message>
     <message>
         <source>allow only one clock instance at a time</source>
         <translation type="vanished">同时仅允许一个时钟实例存在</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="975"/>
+        <location filename="../gui/settings_dialog.ui" line="539"/>
         <source>move clock on click on it (has no effect if &quot;transparent for mouse&quot; is enabled)</source>
         <translation>点击时钟时移动其位置（开启“不响应鼠标操作”时此选项无效）</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="146"/>
+        <location filename="../gui/settings_dialog.ui" line="546"/>
         <source>become almost transparent on mouse hover</source>
         <translation>鼠标经过时透明化</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="156"/>
+        <location filename="../gui/settings_dialog.ui" line="556"/>
         <source>hide completely</source>
         <translation>完全隐藏</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="792"/>
         <source>ATTENTION! Refreshing at a quick rate can cause a high CPU load. Default is 500ms.</source>
-        <translation>注意！过高的刷新率将导致CPU占用升高。默认值为500ms。</translation>
+        <translation type="vanished">注意！过高的刷新率将导致CPU占用升高。默认值为500ms。</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="799"/>
         <source>snap to edges, threshold</source>
-        <translation>靠近边缘时自动吸附；阈值</translation>
+        <translation type="vanished">靠近边缘时自动吸附；阈值</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.ui" line="831"/>
         <source>window refresh interval</source>
-        <translation>窗口刷新间隔</translation>
+        <translation type="vanished">窗口刷新间隔</translation>
     </message>
     <message>
         <source>Please restart clock after changing any of these options!</source>
@@ -573,7 +740,7 @@
         <translation type="vanished">本页面内容为实验性选项。所有选项默认关闭，启用这些选项并不会对电脑本身造成危害，但有可能导致本程序产生异常。请尽情尝试这些选项，欢迎对它们进行任何形式的测试。如果您发现在启用了某一实验性选项后导致了程序异常，都请告诉我。在菜单的“关于”一栏中可以找到我的联系方式。</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="137"/>
+        <location filename="../gui/settings_dialog.cpp" line="130"/>
         <source>unknown</source>
         <translation>未知</translation>
     </message>
@@ -594,33 +761,33 @@
         <translation type="vanished">2周</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="360"/>
+        <location filename="../gui/settings_dialog.cpp" line="335"/>
         <source>Open texture file</source>
         <translation>打开贴图文件</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="362"/>
+        <location filename="../gui/settings_dialog.cpp" line="337"/>
         <source>Images (*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</source>
         <translation>图片文件(*.bmp *.jpg *.jpeg *.png *.tiff *.xbm *.xpm)</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="401"/>
+        <location filename="../gui/settings_dialog.cpp" line="376"/>
         <source>Select Font</source>
         <translation>选择字体</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="436"/>
+        <location filename="../gui/settings_dialog.cpp" line="411"/>
         <source>Export settings to ...</source>
         <translation>将设置导出到...</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="438"/>
-        <location filename="../gui/settings_dialog.cpp" line="446"/>
+        <location filename="../gui/settings_dialog.cpp" line="413"/>
+        <location filename="../gui/settings_dialog.cpp" line="421"/>
         <source>Digital Clock settings files (*.dcs)</source>
         <translation>Digital Clock设置文件(*.dcs)</translation>
     </message>
     <message>
-        <location filename="../gui/settings_dialog.cpp" line="444"/>
+        <location filename="../gui/settings_dialog.cpp" line="419"/>
         <source>Import settings from ...</source>
         <translation>导入设置文件...</translation>
     </message>

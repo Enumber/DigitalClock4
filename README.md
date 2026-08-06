@@ -38,14 +38,17 @@ Everything the official Windows build has, on Linux:
 * **resilient multi-monitor placement** — new setups prefer a non-primary display;
   positions are saved per physical monitor, a disconnected clock moves to an available
   screen, and it returns to its original screen and position after reconnect or reboot.
-* **cover the taskbar/panel/dock if you want** — a "Cover Panels" checkbox sits right
-  in the tray icon's menu and the clock's own right-click menu (next to Position), and
-  the same setting is in Settings → Misc; toggling it anywhere updates the other
-  instantly and takes effect without reopening Settings.
-* **most settings apply immediately** — no restart needed for fullscreen detection,
-  multi-workspace display, keep-visible, click-to-move, the taskbar-icon toggle, the
-  Linux "better stay on top" mode, or showing the clock on every monitor. Only one
-  clock instance ever runs; a second launch just raises the existing one.
+* **covers the taskbar/panel/dock, stays reachable, stays out of Alt-Tab — by default,
+  with nothing to configure**: "stay on top" always uses the stronger,
+  window-manager-bypassing method on Linux, so the clock sits above panels/docks
+  (the one exception is GNOME Shell's own top bar, which no regular application can
+  cover — see [MODIFICATIONS.md](MODIFICATIONS.md) for why); the window never appears
+  in the taskbar or Alt-Tab switcher; and it can never be dragged fully off-screen.
+  These used to be checkboxes; they are just how the clock behaves now.
+* **most remaining settings apply immediately** — no restart needed for fullscreen
+  detection, multi-workspace display, click-to-move, or showing the clock on every
+  monitor. Only one clock instance ever runs; a second launch is simply blocked and
+  exits, leaving the running one untouched.
 * **15 plugins**: alarm, chime, countdown timer, date, IP address, quick note,
   random position, scheduler, spectrum clock, stopwatch, talking clock, tray
   colour, variable translucency, power off, any zoom
@@ -54,9 +57,10 @@ Everything the official Windows build has, on Linux:
   Nederlands for the main window only); anything else falls back to English
 * built-in "start at login" toggle in Settings — flip it there once installed,
   no manual autostart setup needed (the installer itself does not enable it)
-* no update checker and no update notifications; the program does not contact
-  the network on its own — 4.7.9 is the final 4.x release and there is
-  nothing left to check for
+* no update checker and no update notifications; nothing in the base program
+  contacts the network on its own — 4.7.9 is the final 4.x release and there
+  is nothing left to check for (the one exception is the optional IP address
+  plugin, which stays off unless you enable it yourself)
 
 Note on Wayland: the clock positions itself by calling `move()`, which Wayland
 does not permit, so it cannot be dragged or restore its position there. On X11

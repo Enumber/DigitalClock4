@@ -96,16 +96,7 @@ jobs:
             || { echo "fullscreen_detect_x11.cpp is not in the Linux build"; fail=1; }
           grep -q 'X11FullscreenWorkaround' digital_clock/platform/main_window_linux.cpp \
             || { echo "X11 fullscreen handling is not wired into the window"; fail=1; }
-          # the taskbar-icon toggle is implemented with Qt::Tool, which X11
-          # honours; it must not be hidden again on non-Windows
-          grep -q 'taskbar_icon_enable->setVisible(false)' digital_clock/gui/settings_dialog.cpp \
-            && { echo "taskbar icon toggle was hidden again, but it works on X11"; fail=1; }
           exit $fail
-
-      - name: Panel-overlap setting has an inline explanation
-        # Keep the explanation directly below the real window-boundary option,
-        # present in both English and Chinese UI resources, and safe to wrap.
-        run: python3 tests/check_panel_overlap_description.py
 
       - name: Multi-monitor placement policy tests
         run: |

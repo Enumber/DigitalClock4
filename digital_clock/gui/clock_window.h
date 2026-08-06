@@ -163,8 +163,6 @@ private:
   bool show_border_ = true;
 
   bool fullscreen_detect_enabled_;
-  bool keep_always_visible_;
-  bool allow_over_panels_ = false;
   bool stay_on_top_ = false;
   QSet<QString> window_ignore_list_;
   // "already captured" must be tracked separately: an empty ignore list is a

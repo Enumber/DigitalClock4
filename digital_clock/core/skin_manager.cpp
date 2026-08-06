@@ -19,6 +19,7 @@
 #include "skin_manager.h"
 
 #include <QDir>
+#include <QSettings>
 #include <QApplication>
 
 #include "skin/clock_raster_skin.h"
@@ -27,6 +28,35 @@
 
 namespace digital_clock {
 namespace core {
+
+namespace {
+
+// Whether skin_root looks like a valid skin (same test CreateSkin() uses),
+// without actually constructing a skin object. Mirrors CreateSkin()'s logic:
+// a directory is a valid skin iff it has skin.ini AND at least one *.svg or
+// *.png file.
+bool IsValidSkinDir(const QDir& skin_root)
+{
+  if (!skin_root.exists("skin.ini")) return false;
+  bool has_svg = !skin_root.entryList(QStringList("*.svg"), QDir::Files).isEmpty();
+  bool has_png = !skin_root.entryList(QStringList("*.png"), QDir::Files).isEmpty();
+  return has_svg || has_png;
+}
+
+// Reads only the display name out of skin.ini. Used by ListSkins() to build
+// the skin picker: it must NOT go through CreateSkin(), because for raster
+// (PNG) skins that eagerly decodes all 10 digits + separators + am/pm into
+// QPixmap objects (RasterSkin's ctor) just to read one string out of an ini
+// file. With ~20 bundled skins (8 of them PNG-based, ~8.6MB of PNG source
+// data) that meant every app start decoded every raster skin's images into
+// memory, one skin at a time, purely to populate the "Skin" dropdown.
+QString ReadSkinName(const QDir& skin_root)
+{
+  QSettings config(skin_root.filePath("skin.ini"), QSettings::IniFormat);
+  return config.value("info/name").toString();
+}
+
+} // namespace
 
 ClockSkinPtr CreateSkin(const QDir& skin_root)
 {
@@ -72,10 +102,12 @@ void SkinManager::ListSkins()
     QDir s_dir(s_path);
     for (auto& f_dir : s_dir.entryList(QDir::NoDotAndDotDot | QDir::AllDirs)) {
       QDir skin_root(s_dir.filePath(f_dir));
-      ClockSkinPtr tmp = CreateSkin(skin_root);
-      if (!tmp) continue;
-      const BaseSkin::TSkinInfo& info = tmp->GetInfo();
-      skins_[info[BaseSkin::SI_NAME]] = skin_root;
+      // Just read the name from skin.ini here — do NOT call CreateSkin(),
+      // it would decode every image of every raster skin only to throw the
+      // result away a moment later. Actual image loading happens lazily in
+      // LoadSkin(), once, for whichever single skin the user has selected.
+      if (!IsValidSkinDir(skin_root)) continue;
+      skins_[ReadSkinName(skin_root)] = skin_root;
     }
   }
   emit SearchFinished(skins_.keys());

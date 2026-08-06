@@ -1,65 +1,105 @@
 **English** · [中文](ISSUES.zh-CN.md)
 
-# 已修复问题记录（2026-07-22 用户实机反馈）
+# Fixed issues log (2026-07-22, reported on real hardware by the user)
 
-来源：用户在真实 GNOME 桌面（Ubuntu 24.04，X11）上使用时发现。
-**这些都是 Xvfb 测不出来的问题**——涉及真实窗口管理器、托盘、面板交互，
-只能靠用户在真机上确认。留档以防同类问题再犯。
+Source: found by the user on a real GNOME desktop (Ubuntu 24.04, X11).
+**None of these show up under Xvfb** — they involve the real window manager,
+tray host, and panel interactions, which only a real machine can confirm.
+Kept on file so the same class of bug doesn't get reintroduced.
 
-## 已修复
+## Fixed
 
-### 托盘图标不显示
-程序侧无问题（属误判之一）：根因是系统上 `indicator-application` 抢占了
-`org.kde.StatusNotifierWatcher`，GNOME 的 `ubuntu-appindicators` 扩展只能在自己启动时
-暴力扫一次总线，导致**任何在扩展之后启动的程序托盘图标都不显示**。重载扩展后即出现。
-根治需禁用多余的 `indicator-application`（属于用户系统配置，未擅自改动）。
+### Tray icon not showing up
+Not actually a bug in this program (one of the false leads): the root cause
+was `indicator-application` claiming `org.kde.StatusNotifierWatcher` on this
+system, and GNOME's `ubuntu-appindicators` extension only scans the bus once,
+at its own startup — so **any program started after the extension loads never
+gets its tray icon drawn**. Reloading the extension makes it appear. The real
+fix is disabling the redundant `indicator-application` (that's the user's own
+system configuration, left untouched here).
 
-同时确实存在两个程序侧问题（已修，见 `MODIFICATIONS.md`）：
-`setIsMask(true)` 在 Linux 下把彩色图标渲染成不可见的空白模板；
-`IconName` 曾发布成临时文件绝对路径，部分托盘宿主只按主题名解析。
+Two genuine program-side bugs were found and fixed alongside this (see
+`MODIFICATIONS.md`): `setIsMask(true)` renders the colour icon as an invisible
+blank template on Linux; and `IconName` used to be published as an absolute
+path to a temp file, which some tray hosts only resolve by theme name.
 
-### 任务栏莫名出现图标
-是本轮修复过程中引入的回归：`X11ApplyTaskbarVisibility` 在「关闭」分支覆写了窗口类型，
-把 Qt 给 `Qt::Tool` 设的 `UTILITY` 抹成 `NORMAL`。整个函数已删除，恢复上游行为。
+### Icon appearing in the taskbar for no reason
+A regression introduced during this round of fixes:
+`X11ApplyTaskbarVisibility`'s "disable" branch overwrote the window type,
+turning the `UTILITY` type Qt sets for `Qt::Tool` into `NORMAL`. The whole
+function was removed, restoring the upstream behaviour.
 
-### 「已准备就绪」通知
-窗口带 `_NET_WM_STATE_DEMANDS_ATTENTION` 映射所致，已加 `Qt::WindowDoesNotAcceptFocus`
-（时钟本就不需要键盘焦点）。
+### "Ready" notification popping up
+Caused by the window picking up `_NET_WM_STATE_DEMANDS_ATTENTION`. Fixed by
+adding `Qt::WindowDoesNotAcceptFocus` (the clock never needed keyboard focus
+anyway).
 
-### 插件设置一点，整个设置窗口就"卡住"
-实为两个问题叠加，用户明确区分过：
-1. **真卡顿**（首要）：未启用插件首次点击设置会同步 dlopen + 初始化，
-   语音报时（TTS）等插件耗时可达数秒，界面在此期间无响应；
-2. **层级问题**（次要，"和谐一下"）：插件配置对话框无父窗口，
-   对窗口管理器只是 "transient for group"，弹在了置顶的主设置窗口背后。
+### Clicking a plugin's settings freezes the whole Settings window
+Actually two separate problems stacked together, which the user distinguished
+clearly:
+1. **Genuine lag** (the primary one): the first click on an enabled-but-not-yet
+   loaded plugin's settings triggers a synchronous `dlopen` + init on the spot;
+   for something like the talking-clock (TTS) plugin that can take several
+   seconds, during which the UI is unresponsive.
+2. **Stacking order** (secondary, a "nice to have"): the plugin's config
+   dialog had no parent window, so to the window manager it was only
+   "transient for group" — it popped up behind the always-on-top main
+   Settings window instead of in front of it.
 
-修复：`SetDialogParent()` 机制 + `PluginConfigureRequest` 信号链，让插件对话框
-正确停靠在设置窗口之上；没有可配置项的插件（如"变化的透明度""随机位置"）
-齿轮按钮改为置灰而非可点无反应。
+Fix: a `SetDialogParent()` mechanism plus a `PluginConfigureRequest` signal
+chain that correctly docks each plugin dialog above the Settings window;
+plugins with nothing to configure (e.g. "variable transparency", "random
+position") now grey out their gear button instead of leaving it clickable
+with no effect.
 
-实测：语音报时（最慢）8 秒内正确弹出且已在设置窗口之上；日期插件 2 秒。
+Verified: the talking-clock plugin (the slowest) pops up correctly within 8
+seconds and stays above the Settings window; the date plugin takes about 2
+seconds.
 
-### 时钟无法覆盖顶栏/托盘区域
-新增设置项 `OPT_ALLOW_OVER_PANELS`（默认关闭，界面在"实验性选项"页），
-开启后窗口定位改用整屏 `geometry()` 而非排除面板的 `availableGeometry()`。
+### Clock can't cover the top panel / tray area
+A new setting, `OPT_ALLOW_OVER_PANELS` (off by default, exposed on the
+"Experimental" tab), switched window placement from the panel-excluding
+`availableGeometry()` to the full-screen `geometry()` when enabled.
 
-### 托盘/右键菜单「退出」点了退不出
-根因与预判（SingleApplication）无关：`qApp->quit()` 其实每次都成功，
-卡住的是随后的析构——`mouse_tracker_linux.cpp` 的跟踪线程阻塞在 `XNextEvent()`，
-而 `stop()` 只置标志位后死等，线程永远等不到下一个 X 事件就不会检查标志。
-改用 `XPending()` + `poll(200ms)` 轮询和真正的 `wait()` join 修复。
-实测：右键菜单「退出」连续 5 次全部成功退出进程。
+> **Follow-up (2026-08-05)**: the "Experimental" tab mentioned here has since
+> been retired entirely, and `OPT_ALLOW_OVER_PANELS` itself has been deleted
+> outright — covering panels is now Linux's unconditional default, with
+> nothing left to toggle. The one thing it still can't cover is GNOME Shell's
+> own top panel (a limitation of that desktop environment, not something this
+> program can fix). See the "'Cover Panels' removed as a setting" and
+> "diagnosed: GNOME Shell limitation" sections in `MODIFICATIONS.md`. This
+> historical entry is kept as-is; it does not mean today's settings UI still
+> has this option.
 
-### 首次使用默认值复核
-全新配置下实测：位置 (1531,20)（屏幕 1600 宽、窗口 50 宽，右上角）、
-时间格式 `09 25` 形式（24 小时 HH:mm，无 AM/PM）、缩放 20%、不透明度 60%、
-单实例生效（第二个实例被拒绝启动）。全部符合预期。
+### Tray/context-menu "Quit" doesn't actually quit
+The root cause had nothing to do with the suspected culprit
+(`SingleApplication`): `qApp->quit()` always succeeded — what hung was the
+destruction that followed. `mouse_tracker_linux.cpp`'s tracking thread was
+blocked inside `XNextEvent()`, and `stop()` only set a flag and waited
+forever; the thread would never reach the point where it checks that flag
+because it was stuck waiting for the next X event. Fixed by switching to an
+`XPending()` + `poll(200ms)` loop with a real `wait()`/join. Verified: "Quit"
+from the context menu exited the process cleanly 5 times in a row.
 
-## 测试注意（血泪教训，供以后参考）
-- 隔离显示用 `Xvfb`，**绝不用 `DISPLAY=:1`**（用户真实桌面）。
-- 起程序必须套 `dbus-run-session`，否则托盘图标会漏进用户真实任务栏。
-- 必须用**隔离的 HOME**，否则会污染用户真实配置
-  （已发生过：`transp_for_input=true` 被误写进用户配置，导致时钟完全点不动）。
-- **托盘、通知、面板层级这类功能，Xvfb 根本测不出来**，最终必须由用户在真机确认。
-- 多个 agent 并发改同一份源码时，中途的 build 产物会互相打架（一方新增符号、
-  另一方还没重建库），不代表改动本身有问题；等全部完成后统一重建复验即可。
+### Re-checked first-run defaults
+Tested on a brand-new config: position (1531, 20) on a 1600px-wide screen
+with a 50px-wide window (top-right corner), time format `09 25` (24-hour
+`HH:mm`, no AM/PM), 20% zoom, 60% opacity, single-instance enforced (a second
+launch is refused). All matched expectations.
+
+## Testing notes (lessons learned the hard way, for future reference)
+
+- Use `Xvfb` for an isolated display — **never `DISPLAY=:1`** (the user's real
+  desktop).
+- Always wrap the launched program in `dbus-run-session`, or its tray icon
+  leaks into the user's real taskbar.
+- Always use an **isolated `$HOME`**, or you will corrupt the user's real
+  config (this actually happened once: `transp_for_input=true` got written
+  into the user's real config, making the clock completely unclickable).
+- **Tray, notification, and panel-stacking behaviour simply cannot be tested
+  under Xvfb** — only a real machine, confirmed by the user, settles these.
+- When multiple agents edit the same source tree concurrently, intermediate
+  build artifacts can conflict with each other (one side adds a symbol the
+  other side's not-yet-rebuilt library doesn't have yet) — that's not
+  evidence the change itself is broken; rebuild and re-verify once everything
+  has landed.

@@ -67,12 +67,9 @@ QMap<Option, QVariant> ClockSettings::GetSettings() const
   all_settings[OPT_CLOCK_URL_ENABLED]     = GetValue(OPT_CLOCK_URL_ENABLED);
   all_settings[OPT_CLOCK_URL_STRING]      = GetValue(OPT_CLOCK_URL_STRING);
   all_settings[OPT_FULLSCREEN_IGNORE_LST] = GetValue(OPT_FULLSCREEN_IGNORE_LST);
-  all_settings[OPT_BETTER_STAY_ON_TOP]    = GetValue(OPT_BETTER_STAY_ON_TOP);
   all_settings[OPT_SHOW_HIDE_ENABLED]     = GetValue(OPT_SHOW_HIDE_ENABLED);
   all_settings[OPT_EXPORT_STATE]          = GetValue(OPT_EXPORT_STATE);
-  all_settings[OPT_KEEP_ALWAYS_VISIBLE]   = GetValue(OPT_KEEP_ALWAYS_VISIBLE);
   all_settings[OPT_SHOW_WINDOW_BORDER]    = GetValue(OPT_SHOW_WINDOW_BORDER);
-  all_settings[OPT_ALLOW_OVER_PANELS]     = GetValue(OPT_ALLOW_OVER_PANELS);
   all_settings[OPT_SNAP_TO_EDGES]         = GetValue(OPT_SNAP_TO_EDGES);
   all_settings[OPT_SNAP_THRESHOLD]        = GetValue(OPT_SNAP_THRESHOLD);
   all_settings[OPT_REFRESH_INTERVAL]      = GetValue(OPT_REFRESH_INTERVAL);
@@ -81,7 +78,6 @@ QMap<Option, QVariant> ClockSettings::GetSettings() const
   all_settings[OPT_OPACITY_ON_HOVER]      = GetValue(OPT_OPACITY_ON_HOVER);
   all_settings[OPT_USE_HOVER_BUTTONS]     = GetValue(OPT_USE_HOVER_BUTTONS);
   all_settings[OPT_WINDOW_MOVE_STEP]      = GetValue(OPT_WINDOW_MOVE_STEP);
-  all_settings[OPT_SHOW_TASKBAR_ICON]     = GetValue(OPT_SHOW_TASKBAR_ICON);
   return all_settings;
 }
 
@@ -123,13 +119,10 @@ QString ClockSettings::GetKey(const int id) const
     case OPT_CLOCK_URL_ENABLED:     return "misc/clock_url_enabled";
     case OPT_CLOCK_URL_STRING:      return "misc/clock_url_string";
     case OPT_FULLSCREEN_IGNORE_LST: return "misc/fullscreen_ignore_list";
-    case OPT_BETTER_STAY_ON_TOP:    return "misc/better_stay_on_top";
     case OPT_SHOW_HIDE_ENABLED:     return "misc/show_hide_enabled";
     case OPT_EXPORT_STATE:          return "misc/export_state";
-    case OPT_KEEP_ALWAYS_VISIBLE:   return "window/always_visible";
     // window settings
     case OPT_SHOW_WINDOW_BORDER:    return "window/show_border";
-    case OPT_ALLOW_OVER_PANELS:     return "window/allow_over_panels";
     case OPT_SNAP_TO_EDGES:         return "window/snap_to_edges";
     case OPT_SNAP_THRESHOLD:        return "window/snap_threshold";
     case OPT_REFRESH_INTERVAL:      return "window/refresh_interval";
@@ -138,7 +131,6 @@ QString ClockSettings::GetKey(const int id) const
     case OPT_OPACITY_ON_HOVER:      return "window/opacity_on_hover";
     case OPT_USE_HOVER_BUTTONS:     return "window/hover_buttons";
     case OPT_WINDOW_MOVE_STEP:      return "window/move_step";
-    case OPT_SHOW_TASKBAR_ICON:     return "window/show_taskbar_icon";
   }
   Q_ASSERT(false);
   return QString();
@@ -188,13 +180,10 @@ QVariant ClockSettings::GetDefaultValue(const int id) const
     case OPT_CLOCK_URL_ENABLED:     return false;
     case OPT_CLOCK_URL_STRING:      return QString("https://digitalclock4.sourceforge.io/");
     case OPT_FULLSCREEN_IGNORE_LST: return ignored_fullscreen_windows;
-    case OPT_BETTER_STAY_ON_TOP:    return true;
     case OPT_SHOW_HIDE_ENABLED:     return false;
     case OPT_EXPORT_STATE:          return true;
-    case OPT_KEEP_ALWAYS_VISIBLE:   return true;
     // window settings
     case OPT_SHOW_WINDOW_BORDER:    return true;
-    case OPT_ALLOW_OVER_PANELS:     return false;
     case OPT_SNAP_TO_EDGES:         return true;
     case OPT_SNAP_THRESHOLD:        return 15;
     case OPT_REFRESH_INTERVAL:      return 500;
@@ -203,7 +192,6 @@ QVariant ClockSettings::GetDefaultValue(const int id) const
     case OPT_OPACITY_ON_HOVER:      return 0.15;
     case OPT_USE_HOVER_BUTTONS:     return true;
     case OPT_WINDOW_MOVE_STEP:      return 20;
-    case OPT_SHOW_TASKBAR_ICON:     return false;
   }
   return QVariant();
 }

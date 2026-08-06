@@ -18,11 +18,10 @@ does not say that. Here is what it actually means, and what it means for you.
 What the limitation really is
 -----------------------------
 
-The clock is a frameless top-level window (`Qt::FramelessWindowHint`,
-`digital_clock/gui/clock_window.cpp:88`). It implements dragging itself: the
-mouse handler computes a new position and calls `move()`
-(`clock_window.cpp:177-193`), and the saved position is restored the same way
-at startup (`clock_window.cpp:452`).
+The clock is a frameless top-level window (`Qt::FramelessWindowHint`, in
+`digital_clock/gui/clock_window.cpp`). It implements dragging itself: the
+mouse handler computes a new position and calls `move()`, and the saved
+position is restored the same way at startup.
 
 Wayland deliberately does not let a client know or choose where its own window
 sits on screen — there are no global window coordinates in the protocol, by

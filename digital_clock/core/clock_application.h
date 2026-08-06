@@ -59,10 +59,6 @@ private slots:
   void Reset();
   void ApplyOption(const Option opt, const QVariant& value);
 
-  // Quick tray/context-menu toggle: applies immediately and commits on its
-  // own, independent of the settings dialog's Accept()/Reject() transaction.
-  void SetAllowOverPanels(bool allow);
-
   void ShowSettingsDialog();
   void ShowAboutDialog();
 
